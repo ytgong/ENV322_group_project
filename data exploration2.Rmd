@@ -9,6 +9,8 @@ library(dataRetrieval)
 library(tidyverse)
 library(ggplot2)
 library(lubridate)
+
+getwd()
 ```
 
 ```{r}
@@ -21,8 +23,6 @@ NorthWestRiver <- readNWISuv(siteNumbers = "02043410",
                              parameterCd = "00060",
                              startDate = "2006-03-04",
                              endDate = "2007-06-19") 
-
-NorthWestRiver$dateTime <- as.Date(NorthWestRiver$dateTime, "%m/%d/%y")
 
 
 NorthWestRiver2 <- readNWISdv(siteNumbers = "02043410",

@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+
+discharge_sites<-whatNWISsites(stateCd="NC", parameterCd="00060", hasDataTypeCd="iv")
+
+DO_sites<-whatNWISsites(stateCd="NC", parameterCd="00300", hasDataTypeCd="iv")
+
+conductance_sites<-whatNWISsites(stateCd= "NC", parameterCd="00095", hasDataTypeCd="iv")
+
+pH_sites<-whatNWISsites(stateCd="NC", parameterCd="00400", hasDataTypeCd="iv")
+
+temp_sites<-whatNWISsites(stateCd="NC", parameterCd="00010", hasDataTypeCd="iv")
+
+#tss_sites<-whatNWISsites(stateCd="NC", parameterCd="00530", hasDataTypeCd="iv")
+
+#nitrate_sites<-whatNWISsites(stateCd="NC", parameterCd="99133")
+
+hyp1_sites<-discharge_sites%>%
+  filter(site_no %in% conductance_sites$site_no)
+
+hyp2_sites<-discharge_sites%>%
+  filter(site_no %in% DO_sites$site_no)%>%
+  filter(site_no %in% conductance_sites$site_no)%>%
+  filter(site_no %in% pH_sites$site_no)
+
+
+
+#whatNWISdata(siteNumbers = "0209736050")
+#whatNWISdata(siteNumbers = "01646500")
+```
+

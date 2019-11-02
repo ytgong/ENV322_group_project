@@ -1,0 +1,92 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+
+discharge_sites<-whatNWISsites(stateCd="NC", parameterCd="00060", hasDataTypeCd="iv")
+
+DO_sites<-whatNWISsites(stateCd="NC", parameterCd="00300", hasDataTypeCd="iv")
+
+conductance_sites<-whatNWISsites(stateCd= "NC", parameterCd="00095", hasDataTypeCd="iv")
+
+pH_sites<-whatNWISsites(stateCd="NC", parameterCd="00400", hasDataTypeCd="iv")
+
+temp_sites<-whatNWISsites(stateCd="NC", parameterCd="00010", hasDataTypeCd="iv")
+
+#tss_sites<-whatNWISsites(stateCd="NC", parameterCd="00530", hasDataTypeCd="iv")
+
+#nitrate_sites<-whatNWISsites(stateCd="NC", parameterCd="99133")
+
+hyp1_sites<-discharge_sites%>%
+  filter(site_no %in% conductance_sites$site_no)
+
+hyp2_sites<-discharge_sites%>%
+  filter(site_no %in% DO_sites$site_no)%>%
+  filter(site_no %in% conductance_sites$site_no)%>%
+  filter(site_no %in% pH_sites$site_no)
+
+
+
+#whatNWISdata(siteNumbers = "0209736050")
+#whatNWISdata(siteNumbers = "01646500")
+```
+
+```{r}
+LTNdischarge <- readNWISuv( 
+  site = "03501500", 
+  parameterCd = "00060",
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+LTNdata <- readNWISsite(site = "03501500")
+LTN.catchment.size <- LTNdata$drain_area_va
+
+RBI_LTN <- (
+   sum(abs(diff(LTNdischarge$Flow_Inst))) / 
+    sum(LTNdischarge$Flow_Inst[-1])
+   / LTN.catchment.size)
+
+OCONdischarge <- readNWISuv(
+  site = "03512000",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+OCONdata <- readNWISsite(site = "03512000")
+OCON.catchment.size <- OCONdata$drain_area_va
+
+RBI_OCON <- (
+sum(abs(diff(OCONdischarge$Flow_Inst))) /
+    sum(OCONdischarge$Flow_Inst[-1])
+   / OCON.catchment.size)
+
+FBASHEdischarge <- readNWISuv(
+  site = "03451500",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+FBASHEdata <- readNWISsite(site = "03451500")
+FBASHE.catchment.size <- FBASHEdata$drain_area_va
+
+
+```
+
+
+
+
+
+
+

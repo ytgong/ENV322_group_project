@@ -33,5 +33,7 @@ Enodat.combined <-
   left_join(Enodat.vars, Enodat.vars2) %>%
   select(DateTime_UTC, DateTime_Solar, SiteName, DO_mgL, Discharge_m3s, SpecCond_mScm, Turbidity_mV, pH, CDOM_mV, WaterTemp_C, WaterTemp2_C)
 
+#Other variables?
+
 ```
 

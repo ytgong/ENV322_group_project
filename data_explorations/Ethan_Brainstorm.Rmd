@@ -26,16 +26,15 @@ nitrate_sites<-whatNWISsites(stateCd="FL", parameterCd="99133", hasDataTypeCd="i
 hyp1_sites<-discharge_sites%>%
   filter(site_no %in% nitrate_sites$site_no)
 
-hyp2_sites<-discharge_sites%>%
+hyp2_3_sites<-discharge_sites%>%
   filter(site_no %in% DO_sites$site_no)%>%
   filter(site_no %in% conductance_sites$site_no)%>%
   filter(site_no %in% pH_sites$site_no)%>%
   filter(site_no %in% nitrate_sites$site_no)
 
+write.csv(hyp1_sites, file = "/Users/ethanready/ENV322_group_project/hyp1_sites.csv")
 
-
-#whatNWISdata(siteNumbers = "0209736050")
-#whatNWISdata(siteNumbers = "01646500")
+write.csv(hyp2_3_sites, file = "/Users/ethanready/ENV322_group_project/hyp2_3_sites.csv")
 ```
 
 ```{r, RBI for hyp1 sites}

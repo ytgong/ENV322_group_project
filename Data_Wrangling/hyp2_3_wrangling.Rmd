@@ -1,0 +1,88 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+JACK.hyp23 <- readNWISuv( 
+  site = "02358795", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(JACK.hyp23, file = "/Users/ethanready/ENV322_group_project/JACKhyp23.csv")
+
+WAC.hyp23 <- readNWISuv( 
+  site = "02326526", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(WAC.hyp23, file = "/Users/ethanready/ENV322_group_project/WAChyp23.csv")
+
+MAD.hyp23 <- readNWISuv( 
+  site = "02319302", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(MAD.hyp23, file = "/Users/ethanready/ENV322_group_project/MADhyp23.csv")
+
+DELL.hyp23 <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(DELL.hyp23, file = "/Users/ethanready/ENV322_group_project/DELLhyp23.csv")
+
+MAN.hyp23 <- readNWISuv( 
+  site = "02323566", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(MAN.hyp23, file = "/Users/ethanready/ENV322_group_project/MANhyp23.csv")
+
+FAN.hyp23 <- readNWISuv( 
+  site = "02323502", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(FAN.hyp23, file = "/Users/ethanready/ENV322_group_project/FANhyp23.csv")
+
+HILD.hyp23 <- readNWISuv( 
+  site = "02322688", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(HILD.hyp23, file = "/Users/ethanready/ENV322_group_project/HILDhyp23.csv")
+
+CAL.hyp23 <- readNWISuv( 
+  site = "02292900", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(CAL.hyp23, file = "/Users/ethanready/ENV322_group_project/CALhyp23.csv")
+
+
+```
+

@@ -1751,37 +1751,6 @@ summary {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkYXRhUmV0cmlldmFsKVxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmRpc2NoYXJnZV9zaXRlczwtd2hhdE5XSVNzaXRlcyhzdGF0ZUNkPVwiTkNcIiwgcGFyYW1ldGVyQ2Q9XCIwMDA2MFwiLCBoYXNEYXRhVHlwZUNkPVwiaXZcIilcblxuRE9fc2l0ZXM8LXdoYXROV0lTc2l0ZXMoc3RhdGVDZD1cIk5DXCIsIHBhcmFtZXRlckNkPVwiMDAzMDBcIiwgaGFzRGF0YVR5cGVDZD1cIml2XCIpXG5cbmNvbmR1Y3RhbmNlX3NpdGVzPC13aGF0TldJU3NpdGVzKHN0YXRlQ2Q9IFwiTkNcIiwgcGFyYW1ldGVyQ2Q9XCIwMDA5NVwiLCBoYXNEYXRhVHlwZUNkPVwiaXZcIilcblxucEhfc2l0ZXM8LXdoYXROV0lTc2l0ZXMoc3RhdGVDZD1cIk5DXCIsIHBhcmFtZXRlckNkPVwiMDA0MDBcIiwgaGFzRGF0YVR5cGVDZD1cIml2XCIpXG5cbnRlbXBfc2l0ZXM8LXdoYXROV0lTc2l0ZXMoc3RhdGVDZD1cIk5DXCIsIHBhcmFtZXRlckNkPVwiMDAwMTBcIiwgaGFzRGF0YVR5cGVDZD1cIml2XCIpXG5cbiN0c3Nfc2l0ZXM8LXdoYXROV0lTc2l0ZXMoc3RhdGVDZD1cIk5DXCIsIHBhcmFtZXRlckNkPVwiMDA1MzBcIiwgaGFzRGF0YVR5cGVDZD1cIml2XCIpXG5cbiNuaXRyYXRlX3NpdGVzPC13aGF0TldJU3NpdGVzKHN0YXRlQ2Q9XCJOQ1wiLCBwYXJhbWV0ZXJDZD1cIjk5MTMzXCIpXG5cbmh5cDFfc2l0ZXM8LWRpc2NoYXJnZV9zaXRlcyU+JVxuICBmaWx0ZXIoc2l0ZV9ubyAlaW4lIGNvbmR1Y3RhbmNlX3NpdGVzJHNpdGVfbm8pXG5cbmh5cDJfc2l0ZXM8LWRpc2NoYXJnZV9zaXRlcyU+JVxuICBmaWx0ZXIoc2l0ZV9ubyAlaW4lIERPX3NpdGVzJHNpdGVfbm8pJT4lXG4gIGZpbHRlcihzaXRlX25vICVpbiUgY29uZHVjdGFuY2Vfc2l0ZXMkc2l0ZV9ubyklPiVcbiAgZmlsdGVyKHNpdGVfbm8gJWluJSBwSF9zaXRlcyRzaXRlX25vKVxuXG5cblxuI3doYXROV0lTZGF0YShzaXRlTnVtYmVycyA9IFwiMDIwOTczNjA1MFwiKVxuI3doYXROV0lTZGF0YShzaXRlTnVtYmVycyA9IFwiMDE2NDY1MDBcIilcbmBgYCJ9 -->
-<pre class="r"><code>library(dataRetrieval)
-library(tidyverse)
-
-discharge_sites&lt;-whatNWISsites(stateCd=&quot;NC&quot;, parameterCd=&quot;00060&quot;, hasDataTypeCd=&quot;iv&quot;)
-
-DO_sites&lt;-whatNWISsites(stateCd=&quot;NC&quot;, parameterCd=&quot;00300&quot;, hasDataTypeCd=&quot;iv&quot;)
-
-conductance_sites&lt;-whatNWISsites(stateCd= &quot;NC&quot;, parameterCd=&quot;00095&quot;, hasDataTypeCd=&quot;iv&quot;)
-
-pH_sites&lt;-whatNWISsites(stateCd=&quot;NC&quot;, parameterCd=&quot;00400&quot;, hasDataTypeCd=&quot;iv&quot;)
-
-temp_sites&lt;-whatNWISsites(stateCd=&quot;NC&quot;, parameterCd=&quot;00010&quot;, hasDataTypeCd=&quot;iv&quot;)
-
-#tss_sites&lt;-whatNWISsites(stateCd=&quot;NC&quot;, parameterCd=&quot;00530&quot;, hasDataTypeCd=&quot;iv&quot;)
-
-#nitrate_sites&lt;-whatNWISsites(stateCd=&quot;NC&quot;, parameterCd=&quot;99133&quot;)
-
-hyp1_sites&lt;-discharge_sites%&gt;%
-  filter(site_no %in% conductance_sites$site_no)
-
-hyp2_sites&lt;-discharge_sites%&gt;%
-  filter(site_no %in% DO_sites$site_no)%&gt;%
-  filter(site_no %in% conductance_sites$site_no)%&gt;%
-  filter(site_no %in% pH_sites$site_no)
-
-
-
-#whatNWISdata(siteNumbers = &quot;0209736050&quot;)
-#whatNWISdata(siteNumbers = &quot;01646500&quot;)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->

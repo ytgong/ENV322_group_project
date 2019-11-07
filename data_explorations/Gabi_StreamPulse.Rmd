@@ -1,0 +1,37 @@
+---
+title: "Gabi_StreamPulse"
+output: html_document
+---
+
+```{r}
+library(devtools)
+packages <- c(
+  "dataRetrieval", 
+  "tidyverse", 
+  "xts",
+  "dygraphs",
+  "StreamPULSE", 
+  "streamMetabolizer"
+  )
+library(StreamPULSE)
+library(streamMetabolizer)
+
+Enodat <- request_data(
+  sitecode = "NC_Eno",
+  variables = c('DO_mgL', 'SpecCond_mScm', 'Discharge_m3s', 'Turbidity_mV', 'pH', 'CDOM_mV', 'WaterTemp_C', 'WaterTemp2_C')
+  )
+
+Enodat.lon <- Enodat[[2]]$lon
+Enodat.vars <- Enodat[[1]] %>%
+  spread(value = value, key = variable) %>%
+  mutate(DateTime_Solar = convert_UTC_to_solartime(DateTime_UTC, Enodat.lon))
+
+Enodat.vars2 <- Enodat[[2]] %>%
+  mutate(SiteName = name)
+
+Enodat.combined <-
+  left_join(Enodat.vars, Enodat.vars2) %>%
+  select(DateTime_UTC, DateTime_Solar, SiteName, DO_mgL, Discharge_m3s, SpecCond_mScm, Turbidity_mV, pH, CDOM_mV, WaterTemp_C, WaterTemp2_C)
+
+```
+

@@ -1,0 +1,71 @@
+---
+title: "Data Exploration 2"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+install.packages("dataRetrieval")
+library(dataRetrieval)
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+
+getwd()
+```
+
+```{r}
+NorthWestRiverSummary <- whatNWISdata(siteNumbers = "02043410")
+
+
+
+
+NorthWestRiver <- readNWISuv(siteNumbers = "02043410",
+                             parameterCd = "00060",
+                             startDate = "2006-03-04",
+                             endDate = "2007-06-19") 
+
+
+NorthWestRiver2 <- readNWISdv(siteNumbers = "02043410",
+                              parameterCd = "00095",
+                              startDate = "",
+                              endDate = "")
+
+NorthWestRiverPlot <-
+  ggplot(NorthWestRiver, aes(x = dateTime, y = X_00060_00000)) +
+  geom_line(alpha = 0.5)
+print(NorthWestRiverPlot)
+
+NorthWestRiverPlot2 <-
+  ggplot(NorthWestRiver2, aes(x = Date, y = X_00095_00003)) +
+  geom_line(alpha = 0.5)
+print(NorthWestRiverPlot2)
+
+```
+
+
+
+```{r}
+Summary <- whatNWISdata(siteNumbers = "02087183")
+
+
+Neuse <- readNWISuv(siteNumbers = "02086849",
+                             parameterCd = "00060",
+                             startDate = "1960-11-01",
+                             endDate = "1995-04-18")
+
+Neuse2 <- readNWISqw(siteNumbers = "02087183",
+                             parameterCd = "00095",
+                             startDate = "",
+                             endDate = "")
+
+NeusePlot <-
+  ggplot(Neuse, aes(x = dateTime, y = X_00060_00000)) +
+  geom_line(alpha = 0.5)
+print(NeusePlot)
+
+NeusePlot2 <-
+  ggplot(Neuse2, aes(x = sample_dt, y = result_va)) +
+  geom_line(alpha = 0.5)
+print(NeusePlot2)
+
+```

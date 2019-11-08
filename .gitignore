@@ -25,4 +25,8 @@ vignettes/*.pdf
 *.knit.md
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
+<<<<<<< HEAD
 Ethan_Brainstorm_Theo_Continuation.nb.html
+=======
+ENV322_group_project.Rproj
+>>>>>>> bcf994f35a7b7b6277a70f4157b2797f7fc4abd8

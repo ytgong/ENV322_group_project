@@ -1,0 +1,126 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+library(EcoHydRology)
+library(dygraphs)
+library(xts)
+JACK.hyp23 <- readNWISuv( 
+  site = "02358795", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(JACK.hyp23, file = "/Users/ethanready/ENV322_group_project/JACKhyp23.csv")
+
+WAC.hyp23.1617 <- readNWISuv( 
+  site = "02326526", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "2016-02-17", 
+  endDate = "2017-02-17"
+  ) %>% 
+  renameNWISColumns()
+
+WAC.hyp23.1718 <- readNWISuv( 
+  site = "02326526", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "2017-02-17", 
+  endDate = "2018-02-17"
+  ) %>% 
+  renameNWISColumns() %>%
+  drop_na()
+
+WAC.baseflow <- BaseflowSeparation(
+  WAC.hyp23.1718$Flow_Inst, 
+  filter_parameter = 0.925, 
+  passes = 3
+  )
+
+WAC2018 <- cbind(WAC.hyp23.1718, WAC.baseflow)
+
+ggplot(TFC2018, aes(x = dateTime, y = Flow_Inst)) + 
+  geom_line() +
+  # scale_y_log10() +
+  geom_line(mapping = aes(x = dateTime, y = bt), color = "darkorange4") +
+  geom_line(mapping = aes(x = dateTime, y = qft), color = "steelblue4")
+
+dygraph(
+  cbind(
+    Flow = with(WAC2018, xts(Flow_Inst, order.by = dateTime)), 
+    Baseflow = with(WAC2018, xts(bt, order.by = dateTime)), 
+    Quickflow = with(WAC2018, xts(qft, order.by = dateTime))
+    )
+  ) %>% 
+  dyRangeSelector()
+
+
+write.csv(WAC.hyp23, file = "/Users/ethanready/ENV322_group_project/WAChyp23.csv")
+
+MAD.hyp23 <- readNWISuv( 
+  site = "02319302", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(MAD.hyp23, file = "/Users/ethanready/ENV322_group_project/MADhyp23.csv")
+
+DELL.hyp23 <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(DELL.hyp23, file = "/Users/ethanready/ENV322_group_project/DELLhyp23.csv")
+
+MAN.hyp23 <- readNWISuv( 
+  site = "02323566", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(MAN.hyp23, file = "/Users/ethanready/ENV322_group_project/MANhyp23.csv")
+
+FAN.hyp23 <- readNWISuv( 
+  site = "02323502", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(FAN.hyp23, file = "/Users/ethanready/ENV322_group_project/FANhyp23.csv")
+
+HILD.hyp23 <- readNWISuv( 
+  site = "02322688", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(HILD.hyp23, file = "/Users/ethanready/ENV322_group_project/HILDhyp23.csv")
+
+CAL.hyp23 <- readNWISuv( 
+  site = "02292900", 
+  parameterCd = c("00060","99133","00300", "00095", "00400"),
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(CAL.hyp23, file = "/Users/ethanready/ENV322_group_project/CALhyp23.csv")
+
+
+```
+

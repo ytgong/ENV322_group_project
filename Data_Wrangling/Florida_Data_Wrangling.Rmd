@@ -1,0 +1,34 @@
+---
+title: "FL Data Wrangling"
+output: html_notebook
+---
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+
+
+# find dataframe of sites for each parameter
+discharge_sites<-whatNWISsites(stateCd="FL", parameterCd="00060", hasDataTypeCd="iv")
+
+DO_sites<-whatNWISsites(stateCd="FL", parameterCd="00300", hasDataTypeCd="iv")
+
+conductance_sites<-whatNWISsites(stateCd= "FL", parameterCd="00095", hasDataTypeCd="iv")
+
+pH_sites<-whatNWISsites(stateCd="FL", parameterCd="00400", hasDataTypeCd="iv")
+
+nitrate_sites<-whatNWISsites(stateCd="FL", parameterCd="99133", hasDataTypeCd="iv")
+
+# create dataframe of sites for each hypothesis
+hyp1_sites<-discharge_sites%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+hyp2_3_sites<-discharge_sites%>%
+  filter(site_no %in% DO_sites$site_no)%>%
+  filter(site_no %in% conductance_sites$site_no)%>%
+  filter(site_no %in% pH_sites$site_no)%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+```
+
+

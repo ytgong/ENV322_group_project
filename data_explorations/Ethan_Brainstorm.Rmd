@@ -1,0 +1,171 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+
+discharge_sites<-whatNWISsites(stateCd="FL", parameterCd="00060", hasDataTypeCd="iv")
+
+DO_sites<-whatNWISsites(stateCd="FL", parameterCd="00300", hasDataTypeCd="iv")
+
+conductance_sites<-whatNWISsites(stateCd= "FL", parameterCd="00095", hasDataTypeCd="iv")
+
+pH_sites<-whatNWISsites(stateCd="FL", parameterCd="00400", hasDataTypeCd="iv")
+
+#temp_sites<-whatNWISsites(stateCd="NC", parameterCd="00010", hasDataTypeCd="iv")
+
+#tss_sites<-whatNWISsites(stateCd="NC", parameterCd="00530", hasDataTypeCd="iv")
+
+nitrate_sites<-whatNWISsites(stateCd="FL", parameterCd="99133", hasDataTypeCd="iv")
+
+hyp1_sites<-discharge_sites%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+hyp2_3_sites<-discharge_sites%>%
+  filter(site_no %in% DO_sites$site_no)%>%
+  filter(site_no %in% conductance_sites$site_no)%>%
+  filter(site_no %in% pH_sites$site_no)%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+write.csv(hyp1_sites, file = "/Users/ethanready/ENV322_group_project/hyp1_sites.csv")
+
+write.csv(hyp2_3_sites, file = "/Users/ethanready/ENV322_group_project/hyp2_3_sites.csv")
+```
+
+```{r, RBI for hyp1 sites}
+#Little Tennessee River @ Franklin, NC
+LTNdischarge <- readNWISuv( 
+  site = "03501500", 
+  parameterCd = "00060",
+  startDate = "", 
+  endDate = ""
+  ) %>% 
+  renameNWISColumns()
+
+write.csv(LTNdischarge, file = "/Users/ethanready/ENV322_group_project/LTNdischarge.csv")
+
+LTNdata <- readNWISsite(site = "03501500")
+LTN.catchment.size <- LTNdata$drain_area_va
+
+RBI_LTN <- (
+   sum(abs(diff(LTNdischarge$Flow_Inst))) / 
+    sum(LTNdischarge$Flow_Inst[-1])
+   / LTN.catchment.size)
+
+#Oconaluftee River @ Birdtown, NC 
+OCONdischarge <- readNWISuv( #this is a pain to load, so beware
+  site = "03512000",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+write.csv(OCONdischarge, file = "/Users/ethanready/ENV322_group_project/OCONdischarge.csv")
+
+OCONdata <- readNWISsite(site = "03512000")
+OCON.catchment.size <- OCONdata$drain_area_va
+
+RBI_OCON <- (
+sum(abs(diff(OCONdischarge$Flow_Inst))) /
+    sum(OCONdischarge$Flow_Inst[-1])
+   / OCON.catchment.size)
+
+#French Broad River @ Asheville, NC
+FBASHEdischarge <- readNWISuv(
+  site = "03451500",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+write.csv(FBASHEdischarge, file = "/Users/ethanready/ENV322_group_project/FBASHEdischarge.csv")
+
+FBASHEdata <- readNWISsite(site = "03451500")
+FBASHE.catchment.size <- FBASHEdata$drain_area_va
+
+RBI_FBASHE <- (
+  sum(abs(diff(FBASHEdischarge$Flow_Inst))) /
+    sum(FBASHEdischarge$Flow_Inst[-1])
+   / FBASHE.catchment.size)
+
+#French Broad River near Fletcher, NC
+FBFLETCHdischarge <- readNWISuv(
+  site = "03447687",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+write.csv(FBFLETCHdischarge, file = "/Users/ethanready/ENV322_group_project/FBFLETCHdischarge.csv")
+
+FBFLETCHdata <- readNWISsite(site = "03447687")
+FBFLETCH.catchment.size <- FBFLETCHdata$drain_area_va
+
+RBI_FBFLETCH <- (sum(abs(diff(FBFLETCHdischarge$Flow_Inst))) /
+    sum(FBFLETCHdischarge$Flow_Inst[-1])
+   / FBFLETCH.catchment.size)
+
+
+#Rocky River @ US64 near Siler City, NC
+ROCKYdischarge <- readNWISuv(
+  site = "02101726",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+write.csv(ROCKYdischarge, file = "/Users/ethanready/ENV322_group_project/ROCKYdischarge.csv")
+
+ROCKYdata <- readNWISsite(site = "02101726")
+ROCKY.catchment.size <- ROCKYdata$drain_area_va
+
+RBI_ROCKY <- (sum(abs(diff(ROCKYdischarge$Flow_Inst))) /
+    sum(ROCKYdischarge$Flow_Inst[-1])
+   / ROCKY.catchment.size)
+
+
+#New River below HWY17 bridge @ Jacksonville, NC
+NEWdischarge <- readNWISuv(
+  site = "0209303205",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+write.csv(NEWdischarge, file = "/Users/ethanready/ENV322_group_project/NEWdischarge.csv")
+
+NEWdata <- readNWISsite(site = "0209303205")
+NEW.catchment.size <- NEWdata$drain_area_va
+
+RBI_NEW <- (sum(abs(diff(NEWdischarge$Flow_Inst))) /
+    sum(NEWdischarge$Flow_Inst[-1])
+   / NEW.catchment.size)
+
+
+#Roanoke River near Oak City, NC
+ROANOKEdischarge <- readNWISuv(
+  site = "02081022",
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+) %>%
+  renameNWISColumns()
+
+write.csv(ROANOKEdischarge, file = "/Users/ethanready/ENV322_group_project/ROANOKEdischarge.csv")
+
+ROANOKEdata <- readNWISsite(site = "02081022")
+ROANOKE.catchment.size <- ROANOKEdata$drain_area_va
+
+RBI_ROANOKE <- (sum(abs(diff(ROANOKEdischarge$Flow_Inst))) /
+    sum(ROANOKEdischarge$Flow_Inst[-1])
+   / ROANOKE.catchment.size)
+```
+

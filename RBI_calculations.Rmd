@@ -1,0 +1,38 @@
+---
+title: "RBI_calculations"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(dataRetrieval)
+
+RBI_values<-1:22
+hyp1_sites<-read.csv("./FL_CSV/hyp1_sites.csv")
+site.nums<-as.character(hyp1_sites$site_no)
+
+for (i in 1:22) {
+
+sitedata <- readNWISsite(site = paste0("0", site.nums[i]))
+catchment.size <- sitedata$drain_area_va #square miles
+
+discharge<-readNWISuv(
+  siteNumbers = paste0("0", site.nums[i]),
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+)%>%
+  renameNWISColumns()
+
+RBI_values[i] <- (
+  sum(abs(diff(discharge$Flow_Inst))) / 
+    sum(discharge$Flow_Inst[-1])
+  ) / catchment.size
+
+}
+```
+

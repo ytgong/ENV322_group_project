@@ -478,7 +478,7 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Three Mile Canal Below G409 Near Clewiston, FL")
+  ggtitle("Chemostaticity of Three Mile Canal Near Clewiston, FL")
 
 print(THREEChemoplot)
 
@@ -487,7 +487,7 @@ summary(THREEChemo.lm)
 
 
 #TURK
-TURKdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")
+TURKdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURKdata1.csv")
 
 TURKNitrateDV <- TURKdata %>%
   group_by(dateTime) %>%
@@ -514,7 +514,7 @@ summary(TURKChemo.lm)
 
 
 #TURN
-TURNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURNdata.csv")
+TURNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURNdata1.csv")
 
 TURNNitrateDV <- TURNdata %>%
   group_by(dateTime) %>%
@@ -541,7 +541,7 @@ summary(TURNChemo.lm)
 
 
 #WAC
-WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
+WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata1.csv")
 
 WACNitrateDV <- WACdata %>%
   group_by(dateTime) %>%
@@ -557,7 +557,9 @@ WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
-  scale_y_log10()
+  scale_y_log10() +
+  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  ggtitle("Chemostaticity of Wacissa River Near Wacissa, FL")
 
 print(WACChemoplot)
 

@@ -1,6 +1,9 @@
 library(tidyverse)
 library(lubridate)
 
+library(dygraphs)
+library(xts)
+
 BLUEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")
 BOWdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BOWdata.csv")
 CALdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")
@@ -47,7 +50,7 @@ CALdata <- CALdata %>% filter(dateTime > "2015-10-31")
 
 
 
-write.csv(CALdata, file = "/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")
+write.csv(CALdata, file = "/ENV322_group_project/FL_CSV/hyp1/CALdata1.csv")
 
 #CHASdata
 CHASdata$dateTime <- ymd_hms(CHASdata$dateTime)
@@ -56,7 +59,7 @@ CHASdata <- CHASdata %>% filter(dateTime > "2018-03-13")
 
 
 
-write.csv(CHASdata, file = "/ENV322_group_project/FL_CSV/hyp1/CHASdata.csv")
+write.csv(CHASdata, file = "/ENV322_group_project/FL_CSV/hyp1/CHASdata1.csv")
 
 #CRANEdata
 CRANEdata$dateTime <- ymd_hms(CRANEdata$dateTime)
@@ -65,7 +68,7 @@ CRANEdata <- CRANEdata %>% filter(dateTime < "2015-04-15")
 
 
 
-write.csv(CRANEdata, file = "/ENV322_group_project/FL_CSV/hyp1/CRANEdata.csv")
+write.csv(CRANEdata, file = "/ENV322_group_project/FL_CSV/hyp1/CRANEdata1.csv")
 
 #DRAINdata
 DRAINdata$dateTime <- ymd_hms(DRAINdata$dateTime)
@@ -74,7 +77,7 @@ DRAINdata <- DRAINdata %>% filter(dateTime > "2015-11-17")
 
 
 
-write.csv(DRAINdata, file = "/ENV322_group_project/FL_CSV/hyp1/DRAINdata.csv")
+write.csv(DRAINdata, file = "/ENV322_group_project/FL_CSV/hyp1/DRAINdata1.csv")
 
 #FANdata
 FANdata$dateTime <- ymd_hms(FANdata$dateTime)
@@ -83,7 +86,7 @@ FANdata <- FANdata %>% filter(dateTime > "2017-10-27 09:00:00" & dateTime < "201
 
 
 
-write.csv(FANdata, file = "/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")
+write.csv(FANdata, file = "/ENV322_group_project/FL_CSV/hyp1/FANdata1.csv")
 
 #FELLdata
 FELLdata$dateTime <- ymd_hms(FELLdata$dateTime)
@@ -100,7 +103,7 @@ HOLdata <- HOLdata %>% filter(dateTime > "2016-06-24 12:00:00" & dateTime <"2018
 
 
 
-write.csv(HOLdata, file = "/ENV322_group_project/FL_CSV/hyp1/HOLdata.csv")
+write.csv(HOLdata, file = "/ENV322_group_project/FL_CSV/hyp1/HOLdata1.csv")
 
 #HOMdata
 HOMdata$dateTime <- ymd_hms(HOMdata$dateTime)
@@ -109,7 +112,7 @@ HOMdata <- HOMdata %>% filter(dateTime > "2017-10-12 12:15:00")
 
 
 
-write.csv(HOMdata, file = "/ENV322_group_project/FL_CSV/hyp1/HOMdata.csv")
+write.csv(HOMdata, file = "/ENV322_group_project/FL_CSV/hyp1/HOMdata1.csv")
 
 #HUNdata
 HUNdata$dateTime <- ymd_hms(HUNdata$dateTime)
@@ -118,7 +121,7 @@ HUNdata <- HUNdata %>% filter(dateTime < "2018-08-16 03:30:00")
 
 
 
-write.csv(HUNdata, file = "/ENV322_group_project/FL_CSV/hyp1/HUNdata.csv")
+write.csv(HUNdata, file = "/ENV322_group_project/FL_CSV/hyp1/HUNdata1.csv")
 
 #ICHEdata
 ICHEdata$dateTime <- ymd_hms(ICHEdata$dateTime)
@@ -127,7 +130,7 @@ ICHEdata <- ICHEdata %>% filter(dateTime > "2017-09-28 09:15:00" & dateTime < "2
 
 
 
-write.csv(ICHEdata, file = "/ENV322_group_project/FL_CSV/hyp1/ICHEdata.csv")
+write.csv(ICHEdata, file = "/ENV322_group_project/FL_CSV/hyp1/ICHEdata1.csv")
 
 #MADdata
 MADdata$dateTime <- ymd_hms(MADdata$dateTime)
@@ -136,7 +139,7 @@ MADdata <- MADdata %>% filter(dateTime > "2015-05-11 12:00:00" & dateTime < "201
 
 
 
-write.csv(MADdata, file = "/ENV322_group_project/FL_CSV/hyp1/MADdata.csv")
+write.csv(MADdata, file = "/ENV322_group_project/FL_CSV/hyp1/MADdata1.csv")
 
 #MAINdata
 MAINdata$dateTime <- ymd_hms(MAINdata$dateTime)
@@ -145,7 +148,24 @@ MAINdata <- MAINdata %>% filter(dateTime > "2014-10-10 12:00:00" & dateTime < "2
 
 
 
-write.csv(MAINdata, file = "/ENV322_group_project/FL_CSV/hyp1/MAINdata.csv")
+write.csv(MAINdata, file = "/ENV322_group_project/FL_CSV/hyp1/MAINdata1.csv")
+
+#MANdata
+MANdata$dateTime <- ymd_hms(MANdata$dateTime)
+
+MANdata <- MANdata %>% filter(dateTime > "2016-01-06 03:15:00")
+
+dygraph(
+  cbind(
+    Flow = xts(MANdata$Flow_Inst, order.by = MANdata$dateTime),
+    Nitrate = xts(MANdata$Nitrate_mgl, order.by = MANdata$dateTime)
+  )
+) %>%
+  dySeries("Nitrate", axis = "y2") %>%
+  dyRangeSelector()
+
+
+write.csv(MANdata, file = "/ENV322_group_project/FL_CSV/hyp1/MANdata1.csv")
 
 #RAINdata
 RAINdata$dateTime <- ymd_hms(RAINdata$dateTime)
@@ -154,7 +174,7 @@ RAINdata <- RAINdata %>% filter(dateTime > "2016-06-16 04:00:00")
 
 
 
-write.csv(RAINdata, file = "/ENV322_group_project/FL_CSV/hyp1/RAINdata.csv")
+write.csv(RAINdata, file = "/ENV322_group_project/FL_CSV/hyp1/RAINdata1.csv")
 
 #SANTAdata
 SANTAdata$dateTime <- ymd_hms(SANTAdata$dateTime)
@@ -163,7 +183,7 @@ SANTAdata <- SANTAdata %>% filter(dateTime > "2013-07-24 12:00:00" & dateTime < 
 
 
 
-write.csv(SANTAdata, file = "/ENV322_group_project/FL_CSV/hyp1/SANTAdata.csv")
+write.csv(SANTAdata, file = "/ENV322_group_project/FL_CSV/hyp1/SANTAdata1.csv")
 
 #THREEdata
 THREEdata$dateTime <- ymd_hms(THREEdata$dateTime)
@@ -172,7 +192,7 @@ THREEdata <- THREEdata %>% filter(dateTime > "2016-01-14 01:15:00" & dateTime < 
 
 
 
-write.csv(THREEdata, file = "/ENV322_group_project/FL_CSV/hyp1/THREEdata.csv")
+write.csv(THREEdata, file = "/ENV322_group_project/FL_CSV/hyp1/THREEdata1.csv")
 
 #TURKdata
 TURKdata$dateTime <- ymd_hms(TURKdata$dateTime)
@@ -181,7 +201,7 @@ TURKdata <- TURKdata %>% filter(dateTime > "2014-12-02 12:00:00" & dateTime < "2
 
 
 
-write.csv(TURKdata, file = "/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")
+write.csv(TURKdata, file = "/ENV322_group_project/FL_CSV/hyp1/TURKdata1.csv")
 
 #TURNdata
 TURNdata$dateTime <- ymd_hms(TURNdata$dateTime)
@@ -190,7 +210,7 @@ TURNdata <- TURNdata %>% filter(dateTime > "2015-12-21 10:00:00" & dateTime < "2
 
 
 
-write.csv(TURNdata, file = "/ENV322_group_project/FL_CSV/hyp1/TURNdata.csv")
+write.csv(TURNdata, file = "/ENV322_group_project/FL_CSV/hyp1/TURNdata1.csv")
 
 #WACdata
 WACdata$dateTime <- ymd_hms(WACdata$dateTime)
@@ -198,4 +218,4 @@ WACdata$dateTime <- ymd_hms(WACdata$dateTime)
 WACdata <- WACdata %>% filter(dateTime > "2017-12-04 02:45:00" & dateTime < "2018-12-15 05:15:00")
 
 
-write.csv(WACdata, file = "/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
+write.csv(WACdata, file = "/ENV322_group_project/FL_CSV/hyp1/WACdata1.csv")

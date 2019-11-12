@@ -1,0 +1,67 @@
+---
+title: "RBI_calculations"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(dataRetrieval)
+
+RBI_values<-1:22
+hyp1_sites<-read.csv("./FL_CSV/hyp1_sites.csv")
+site.nums<-as.character(hyp1_sites$site_no)
+
+for (i in 1:22) {
+
+sitedata <- readNWISsite(site = paste0("0", site.nums[i]))
+catchment.size <- sitedata$drain_area_va #square miles
+
+discharge<-readNWISuv(
+  siteNumbers = paste0("0", site.nums[i]),
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+)%>%
+  renameNWISColumns()
+
+RBI_values[i] <- (
+  sum(abs(diff(discharge$Flow_Inst))) / 
+    sum(discharge$Flow_Inst[-1])
+  ) / catchment.size
+
+}
+```
+
+Individual RBI calculations
+
+```{r}
+#BLUE data
+
+SANTAdata<-read_csv("./FL_CSV/hyp1/SANTAdata.csv")
+
+BLUE.sitedata <- readNWISsite(
+  site = "02322800")
+BLUE.catchment.size <- BLUE.sitedata$drain_area_va #square miles
+
+
+RBI_value <- (
+  sum(abs(diff(BLUEdata$Flow_Inst))) / 
+    sum(BLUEdata$Flow_Inst[-1])
+  ) / BLUE.catchment.size
+```
+
+Creating vector with chemostaticity regression coefficients
+```{r}
+linregs<-c(22.8644,-873.27,-5886.7,-60.457,-15.5647, -1.82465, -87.731,
+           625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,
+           67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300)
+linreg.sites<-c("BLUE", "BOW", "CAL","CHAS", "CRANE","DRAIN","FAN","FELL",
+                "HOL","HOM","HUN","ICHE","MAD","MAIN","MAN","RAIN",
+                "SANTA","THREE","TURK","TURN","WAC")
+hyp1_analysis<-tibble(linregs, linreg.sites)
+```
+

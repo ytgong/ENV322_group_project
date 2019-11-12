@@ -11,14 +11,19 @@ library(xts)
 ```
 
 ```{r}
+hyp1_sites = read.csv("../FL_CSV/hyp1_sites.csv")
+
+hyp1_sites = hyp1_sites[-c(1), ]
+hyp1_sites = cbind(hyp1_sites,county_nm = c("Jefferson County","Madison County","Lafayette County","Levy County","Levy County","Gilchrist County", "Columbia County", "Columbia County","Citrus County","Citrus County","Citrus County","Marion County","Marion County", "Lee County", "Hendry County","Volusia County","Brevard County","Brevard County","Brevard County","Brevard County","Indian River County"))
+
 hyp2_3_sites = read.csv("../FL_CSV/hyp2_3_sites.csv")
-hyp2_3_sites = cbind(hyp2_3_sites,county = c("","Jefferson","Madison","Lafayette","Levy","Levy","Columbia","Lee"))
+hyp2_3_sites = hyp2_3_sites[-c(1), ]
+hyp2_3_sites = cbind(hyp2_3_sites,county_nm = c("Jefferson County","Madison County","Lafayette County","Levy County","Levy County","Columbia County","Lee County"))
 
 wateruse <- readNWISuse(stateCd = "Florida",
                          countyCd = "ALL",
                          year = "2015",
                         categories = c("IT","LI","TP","IN","PO")) ## IT = irrigation, LI = livestock, TP = total population, IN = industrial, CO = commercial
-colnames(wateruse)
 
 wateruse_cleaned <- wateruse %>%
   select(county_nm,
@@ -31,119 +36,31 @@ wateruse_cleaned <- wateruse %>%
 ```
 
 ```{r}
-JACK.hyp23 <- readNWISuv( 
-  site = "02358795", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
+hyp1 <- merge(hyp1_sites,wateruse_cleaned,by="county_nm")
+hyp2.full = hyp1[order(hyp1$station_nm),]
+hyp2.full = cbind(hyp2.full,chemo = c(22.8644,-873.27,-5886.7,-60.457,-15.5647, -1.82465, -87.731,
+           625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300))
+hyp2.full$chemo[hyp2.full$chemo<-2000] <- NA
+hyp2.full_cleaned = hyp2.full %>%
+  filter(hyp2.full$chemo > -2000) %>%
+  mutate(abschemo = abs(chemo))
 
-write.csv(JACK.hyp23, file = "/Users/ethanready/ENV322_group_project/JACKhyp23.csv")
+ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo)) +
+  geom_point() +
+  ggtitle("Relationship between population and chemostaticity") +
+  labs(x = "Population of the county", y = "Chemostaticity (slope from regression)")
 
-WAC.hyp23.1617 <- readNWISuv( 
-  site = "02326526", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "2016-02-17", 
-  endDate = "2017-02-17"
-  ) %>% 
-  renameNWISColumns()
+ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo)) +
+  geom_point() +
+  ggtitle("Relationship between irrigation water use and chemostaticity") +
+  labs(x = "Irrigation water use", y = "Chemostaticity (slope from regression)")
 
-WAC.hyp23.1718 <- readNWISuv( 
-  site = "02326526", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "2017-02-17", 
-  endDate = "2018-02-17"
-  ) %>% 
-  renameNWISColumns() %>%
-  drop_na()
+ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo)) +
+  geom_point() +
+  ggtitle("Relationship between power generation water use and chemostaticity") +
+  labs(x = "Power generation water use", y = "Chemostaticity (slope from regression)")
 
-WAC.baseflow <- BaseflowSeparation(
-  WAC.hyp23.1718$Flow_Inst, 
-  filter_parameter = 0.925, 
-  passes = 3
-  )
-
-WAC2018 <- cbind(WAC.hyp23.1718, WAC.baseflow)
-
-ggplot(TFC2018, aes(x = dateTime, y = Flow_Inst)) + 
-  geom_line() +
-  # scale_y_log10() +
-  geom_line(mapping = aes(x = dateTime, y = bt), color = "darkorange4") +
-  geom_line(mapping = aes(x = dateTime, y = qft), color = "steelblue4")
-
-dygraph(
-  cbind(
-    Flow = with(WAC2018, xts(Flow_Inst, order.by = dateTime)), 
-    Baseflow = with(WAC2018, xts(bt, order.by = dateTime)), 
-    Quickflow = with(WAC2018, xts(qft, order.by = dateTime))
-    )
-  ) %>% 
-  dyRangeSelector()
-
-
-write.csv(WAC.hyp23, file = "/Users/ethanready/ENV322_group_project/WAChyp23.csv")
-
-MAD.hyp23 <- readNWISuv( 
-  site = "02319302", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
-
-write.csv(MAD.hyp23, file = "/Users/ethanready/ENV322_group_project/MADhyp23.csv")
-
-DELL.hyp23 <- readNWISuv( 
-  site = "02319950", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
-
-write.csv(DELL.hyp23, file = "/Users/ethanready/ENV322_group_project/DELLhyp23.csv")
-
-MAN.hyp23 <- readNWISuv( 
-  site = "02323566", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
-
-write.csv(MAN.hyp23, file = "/Users/ethanready/ENV322_group_project/MANhyp23.csv")
-
-FAN.hyp23 <- readNWISuv( 
-  site = "02323502", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
-
-write.csv(FAN.hyp23, file = "/Users/ethanready/ENV322_group_project/FANhyp23.csv")
-
-HILD.hyp23 <- readNWISuv( 
-  site = "02322688", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
-
-write.csv(HILD.hyp23, file = "/Users/ethanready/ENV322_group_project/HILDhyp23.csv")
-
-CAL.hyp23 <- readNWISuv( 
-  site = "02292900", 
-  parameterCd = c("00060","99133","00300", "00095", "00400"),
-  startDate = "", 
-  endDate = ""
-  ) %>% 
-  renameNWISColumns()
-
-write.csv(CAL.hyp23, file = "/Users/ethanready/ENV322_group_project/CALhyp23.csv")
+hyp2 <- merge(hyp2_3_sites,wateruse_cleaned,by="county_nm")
 
 
 ```
-

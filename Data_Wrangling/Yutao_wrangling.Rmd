@@ -8,6 +8,29 @@ library(tidyverse)
 library(EcoHydRology)
 library(dygraphs)
 library(xts)
+```
+
+```{r}
+hyp2_3_sites = read.csv("../FL_CSV/hyp2_3_sites.csv")
+hyp2_3_sites = cbind(hyp2_3_sites,county = c("","Jefferson","Madison","Lafayette","Levy","Levy","Columbia","Lee"))
+
+wateruse <- readNWISuse(stateCd = "Florida",
+                         countyCd = "ALL",
+                         year = "2015",
+                        categories = c("IT","LI","TP","IN","PO")) ## IT = irrigation, LI = livestock, TP = total population, IN = industrial, CO = commercial
+colnames(wateruse)
+
+wateruse_cleaned <- wateruse %>%
+  select(county_nm,
+         total_pop = Total.Population.total.population.of.area..in.thousands,
+         industrial = Industrial.total.self.supplied.withdrawals..surface.water..in.Mgal.d,
+         thermoelectric = Thermoelectric.Power..Once.through.cooling..total.self.supplied.withdrawals..surface.water..in.Mgal.,
+         livestock = Livestock.self.supplied.surface.water.withdrawals..fresh..in.Mgal.d,
+         irrigation = Irrigation..Total.total.self.supplied.withdrawals..surface.water..in.Mgal.d)
+
+```
+
+```{r}
 JACK.hyp23 <- readNWISuv( 
   site = "02358795", 
   parameterCd = c("00060","99133","00300", "00095", "00400"),

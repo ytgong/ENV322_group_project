@@ -45,7 +45,7 @@ hyp2.full_cleaned = hyp2.full %>%
   filter(hyp2.full$chemo > -2000) %>%
   mutate(abschemo = abs(chemo))
 
-ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo)) +
+ggplot(hyp2.full_cleaned, aes(x = total_pop, y = chemo)) +
   geom_point() +
   ggtitle("Relationship between population and chemostaticity") +
   labs(x = "Population of the county", y = "Chemostaticity (slope from regression)")
@@ -64,3 +64,25 @@ hyp2 <- merge(hyp2_3_sites,wateruse_cleaned,by="county_nm")
 
 
 ```
+```{r}
+library(sf)
+library(maps)
+
+states<- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white")) 
+states.florida = filter(states, ID %in% c("florida"))
+hyp2.spatial <- st_as_sf(hyp2.full, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+hyp2.plot <- ggplot() +
+  geom_sf(data = states.florida, fill = "white") +
+  geom_sf(data = hyp2.spatial, aes(color = chemo, size = total_pop), alpha = 0.5) +
+labs(color = "Chemo staticity") +
+theme(legend.position = "top")
+print(hyp2.plot)
+```
+```{r}
+library(FedData)
+get_nlcd(states.florida,  label = "VEPIIN", year = 2011, dataset = "landcover",
+  raw.dir = "./RAW/NLCD", extraction.dir = paste0("./EXTRACTIONS/",
+  label, "/NLCD"), raster.options = c("COMPRESS=DEFLATE", "ZLEVEL=9",
+  "INTERLEAVE=BAND"), force.redo = F)
+```
+

@@ -1,0 +1,348 @@
+---
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+title: Experiment Title
+subtitle: Web address for GitHub repository
+author: Ethan Ready, Gabi Rachichi, Theo Cai, Yutao Gong
+abstract: "Experimental overview. This section should be no longer than 250 words."
+fontsize: 12pt
+mainfont: Times New Roman
+---
+
+<Information in these brackets are used for annotating the RMarkdown file. They will not appear in the final version of the PDF document>
+
+\newpage
+\tableofcontents 
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+<Setup the global options for the R chunks in your document>
+
+<Note: set up autoreferencing for figures and tables in your document>
+
+```{r setup, include=FALSE}
+# Set your working directory
+
+# Load your packages
+library(dataRetrieval)
+library(tidyverse)
+library(lubridate)
+library(dygraphs)
+library(xts)
+library(ggplot2)
+library(cowplot)
+library(sf)
+library(maps)
+# Set your ggplot theme
+
+```
+
+
+# Research Question and Rationale
+
+<Paragraph detailing the rationale for your analysis. What is the significant application and/or interest in this topic? Connect to environmental topic(s)/challenge(s).>
+
+<Paragraph detailing your research question(s) and goals. What do you want to find out? Include a sentence (or a few) on the dataset you are using to answer this question - just enough to give your reader an idea of where you are going with the analysis.>
+
+Our research questions are:
+
+What, if any, is the correlation between hydrologic flashiness and chemical flashiness in Florida?
+
+What aspects of a stream influence chemical flashiness in Florida?
+
+What aspects of a storm influence chemical flashiness in Florida?
+
+\newpage
+
+# Dataset Information
+
+<Information on how the dataset for this analysis were collected, the data contained in the dataset, and any important pieces of information that are relevant to your analyses. This section should contain much of same information as the README file for the dataset but formatted in a way that is more narrative.>
+
+<Add a table that summarizes your data structure. This table can be made in markdown text or inserted as a `kable` function in an R chunk. If the latter, do not include the code used to generate your table.>
+
+For this analysis, our datasets were USGS NWIS high frequency and water use data. The data contained in our datasets for hypothesis 1 are the site number, date/time of measurement, instantaneous discharge, and instantaneous nitrate. Contained in the datasets for hypothesis 2 and 3 are site number, date/time of measurement, instantaneous discharge, nitrate, pH, dissolved oxygen, specific conductance; population of the county each site is in, and the amount of surface water used for thermoelectric, industrial, livestock and irrigation uses in each county. We wrangled all our data frames to include periods of data that included all of the variables, and that exhibited the most continuous measurements - all for easier, more standardized analysis and visualization. We chose sites from the state of Florida because it had sufficient sites with high frequency nitrate and discharge data.
+
+
+\newpage
+
+# Exploratory Data Analysis and Wrangling
+
+<Include R chunks for 5+ lines of summary code (display code and output), 3+ exploratory graphs (display graphs only), and any wrangling you do to your dataset(s).> 
+
+<Include text sections to accompany these R chunks to explain the reasoning behind your workflow, and the rationale for your approach.>
+
+```{r}
+discharge_sites<-whatNWISsites(stateCd="FL", parameterCd="00060", hasDataTypeCd="iv")
+
+DO_sites<-whatNWISsites(stateCd="FL", parameterCd="00300", hasDataTypeCd="iv")
+
+conductance_sites<-whatNWISsites(stateCd= "FL", parameterCd="00095", hasDataTypeCd="iv")
+
+pH_sites<-whatNWISsites(stateCd="FL", parameterCd="00400", hasDataTypeCd="iv")
+
+nitrate_sites<-whatNWISsites(stateCd="FL", parameterCd="99133", hasDataTypeCd="iv")
+
+hyp1_sites<-discharge_sites%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+hyp2_3_sites<-discharge_sites%>%
+  filter(site_no %in% DO_sites$site_no)%>%
+  filter(site_no %in% conductance_sites$site_no)%>%
+  filter(site_no %in% pH_sites$site_no)%>%
+  filter(site_no %in% nitrate_sites$site_no)
+```
+
+These lines of code show how we found our list of sites for hypothesis 1 and for hypothesis 2 and 3. We sought less variables with more sites for hypothesis 1 in order to run more robust tests. We sought more variables with less sites for hypothesis 2 and 3 to get a more complete look at a few different sites.
+
+We used readNWISuv to read in the dataset from each site in the hyp1 and hyp2/3 dataframes.
+
+We also retrieved NWIS Water Use data for each county and combined them with site data (Which county each site is in is retrieved and entered manually).
+
+```{r}
+hyp1_sites = hyp1_sites[-c(1), ]
+hyp1_sites_county = cbind(hyp1_sites,county_nm = c("Jefferson County","Madison County","Lafayette County","Levy County","Levy County","Gilchrist County", "Columbia County", "Columbia County","Citrus County","Citrus County","Citrus County","Marion County","Marion County", "Lee County", "Hendry County","Volusia County","Brevard County","Brevard County","Brevard County","Brevard County","Indian River County"))
+wateruse <- readNWISuse(stateCd = "Florida",
+                         countyCd = "ALL",
+                         year = "2015",
+                        categories = c("IT","LI","TP","IN","PO")) ## IT = irrigation, LI = livestock, TP = total population, IN = industrial, CO = commercial
+
+
+wateruse_cleaned <- wateruse %>%
+  select(county_nm,
+         total_pop = Total.Population.total.population.of.area..in.thousands,
+         industrial = Industrial.total.self.supplied.withdrawals..surface.water..in.Mgal.d,
+         thermoelectric = Thermoelectric.Power..Once.through.cooling..total.self.supplied.withdrawals..surface.water..in.Mgal.,
+         livestock = Livestock.self.supplied.surface.water.withdrawals..fresh..in.Mgal.d,
+         irrigation = Irrigation..Total.total.self.supplied.withdrawals..surface.water..in.Mgal.d)
+
+hyp2.data <- merge(hyp1_sites_county,wateruse_cleaned,by="county_nm")
+hyp2.data = hyp2.data[order(hyp2.data$station_nm),]
+
+```
+
+
+## Preliminary Visualization 1
+```{r, echo = FALSE}
+BLUENO3 <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = "99133",
+  startDate = "", 
+  endDate = ""
+) %>% 
+  renameNWISColumns %>%
+  rename(Nitrate_mgl = 4)
+
+BLUEdischarge <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = "00060",
+  startDate = "2015-08-11", 
+  endDate = "2018-10-30"
+) %>% 
+  renameNWISColumns
+
+BLUEdata <- full_join(BLUENO3, BLUEdischarge, by = "dateTime") %>%
+  drop_na() %>%
+  filter(X_99133_Inst_cd == "A" & Flow_Inst_cd == "A")
+
+BLUEdata$dateTime <- ymd_hms(BLUEdata$dateTime)
+
+dygraph(
+  cbind(
+    Flow = xts(BLUEdata$Flow_Inst, order.by = BLUEdata$dateTime), 
+    Nitrate = xts(BLUEdata$Nitrate_mgl, order.by = BLUEdata$dateTime)
+  )
+) %>% 
+  dySeries("Nitrate", axis = "y2") %>%
+  dyRangeSelector()
+```
+Above is a preliminary look at the Discharge and Nitrate trends at one of our sites, Blue Springs.
+
+## Preliminary Visualization 2
+```{r, echo = FALSE}
+BOWNO3 <- readNWISuv( 
+  site = "02313098", 
+  parameterCd = "99133",
+  startDate = "", 
+  endDate = ""
+) %>% 
+  renameNWISColumns %>%
+  rename(Nitrate_mgl = 4)
+
+BOWdischarge <- readNWISuv( 
+  site = "02313098", 
+  parameterCd = "00060",
+  startDate = "2015-10-08", 
+  endDate = "2019-06-20"
+) %>% 
+  renameNWISColumns
+
+BOWdata <- full_join(BOWdischarge, BOWNO3, by = "dateTime") %>%
+  drop_na() %>%
+  filter(X_99133_Inst_cd == "A" & Flow_Inst_cd == "A")
+
+BOWdata$dateTime <- ymd_hms(BOWdata$dateTime)
+
+dygraph(
+  cbind(
+    Flow = xts(BOWdata$Flow_Inst, order.by = BOWdata$dateTime), 
+    Nitrate = xts(BOWdata$Nitrate_mgl, order.by = BOWdata$dateTime)
+  )
+) %>% 
+  dySeries("Nitrate", axis = "y2") %>%
+  dyRangeSelector()
+```
+	Above is another preliminary, visual look at the trends of another site: Rainbow River near Dunnellon. 
+
+## Preliminary Visualization 3
+```{r, echo = FALSE}
+states <- st_as_sf(map(database = "state", fill = TRUE, plot = FALSE, col = "white")) 
+states.florida = filter(states, ID %in% c("florida"))
+hyp2.exp.spatial <- st_as_sf(hyp2.data, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+hyp2.exp.plot <- ggplot() +
+  geom_sf(data = states.florida, fill = "white") +
+  geom_sf(data = hyp2.exp.spatial, alpha = 0.5) +
+labs(color = "Chemo staticity") +
+theme(legend.position = "top")
+print(hyp2.exp.plot)
+```
+
+Above visual shows the distribution across Florida of the sites we will be conducting analyses on.
+
+
+\newpage
+
+# Analysis
+<Include R chunks for 3+ statistical tests (display code and output) and 3+ final visualization graphs (display graphs only).>
+
+<Include text sections to accompany these R chunks to explain the reasoning behind your workflow, rationale for your approach, and the justification of meeting or failing to meet assumptions of tests.>
+
+## Statistical Test 1: RBI-Chemostaticity Regression
+```{r, echo = FALSE}
+RBI_values<-1:22
+site.nums<-as.character(hyp1_sites$site_no)
+
+for (i in 1:22) {
+
+sitedata <- readNWISsite(site = site.nums[i])
+catchment.size <- sitedata$drain_area_va #square miles
+
+discharge<-readNWISuv(
+  siteNumbers = site.nums[i],
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+)%>%
+  renameNWISColumns()
+
+RBI_values[i] <- (
+  sum(abs(diff(discharge$Flow_Inst))) / 
+    sum(discharge$Flow_Inst[-1])
+  ) / catchment.size
+}
+``` 
+We wrote a for loop to create a vector with the RBI value for each site. We plan to run a regression between RBI and Chemostatic coefficients to investigate the relationship between hydrologic flashiness and chemical flashiness. We currently don’t have RBI values because most of our sites don’t have catchment size values.
+
+## Statistical Test 2: ChemostaticityRegression
+```{r, echo = FALSE}
+BLUEdata <- BLUEdata %>% filter(dateTime > "2015-05-11 12:00:00" & dateTime < "2015-12-30 11:15:00")
+
+BLUENitrateDV <- BLUEdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+BLUEFlowDV <- BLUEdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+BLUEChemo <- full_join(BLUENitrateDV, BLUEFlowDV, by = "dateTime")
+
+BLUEChemo.lm <- lm(data = BLUEChemo, Flow_DV ~ Nitrate_DV)
+summary(BLUEChemo.lm)
+```
+	After loading the data for one of our sites, Blue Springs, we grouped the data by the Date/Time the measurement was taken and then took the mean Nitrate concentrations for each day. We did the same for discharge in the next line. We decided to use the daily mean values because we wanted to simplify the C-Q plot and take the regression line coefficient from this compacted dataframe.
+
+## Visualization 1: C-Q Plot
+```{r, echo = FALSE}
+BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  ggtitle("Chemostaticity of Blue Springs Near Dell, FL")
+  
+print(BLUEChemoplot)
+```
+	Above is the accompanying C-Q plot and plotted regression line for the same site in Statistical Test 1. Both axes have been log-transformed to make the data points less clumped and more interpretable. 
+	
+## Visualization 2: Hysteresis Plot
+```{r, echo = FALSE}
+BLUEstorm <- BLUEdata %>%
+  filter(dateTime > "2015-08-28 01:00:00" & dateTime < "2015-11-05  04:30:00")
+
+BLUEplot <- ggplot(BLUEstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
+  geom_point() +
+  labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
+  ggtitle("2015 Storm Event at Blue Springs")
+print(BLUEplot)
+```
+	Above is the hysteresis plot tracking discharge and nitrate concentrations and colored by dateTime during a 2015 Storm (or otherwise high discharge event) that we defined as taking place between 2015-08-28 and 2015-11-05. 
+	We see first counter-clockwise movement - as discharge increases and decreases due to initial overland flow, nitrate concentrations increase dramatically. Later, as more baseflow gets into the river system, the concentration of nitrogen decreases, but to a slightly higher level than measured at the start of the storm. This seems to be a flushing storm. 
+
+#Visualization 3: Chemostaticity and population
+```{r, echo = FALSE}
+hyp2.full = cbind(hyp2.data,chemo = c(22.8644,-873.27,-5886.7,-60.457,-15.5647, -1.82465, -87.731,
+           625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300))
+# These numbers are slope of regression lines from C-Q plots
+hyp2.full_cleaned = hyp2.full %>%
+  filter(hyp2.full$chemo > -2000) %>%
+  mutate(abschemo = abs(chemo))
+hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+hyp2.plot <- ggplot() +
+  geom_sf(data = states.florida, fill = "white") +
+  geom_sf(data = hyp2.spatial, aes(color = chemo, size = total_pop), alpha = 0.5) +
+labs(color = "Chemo staticity") +
+theme(legend.position = "top")
+print(hyp2.plot)
+```
+Above visual shows how population and chemostaticity varies in different sites, where each bubble shows one site, the color of each bubble stands for the site's chemostaticity and the size of each bubble stands for the population of the site's county. It is unclear whether there is a relationship between population and chemostaticity so we decided to run an ANOVA test.
+
+
+## Statistical Test 3: ANOVA
+```{r, echo = FALSE}
+fit <- aov(abschemo ~ total_pop, data=hyp2.full_cleaned)
+plot(fit)
+summary(fit)
+``` 
+
+According to the ANOVA, we don't have sufficient evidence to reject the null hypothesis, meaning that there doesn't seem to be an impact from the region's population on a stream's chemostaticity.
+
+\newpage
+
+# Summary and Conclusions
+<Summarize your major findings from your analyses. What conclusions do you draw from your findings? Make sure to apply this to a broader application for the research question you have answered.>
+
+Unfortunately, we do not have any definite conclusions for any of our hypotheses at this point in our analysis. For hypothesis 1, we are still trying to find a way to calculate RBIs without catchment size data, but if we acquire that data we would be able to run a regression between that and the Chemostaticity regression coefficient. That could lead us to a definite conclusion regarding the nature of the relationship between Chemostaticity and Hydrologic Flashiness - that there is a correlation between the two, or that there is none.
+
+As for hypothesis 2, we have some preliminary graphs trying to visualize possible relationships between water use type, population, and chemostaticity, but these results seem to show little to no correlation. It is unclear if there really is no correlation present, or if other factors are at play. More analysis is needed here. 
+
+In the meanwhile, we have made some purely qualitative observations about certain sites - specifically the ones that generated legible hysteresis plots. (We made the choice to exclude sites that had extremely chaotic discharge patterns, ones where it was impossible to pinpoint specific, major storm/discharge events).
+
+Blue Springs is located in the least populated county among all our other sites. It seems to be a very rural area, though not much water is being appropriated to use for livestock/agriculture, so we concluded that this is not a heavily agricultural site. This location is in the middle of a state park. The storm we visualized for its hysteresis plot seems to be a flushing storm.
+
+Caloosahatchee is located in the most populated county among all our other sites. Much of its water is being appropriated for thermoelectric power, and some for irrigation. The sensor for this location is located offshore a recreation park, but is otherwise amidst an urban area. A storm event here generated a hysteresis plot with a lot of noise, but still a general, flushing trend seemed to appear in the data.
+
+Fanning Springs is located geographically in the middle of the previous two sites and the population of its surrounding county is similarly in the middle. There does not seem to be any major agricultural/industrial/hydroelectric water use in the county surrounding the site. The Springs does seem to be located in a populated/semi-urban area - next to a major road, etc. The storm event visualized for this location exhibited diluting behavior. 
+
+Madison Blue Spring is a site with similar conditions as Fanning Springs - located in a medium-sized county that does not seem to specialize in agriculture/industry/hydroelectric water-use-wise. The Spring itself is located in a state park, but on its periphery. It is near an airport. The hysteresis plot generated for a storm in this location is a little bit difficult to read, but it seems to be flushing. 
+
+From just these four sites, qualitatively, it seems like those located in or near parks exhibit flushing behavior, while the one site located in a solely urban area exhibits diluting behavior. This seems to be in line with what we know about flushing/diluting behavior - flushing generally correlates with overland flow over land that actually contain nutrients to carry to the stream, while diluting correlates with overland flow over impenetrable surfaces that might now have the same level of nutrients to carry off from.
+
+

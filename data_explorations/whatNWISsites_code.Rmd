@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+
+discharge_sites<-whatNWISsites(stateCd="FL", parameterCd="00060", hasDataTypeCd="iv")
+
+DO_sites<-whatNWISsites(stateCd="FL", parameterCd="00300", hasDataTypeCd="iv")
+
+conductance_sites<-whatNWISsites(stateCd= "FL", parameterCd="00095", hasDataTypeCd="iv")
+
+pH_sites<-whatNWISsites(stateCd="FL", parameterCd="00400", hasDataTypeCd="iv")
+
+#temp_sites<-whatNWISsites(stateCd="NC", parameterCd="00010", hasDataTypeCd="iv")
+
+#tss_sites<-whatNWISsites(stateCd="NC", parameterCd="00530", hasDataTypeCd="iv")
+
+nitrate_sites<-whatNWISsites(stateCd="FL", parameterCd="99133", hasDataTypeCd="iv")
+
+hyp1_sites<-discharge_sites%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+hyp2_3_sites<-discharge_sites%>%
+  filter(site_no %in% DO_sites$site_no)%>%
+  filter(site_no %in% conductance_sites$site_no)%>%
+  filter(site_no %in% pH_sites$site_no)%>%
+  filter(site_no %in% nitrate_sites$site_no)
+
+write.csv(hyp1_sites, file = "/Users/ethanready/ENV322_group_project/hyp1_sites.csv")
+
+write.csv(hyp2_3_sites, file = "/Users/ethanready/ENV322_group_project/hyp2_3_sites.csv")
+```
+```
+

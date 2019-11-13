@@ -28,6 +28,8 @@ print(BLUEChemoplot)
 BLUEChemo.lm <- lm(data = BLUEChemo, Flow_DV ~ Nitrate_DV)
 summary(BLUEChemo.lm)
 
+
+
 #BOW
 BOWdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BOWdata.csv")
 

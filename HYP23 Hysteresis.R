@@ -6,6 +6,7 @@ library(EcoHydRology)
 library(xts)
 library(dygraphs)
 library(lubridate)
+library(viridis)
 
 
 BLUEdata
@@ -144,12 +145,13 @@ MADstorm <- MADdata %>%
 MADplot <- ggplot(MADstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
-  ggtitle("2015 Storm Event at Madison Blue Spring")
+  ggtitle("2015 Storm Event at Madison Blue Spring") +
+  scale_fill_viridis_c(option = "magma")
 print(MADplot)
 
 
 #MAN
-MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata1.csv")
+MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")
 
 MANdata$dateTime <- ymd_hms(MANdata$dateTime)
 

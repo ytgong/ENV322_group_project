@@ -49,15 +49,25 @@ library(maps)
 
 <Paragraph detailing the rationale for your analysis. What is the significant application and/or interest in this topic? Connect to environmental topic(s)/challenge(s).>
 
+Each time a storm event occurs, it has the potential to influence the land and waterways with which it comes in contact. A storm can bring high levels of precipitation that can flood rivers and streams and temporarily alter their discharge levels. The precipitation can also alter the biogeochemistry of water bodies: eroding soil, increasing terrestrial inputs of organic matter, and transporting in contaminants such as pesticides and fertilizers. Alterations to the natural processes of streams impact the ecosystems present in the streams and can affect human activity such as hunting, fishing, recreation, and the utilization of river water for irrigation. Eutrophication is one example of a massive alteration to a river that can have negative consequences for people. Eutrophication is the induction of a dead zone devoid of oxygen in a body of water due to nutrient loading from a storm event.
+
+The effects of storm events on bodies of water are compounded by human activity. The use of pesticides and fertilizers on agricultural land makes nutrients such as nitrogen and phosphorus accessible for storm transport in the first place. Furthermore, anthropogenically-induced climate change is intensifying natural precipitation events by making them wetter, longer, and more intense. As storms worsen, so do their effects. 
+	
+This applies to the region we are studying in particular. Florida is a state that has a history of extreme weather events such as hurricanes and tropical storms, as well as a history, particularly recently, of eutrophication events. High levels of nutrient loading, in combination with high temperatures that are typical of Florida’s climate, creates an environment conducive to eutrophication (Stephenson, 2018). The Florida Department of Environmental Protection lists more than 1,400 water bodies as “impaired by pollutants” (Stephenson, 2018). 
+
+It is important for us to understand the science behind the interaction of storms and streams in order to protect ourselves from the consequences on human activity of storm events. As eutrophication events worsen and hinder human activities such as fishing, hunting, recreation, and irrigation, policymakers will enact legislation to tackle the problem. In Florida, for example, policymakers have enacted legislation to tackle point sources of nutrient discharge. Nevertheless, eutrophication still abounds (Smith & Schindler 2009). As a result, it is crucial that the problem be understood more explicitly in order for policies to be more targeted and effective. How do storm events affect the chemostaticity and hydrologic flashiness of rivers in Florida? Which rivers are the most affected? What factors influence the flashiness during storm events? These are questions to which we need answers in order to affect change. 
+
+References
+
+Chislock, M. F., Doster, E., Zitomer, R. A. & Wilson, A. E. (2013) Eutrophication: Causes, Consequences, and Controls in Aquatic Ecosystems. Nature Education Knowledge 4(4):10
+
+Smith, V. H. & Schindler, D. W. Eutrophication science: where do we go from here? Trends in Ecology and Evolution 24, 201-207 (2009).
+
+Stephenson, C. “Addressing Eutrophication in Florida, one watershed at a time.” University of Florida: IFAS Extension. July 23, 2018. Web: https://nwdistrict.ifas.ufl.edu/nat/2018/07/23/addressing-eutrophication-in-florida-one-watershed-at-a-time/.
+
 <Paragraph detailing your research question(s) and goals. What do you want to find out? Include a sentence (or a few) on the dataset you are using to answer this question - just enough to give your reader an idea of where you are going with the analysis.>
 
-Our research questions are:
-
-What, if any, is the correlation between hydrologic flashiness and chemical flashiness in Florida?
-
-What aspects of a stream influence chemical flashiness in Florida?
-
-What aspects of a storm influence chemical flashiness in Florida?
+Our goal is to better understand the effects of storm events on rivers and streams in Florida. We would like to determine: what, if any, is the correlation between hydrologic flashiness and chemical flashiness in Florida? What aspects of a stream influence chemical flashiness in Florida? What aspects of a storm influence chemical flashiness in Florida? We will be using USGS NWIS high frequency data in order to assess the chemical and hydrologic flashiness of rivers and streams. We will also be using long-term, characteristic data of streams and storms in order to compare the high frequency changes with more stable patterns of the streams and storms. It is our hope that this might elucidate some factors that influence high frequency outcomes. 
 
 \newpage
 

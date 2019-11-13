@@ -1,19 +1,18 @@
 ---
-output: 
-  pdf_document:
-    keep_tex: yes
-    fig_caption: yes
-    number_sections: yes
-geometry: margin=2.54cm
-title: Experiment Title
-subtitle: Web address for GitHub repository
-author: Ethan Ready, Gabi Rachichi, Theo Cai, Yutao Gong
-abstract: "Experimental overview. This section should be no longer than 250 words."
+title: "Hydrologic Preliminary Project Report"
+author: "Ethan Ready, Gabi Rachichi, Theo Cai, Yutao Gong"
 fontsize: 12pt
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    number_sections: yes
 mainfont: Times New Roman
+geometry: margin=2.54cm
+subtitle: https://github.com/ytgong/ENV322_group_project
 ---
-
-<Information in these brackets are used for annotating the RMarkdown file. They will not appear in the final version of the PDF document>
 
 \newpage
 \tableofcontents 
@@ -40,16 +39,26 @@ library(ggplot2)
 library(cowplot)
 library(sf)
 library(maps)
+library(maptools)
+library(rgeos)
 # Set your ggplot theme
 
 ```
 
 
 # Research Question and Rationale
+Each time a storm event occurs, it has the potential to influence the land and waterways with which it comes in contact. A storm can bring high levels of precipitation that can flood rivers and streams and temporarily alter their discharge levels. The precipitation can also alter the biogeochemistry of water bodies: eroding soil, increasing terrestrial inputs of organic matter, and transporting in contaminants such as pesticides and fertilizers. Alterations to the natural processes of streams impact the ecosystems present in the streams and can affect human activity such as hunting, fishing, recreation, and the utilization of river water for irrigation. Eutrophication is one example of a massive alteration to a river that can have negative consequences for people. Eutrophication is the induction of a dead zone devoid of oxygen in a body of water due to nutrient loading from a storm event.
+	The effects of storm events on bodies of water are compounded by human activity. The use of pesticides and fertilizers on agricultural land makes nutrients such as nitrogen and phosphorus accessible for storm transport in the first place. Furthermore, anthropogenically-induced climate change is intensifying natural precipitation events by making them wetter, longer, and more intense. As storms worsen, so do their effects. 
+	This applies to the region we are studying in particular. Florida is a state that has a history of extreme weather events such as hurricanes and tropical storms, as well as a history, particularly recently, of eutrophication events. High levels of nutrient loading, in combination with high temperatures that are typical of Florida’s climate, creates an environment conducive to eutrophication (Stephenson, 2018). The Florida Department of Environmental Protection lists more than 1,400 water bodies as “impaired by pollutants” (Stephenson, 2018). 
+It is important for us to understand the science behind the interaction of storms and streams in order to protect ourselves from the consequences on human activity of storm events. As eutrophication events worsen and hinder human activities such as fishing, hunting, recreation, and irrigation, policymakers will enact legislation to tackle the problem. In Florida, for example, policymakers have enacted legislation to tackle point sources of nutrient discharge. Nevertheless, eutrophication still abounds (Smith & Schindler 2009). As a result, it is crucial that the problem be understood more explicitly in order for policies to be more targeted and effective. How do storm events affect the chemostaticity and hydrologic flashiness of rivers in Florida? Which rivers are the most affected? What factors influence the flashiness during storm events? These are questions to which we need answers in order to affect change. 
 
-<Paragraph detailing the rationale for your analysis. What is the significant application and/or interest in this topic? Connect to environmental topic(s)/challenge(s).>
+References
+Chislock, M. F., Doster, E., Zitomer, R. A. & Wilson, A. E. (2013) Eutrophication: Causes, Consequences, and Controls in Aquatic Ecosystems. Nature Education Knowledge 4(4):10
 
-<Paragraph detailing your research question(s) and goals. What do you want to find out? Include a sentence (or a few) on the dataset you are using to answer this question - just enough to give your reader an idea of where you are going with the analysis.>
+Smith, V. H. & Schindler, D. W. Eutrophication science: where do we go from here? Trends in Ecology and Evolution 24, 201-207 (2009).
+Stephenson, C. “Addressing Eutrophication in Florida, one watershed at a time.” University of Florida: IFAS Extension. July 23, 2018. Web: https://nwdistrict.ifas.ufl.edu/nat/2018/07/23/addressing-eutrophication-in-florida-one-watershed-at-a-time/.
+
+
 
 Our research questions are:
 
@@ -63,20 +72,12 @@ What aspects of a storm influence chemical flashiness in Florida?
 
 # Dataset Information
 
-<Information on how the dataset for this analysis were collected, the data contained in the dataset, and any important pieces of information that are relevant to your analyses. This section should contain much of same information as the README file for the dataset but formatted in a way that is more narrative.>
-
-<Add a table that summarizes your data structure. This table can be made in markdown text or inserted as a `kable` function in an R chunk. If the latter, do not include the code used to generate your table.>
-
 For this analysis, our datasets were USGS NWIS high frequency and water use data. The data contained in our datasets for hypothesis 1 are the site number, date/time of measurement, instantaneous discharge, and instantaneous nitrate. Contained in the datasets for hypothesis 2 and 3 are site number, date/time of measurement, instantaneous discharge, nitrate, pH, dissolved oxygen, specific conductance; population of the county each site is in, and the amount of surface water used for thermoelectric, industrial, livestock and irrigation uses in each county. We wrangled all our data frames to include periods of data that included all of the variables, and that exhibited the most continuous measurements - all for easier, more standardized analysis and visualization. We chose sites from the state of Florida because it had sufficient sites with high frequency nitrate and discharge data.
 
 
 \newpage
 
 # Exploratory Data Analysis and Wrangling
-
-<Include R chunks for 5+ lines of summary code (display code and output), 3+ exploratory graphs (display graphs only), and any wrangling you do to your dataset(s).> 
-
-<Include text sections to accompany these R chunks to explain the reasoning behind your workflow, and the rationale for your approach.>
 
 ```{r}
 discharge_sites<-whatNWISsites(stateCd="FL", parameterCd="00060", hasDataTypeCd="iv")
@@ -162,6 +163,7 @@ dygraph(
   dySeries("Nitrate", axis = "y2") %>%
   dyRangeSelector()
 ```
+
 Above is a preliminary look at the Discharge and Nitrate trends at one of our sites, Blue Springs.
 
 ## Preliminary Visualization 2
@@ -198,7 +200,8 @@ dygraph(
   dySeries("Nitrate", axis = "y2") %>%
   dyRangeSelector()
 ```
-	Above is another preliminary, visual look at the trends of another site: Rainbow River near Dunnellon. 
+	
+Above is another preliminary, visual look at the trends of another site: Rainbow River near Dunnellon. 
 
 ## Preliminary Visualization 3
 ```{r, echo = FALSE}
@@ -219,38 +222,58 @@ Above visual shows the distribution across Florida of the sites we will be condu
 \newpage
 
 # Analysis
-<Include R chunks for 3+ statistical tests (display code and output) and 3+ final visualization graphs (display graphs only).>
-
-<Include text sections to accompany these R chunks to explain the reasoning behind your workflow, rationale for your approach, and the justification of meeting or failing to meet assumptions of tests.>
 
 ## Statistical Test 1: RBI-Chemostaticity Regression
 ```{r, echo = FALSE}
-RBI_values<-1:22
-site.nums<-as.character(hyp1_sites$site_no)
+#RBI_values<-1:22
+#site.nums<-as.character(hyp1_sites$site_no)
 
-for (i in 1:22) {
+#for (i in 1:22) {
 
-sitedata <- readNWISsite(site = site.nums[i])
-catchment.size <- sitedata$drain_area_va #square miles
+#sitedata <- readNWISsite(site = site.nums[i])
+#catchment.size <- sitedata$drain_area_va #square miles
 
-discharge<-readNWISuv(
-  siteNumbers = site.nums[i],
-  parameterCd = "00060",
-  startDate = "",
-  endDate = ""
-)%>%
-  renameNWISColumns()
+#discharge<-readNWISuv(
+  #siteNumbers = site.nums[i],
+  #parameterCd = "00060",
+  #startDate = "",
+  #endDate = ""
+#)%>%
+  #renameNWISColumns()
 
-RBI_values[i] <- (
-  sum(abs(diff(discharge$Flow_Inst))) / 
-    sum(discharge$Flow_Inst[-1])
-  ) / catchment.size
-}
+#RBI_values[i] <- (
+  #sum(abs(diff(discharge$Flow_Inst))) / 
+    #sum(discharge$Flow_Inst[-1])
+  #) / catchment.size
+#}
 ``` 
 We wrote a for loop to create a vector with the RBI value for each site. We plan to run a regression between RBI and Chemostatic coefficients to investigate the relationship between hydrologic flashiness and chemical flashiness. We currently don’t have RBI values because most of our sites don’t have catchment size values.
 
-## Statistical Test 2: ChemostaticityRegression
+## Statistical Test 2: Chemostaticity Regression
 ```{r, echo = FALSE}
+BLUENO3 <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = "99133",
+  startDate = "", 
+  endDate = ""
+) %>% 
+  renameNWISColumns %>%
+  rename(Nitrate_mgl = 4)
+
+BLUEdischarge <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = "00060",
+  startDate = "2015-08-11", 
+  endDate = "2018-10-30"
+) %>% 
+  renameNWISColumns
+
+BLUEdata <- full_join(BLUENO3, BLUEdischarge, by = "dateTime") %>%
+  drop_na() %>%
+  filter(X_99133_Inst_cd == "A" & Flow_Inst_cd == "A")
+
+BLUEdata$dateTime <- ymd_hms(BLUEdata$dateTime)
+
 BLUEdata <- BLUEdata %>% filter(dateTime > "2015-05-11 12:00:00" & dateTime < "2015-12-30 11:15:00")
 
 BLUENitrateDV <- BLUEdata %>%
@@ -270,6 +293,41 @@ summary(BLUEChemo.lm)
 
 ## Visualization 1: C-Q Plot
 ```{r, echo = FALSE}
+BLUENO3 <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = "99133",
+  startDate = "", 
+  endDate = ""
+) %>% 
+  renameNWISColumns %>%
+  rename(Nitrate_mgl = 4)
+
+BLUEdischarge <- readNWISuv( 
+  site = "02319950", 
+  parameterCd = "00060",
+  startDate = "2015-08-11", 
+  endDate = "2018-10-30"
+) %>% 
+  renameNWISColumns
+
+BLUEdata <- full_join(BLUENO3, BLUEdischarge, by = "dateTime") %>%
+  drop_na() %>%
+  filter(X_99133_Inst_cd == "A" & Flow_Inst_cd == "A")
+
+BLUEdata$dateTime <- ymd_hms(BLUEdata$dateTime)
+
+BLUEdata1 <- BLUEdata %>% filter(dateTime < "2015-12-30 11:15:00")
+
+BLUENitrateDV <- BLUEdata1 %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+BLUEFlowDV <- BLUEdata1 %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+BLUEChemo <- full_join(BLUENitrateDV, BLUEFlowDV, by = "dateTime")
+
 BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
@@ -280,13 +338,12 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   
 print(BLUEChemoplot)
 ```
-	Above is the accompanying C-Q plot and plotted regression line for the same site in Statistical Test 1. Both axes have been log-transformed to make the data points less clumped and more interpretable. 
+	To the left is the accompanying C-Q plot and plotted regression line for the same site in Statistical Test 1. Both axes have been log-transformed to make the data points less clumped and more interpretable. 
 	
 ## Visualization 2: Hysteresis Plot
 ```{r, echo = FALSE}
-BLUEstorm <- BLUEdata %>%
+BLUEstorm <- BLUEdata1 %>%
   filter(dateTime > "2015-08-28 01:00:00" & dateTime < "2015-11-05  04:30:00")
-
 BLUEplot <- ggplot(BLUEstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
@@ -327,7 +384,6 @@ According to the ANOVA, we don't have sufficient evidence to reject the null hyp
 \newpage
 
 # Summary and Conclusions
-<Summarize your major findings from your analyses. What conclusions do you draw from your findings? Make sure to apply this to a broader application for the research question you have answered.>
 
 Unfortunately, we do not have any definite conclusions for any of our hypotheses at this point in our analysis. For hypothesis 1, we are still trying to find a way to calculate RBIs without catchment size data, but if we acquire that data we would be able to run a regression between that and the Chemostaticity regression coefficient. That could lead us to a definite conclusion regarding the nature of the relationship between Chemostaticity and Hydrologic Flashiness - that there is a correlation between the two, or that there is none.
 

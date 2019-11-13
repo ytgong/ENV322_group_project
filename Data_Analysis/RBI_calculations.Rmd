@@ -12,7 +12,7 @@ library(tidyverse)
 library(dataRetrieval)
 
 RBI_values<-1:22
-hyp1_sites<-read.csv("./FL_CSV/hyp1_sites.csv")
+hyp1_sites<-read.csv("/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
 site.nums<-as.character(hyp1_sites$site_no)
 
 for (i in 1:22) {
@@ -36,32 +36,312 @@ RBI_values[i] <- (
 }
 ```
 
-Individual RBI calculations
+RBI without catchment size
 
 ```{r}
-#BLUE data
+library(tidyverse)
+library(dataRetrieval)
 
-SANTAdata<-read_csv("./FL_CSV/hyp1/SANTAdata.csv")
+RBI_values_noncatch<-1:22
+hyp1_sites<-read.csv("/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
+site.nums<-as.character(hyp1_sites$site_no)
 
-BLUE.sitedata <- readNWISsite(
-  site = "02322800")
-BLUE.catchment.size <- BLUE.sitedata$drain_area_va #square miles
+for (i in 1:22) {
 
+discharge<-readNWISuv(
+  siteNumbers = paste0("0", site.nums[i]),
+  parameterCd = "00060",
+  startDate = "",
+  endDate = ""
+)%>%
+  renameNWISColumns()
 
-RBI_value <- (
-  sum(abs(diff(BLUEdata$Flow_Inst))) / 
-    sum(BLUEdata$Flow_Inst[-1])
-  ) / BLUE.catchment.size
+RBI_values_noncatch[i] <- (
+  sum(abs(diff(discharge$Flow_Inst))) / 
+    sum(discharge$Flow_Inst[-1])
+  )
+
+}
 ```
 
-Creating vector with chemostaticity regression coefficients
+
+Individual RBI calculations w/ catchment
+
 ```{r}
+#confirm which sites have catchment sizes
+catch<-1:22
+hyp1_sites<-read.csv("/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
+site.nums<-as.character(hyp1_sites$site_no)
+
+for (i in 1:22) {
+
+sitedata <- readNWISsite(site = paste0("0", site.nums[i]))
+catch[i] <- sitedata$drain_area_va #square miles
+
+}
+
+RBI_value_ind_catch<-rep(NA,21)
+
+#investigate sites that have known catchment sizes
+
+#CRANE data
+CRANEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CRANEdata.csv")
+
+CRANE.sitedata <- readNWISsite(
+  site = "02249500")
+CRANE.catchment.size <- CRANE.sitedata$drain_area_va #square miles
+
+RBI_value_ind_catch[5] <- (
+  sum(abs(diff(CRANEdata$Flow_Inst))) / 
+    sum(CRANEdata$Flow_Inst[-1])
+  ) / CRANE.catchment.size
+
+#ICHE data
+ICHEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/ICHEdata.csv")
+
+ICHE.sitedata <- readNWISsite(
+  site = "02322700")
+ICHE.catchment.size <- ICHE.sitedata$drain_area_va #square miles
+
+RBI_value_ind_catch[12] <- (
+  sum(abs(diff(ICHEdata$Flow_Inst))) / 
+    sum(ICHEdata$Flow_Inst[-1])
+  ) / ICHE.catchment.size
+
+#SANTA data
+SANTAdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/SANTAdata.csv")
+
+SANTA.sitedata <- readNWISsite(
+  site = "02322800")
+SANTA.catchment.size <- SANTA.sitedata$drain_area_va #square miles
+
+RBI_value_ind_catch[17] <- (
+  sum(abs(diff(SANTAdata$Flow_Inst))) / 
+    sum(SANTAdata$Flow_Inst[-1])
+  ) / SANTA.catchment.size
+
+#TURK data
+TURKdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")
+
+TURK.sitedata <- readNWISsite(
+  site = "02250030")
+TURK.catchment.size <- TURK.sitedata$drain_area_va #square miles
+
+RBI_value_ind_catch[19] <- (
+  sum(abs(diff(TURKdata$Flow_Inst))) / 
+    sum(TURKdata$Flow_Inst[-1])
+  ) / TURK.catchment.size
+
+```
+
+Individual RBI calculations w/o catchment
+
+```{r}
+RBI_value_ind_noncatch<-1:21
+
+BLUEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")
+
+RBI_value_ind_noncatch[1] <- (
+  sum(abs(diff(BLUEdata$Flow_Inst))) / 
+    sum(BLUEdata$Flow_Inst[-1])
+  )
+
+BOWdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/BOWdata.csv")
+
+RBI_value_ind_noncatch[2] <- (
+  sum(abs(diff(BOWdata$Flow_Inst))) / 
+    sum(BOWdata$Flow_Inst[-1])
+  )
+
+CALdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")
+
+RBI_value_ind_noncatch[3] <- (
+  sum(abs(diff(CALdata$Flow_Inst))) / 
+    sum(CALdata$Flow_Inst[-1])
+  )
+
+CHASdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CHASdata.csv")
+
+RBI_value_ind_noncatch[4] <- (
+  sum(abs(diff(CHASdata$Flow_Inst))) / 
+    sum(CHASdata$Flow_Inst[-1])
+  )
+
+CRANEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CRANEdata.csv")
+
+RBI_value_ind_noncatch[5] <- (
+  sum(abs(diff(CRANEdata$Flow_Inst))) / 
+    sum(CRANEdata$Flow_Inst[-1])
+  )
+
+DRAINdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/DRAINdata.csv")
+
+RBI_value_ind_noncatch[6] <- (
+  sum(abs(diff(DRAINdata$Flow_Inst))) / 
+    sum(DRAINdata$Flow_Inst[-1])
+  )
+
+FANdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")
+
+RBI_value_ind_noncatch[7] <- (
+  sum(abs(diff(FANdata$Flow_Inst))) / 
+    sum(FANdata$Flow_Inst[-1])
+  )
+
+FELLdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/FELLdata.csv")
+
+RBI_value_ind_noncatch[8] <- (
+  sum(abs(diff(FELLdata$Flow_Inst))) / 
+    sum(FELLdata$Flow_Inst[-1])
+  )
+
+HOLdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/HOLdata.csv")
+
+RBI_value_ind_noncatch[9] <- (
+  sum(abs(diff(HOLdata$Flow_Inst))) / 
+    sum(HOLdata$Flow_Inst[-1])
+  )
+
+HOMdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/HOMdata.csv")
+
+RBI_value_ind_noncatch[10] <- (
+  sum(abs(diff(HOMdata$Flow_Inst))) / 
+    sum(HOMdata$Flow_Inst[-1])
+  )
+
+HUNdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/HUNdata.csv")
+
+RBI_value_ind_noncatch[11] <- (
+  sum(abs(diff(HUNdata$Flow_Inst))) / 
+    sum(HUNdata$Flow_Inst[-1])
+  )
+
+ICHEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/ICHEdata.csv")
+
+RBI_value_ind_noncatch[12] <- (
+  sum(abs(diff(ICHEdata$Flow_Inst))) / 
+    sum(ICHEdata$Flow_Inst[-1])
+  )
+
+MADdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/MADdata.csv")
+
+RBI_value_ind_noncatch[13] <- (
+  sum(abs(diff(MADdata$Flow_Inst))) / 
+    sum(MADdata$Flow_Inst[-1])
+  )
+
+MAINdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/MAINdata.csv")
+
+RBI_value_ind_noncatch[14] <- (
+  sum(abs(diff(MAINdata$Flow_Inst))) / 
+    sum(MAINdata$Flow_Inst[-1])
+  )
+
+#MAN data
+MANdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")
+
+RBI_value_ind_noncatch[15] <- (
+  sum(abs(diff(MANdata$Flow_Inst))) / 
+    sum(MANdata$Flow_Inst[-1])
+  )
+
+#RAIN data
+RAINdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/RAINdata.csv")
+
+RBI_value_ind_noncatch[16] <- (
+  sum(abs(diff(RAINdata$Flow_Inst))) / 
+    sum(RAINdata$Flow_Inst[-1])
+  )
+
+#SANTA data
+SANTAdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/SANTAdata.csv")
+
+RBI_value_ind_noncatch[17] <- (
+  sum(abs(diff(SANTAdata$Flow_Inst))) / 
+    sum(SANTAdata$Flow_Inst[-1])
+  )
+
+#THREE data
+THREEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/THREEdata.csv")
+RBI_value_ind_noncatch[18] <- (
+  sum(abs(diff(THREEdata$Flow_Inst))) / 
+    sum(THREEdata$Flow_Inst[-1]))
+
+#TURK data
+TURKdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")
+
+RBI_value_ind_noncatch[19] <- (
+  sum(abs(diff(TURKdata$Flow_Inst))) / 
+    sum(TURKdata$Flow_Inst[-1])
+  )
+
+#TURN data
+TURNdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/TURNdata.csv")
+
+RBI_value_ind_noncatch[20] <- (
+  sum(abs(diff(TURNdata$Flow_Inst))) / 
+    sum(TURNdata$Flow_Inst[-1])
+  )
+
+#WAC data
+WACdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
+
+RBI_value_ind_noncatch[21] <- (
+  sum(abs(diff(WACdata$Flow_Inst))) / 
+    sum(WACdata$Flow_Inst[-1])
+  )
+```
+
+Creating vector with RBI values and chemostaticity regression coefficients
+```{r}
+RBI_sites<-c("WAC", "MAD", "BLUE", "MAN", "FAN", "SANTA", "ICHE", "HOL",
+             "HUN", "HOM", "CHAS", "RAIN", "BOW", "CAL", "THREE", "TURN",
+             "DRAIN", "CRANE", "TURK", "FELL", "MAIN")
+RBI_forloop<-tibble(
+  sites = RBI_sites,
+  site_no = paste0("0", hyp1_sites$site_no[2:22]),
+  "RBI forloop noncatch" = RBI_values_noncatch[2:22],
+  "RBI forloop catch" = RBI_values[2:22])
+
+RBI_ind<-tibble(sites = linreg.sites, RBI_value_ind_noncatch, RBI_value_ind_catch)
+
+RBI_compiled<-RBI_forloop%>%
+  left_join(RBI_ind, by = "sites")
+
+
 linregs<-c(22.8644,-873.27,-5886.7,-60.457,-15.5647, -1.82465, -87.731,
            625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,
            67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300)
+linregs.abs<-abs(linregs)
 linreg.sites<-c("BLUE", "BOW", "CAL","CHAS", "CRANE","DRAIN","FAN","FELL",
                 "HOL","HOM","HUN","ICHE","MAD","MAIN","MAN","RAIN",
                 "SANTA","THREE","TURK","TURN","WAC")
-hyp1_analysis<-tibble(linregs, linreg.sites)
+hyp1_analysis<-tibble(linregs, linregs.abs, sites = linreg.sites)%>%
+  left_join(RBI_compiled, by = "sites")
 ```
 

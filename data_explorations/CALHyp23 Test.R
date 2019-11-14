@@ -75,15 +75,29 @@ plot_grid(CALpHupstream, CALDOupstream, CALSCupstream, nrow = 3)
 CAL23data1 <- CAL23data %>%
   drop_na()
 
-CAL23upstream.lm <- lm(data = CAL23data1, Flow_Inst ~ UPSTREAM_pH_Inst + UPSTREAM_DO_Inst +
-                         UPSTREAM_SpecCond_Inst)
-summary(CAL23upstream.lm)
-#DO fails the null
+CAL23upstreamSC.lm <- lm(data = CAL23data1, UPSTREAM_SpecCond_Inst ~ Flow_Inst)
+summary(CAL23upstreamSC.lm)
+#^ significant! (P = 0.000467, Rsq = 0.00475)
 
-CAL23floating.lm <- lm(data = CAL23data1, Flow_Inst ~ FLOATING_pH_Inst + FLOATING_DO_Inst +
-                         FLOATING_SpecCond_Inst)
-summary(CAL23floating.lm)
-#DO fails the null again
+CAL23upstreamDO.lm <- lm(data = CAL23data1, UPSTREAM_DO_Inst ~ Flow_Inst)
+summary(CAL23upstreamDO.lm)
+# significant! (P < 2e-16, Rsq = 0.04471)
+
+CAL23upstreampH.lm <- lm(data = CAL23data1, UPSTREAM_pH_Inst ~ Flow_Inst)
+summary(CAL23upstreampH.lm)
+# significant! (P < 2e-16, Rsq = 0.03194)
+
+CAL23floatingSC.lm <- lm(data = CAL23data1, FLOATING_SpecCond_Inst ~ Flow_Inst)
+summary(CAL23floatingSC.lm)
+# ^ not significant! (P = 0.346, Rsq = -4.723e-05)
+
+CAL23floatingDO.lm <- lm(data = CAL23data1, FLOATING_DO_Inst ~ Flow_Inst)
+summary(CAL23floatingDO.lm)
+# significant! (P <2e-16, Rsq = 0.04745)
+
+CAL23floatingpH.lm <- lm(data = CAL23data1, FLOATING_pH_Inst ~ Flow_Inst)
+summary(CAL23floatingpH.lm)
+# significant! (P < 2e-16, Rsq = 0.03332)
 
 
 #Some plots + regression lines

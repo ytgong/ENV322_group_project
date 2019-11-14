@@ -33,65 +33,46 @@ BLUEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")
 
 BLUEdata$dateTime <- ymd_hms(BLUEdata$dateTime)
 
-dygraph(
-  cbind(
-    Flow = xts(BLUEdata$Flow_Inst, order.by = BLUEdata$dateTime), 
-    Nitrate = xts(BLUEdata$Nitrate_mgl, order.by = BLUEdata$dateTime)
-  )
-) %>% 
-  dySeries("Nitrate", axis = "y2") %>%
-  dyRangeSelector()
+ggplot(BLUEdata, aes(dateTime)) +
+  geom_line(aes(y = Nitrate_mgl, color = "red")) +
+  geom_line(aes(y = Flow_Inst, color = "blue"))
+
 
 BLUEstorm <- BLUEdata %>%
-  filter(dateTime > "2015-08-28 01:00:00" & dateTime < "2015-11-05  04:30:00")
+  filter(dateTime > "2015-08-17 02:45:00" & dateTime < "2015-08-24 10:30:00")
 
 BLUEplot <- ggplot(BLUEstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
-  geom_point() +
+  geom_point() + 
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
-  ggtitle("2015 Storm Event at Blue Springs")
+  ggtitle("2015 Storm Event at Blue Springs") 
 print(BLUEplot)
 
 
 #CAL
-CALdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CALdata1.csv")
+#Largest discharge event
+CALdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")
 
 CALdata$dateTime <- ymd_hms(CALdata$dateTime)
 
-dygraph(
-  cbind(
-    Flow = xts(CALdata$Flow_Inst, order.by = CALdata$dateTime), 
-    Nitrate = xts(CALdata$Nitrate_mgl, order.by = CALdata$dateTime)
-  )
-) %>% 
-  dySeries("Nitrate", axis = "y2") %>%
-  dyRangeSelector()
-
 CALstorm <- CALdata %>%
-  filter(dateTime > "2016-01-27 04:30:00" & dateTime < "2016-02-08 03:15:00")
+  filter(dateTime > "2017-09-09 08:30:00" & dateTime < "2017-09-17 01:45:00")
 
 CALplot <- ggplot(CALstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
-  ggtitle("2016 Storm Event at Caloosahatchee River")
+  ggtitle("2017 Storm Event at Caloosahatchee River")
 print(CALplot)
 
+#2016-01-27 04:30:00 2016-02-08 03:15:00
 
 #FAN
-FANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FANdata1.csv")
+#Largest discharge event with enough data points
+FANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")
 
 FANdata$dateTime <- ymd_hms(FANdata$dateTime)
 
-dygraph(
-  cbind(
-    Flow = xts(FANdata$Flow_Inst, order.by = FANdata$dateTime), 
-    Nitrate = xts(FANdata$Nitrate_mgl, order.by = FANdata$dateTime)
-  )
-) %>% 
-  dySeries("Nitrate", axis = "y2") %>%
-  dyRangeSelector()
-
 FANstorm <- FANdata %>%
-  filter(dateTime > "2017-12-09 07:15:00" & dateTime < "2017-12-12 01:45:00")
+  filter(dateTime > "2017-12-09 07:15:00" & dateTime < "2017-12-13 15:45:00")
 
 FANplot <- ggplot(FANstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
@@ -101,7 +82,8 @@ print(FANplot)
 
 
 #HOL
-HOLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOLdata1.csv")
+#Not usable = Nitrate readings are too discrete
+HOLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOLdata.csv")
 
 HOLdata$dateTime <- ymd_hms(HOLdata$dateTime)
 
@@ -115,7 +97,7 @@ dygraph(
   dyRangeSelector()
 
 HOLstorm <- HOLdata %>%
-  filter(dateTime > "" & dateTime < "")
+  filter(dateTime > "2016-12-04 03:00:00" & dateTime < "2016-12-09 22:15:00")
 
 HOLplot <- ggplot(HOLstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
@@ -125,31 +107,23 @@ print(HOLplot)
 
 
 #MAD
-MADdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MADdata1.csv")
+#Largest discharge legible
+MADdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MADdata.csv")
 
 MADdata$dateTime <- ymd_hms(MADdata$dateTime)
 
-dygraph(
-  cbind(
-    Flow = xts(MADdata$Flow_Inst, order.by = MADdata$dateTime), 
-    Nitrate = xts(MADdata$Nitrate_mgl, order.by = MADdata$dateTime)
-  )
-) %>% 
-  dySeries("Nitrate", axis = "y2") %>%
-  dyRangeSelector()
-
 MADstorm <- MADdata %>%
-  filter(dateTime > "2015-05-30 04:00:00" & dateTime < "2016-06-05 12:15:00")
+  filter(dateTime > "2015-11-05 16:30:00" & dateTime < "2015-11-16 24:00:00")
 
 MADplot <- ggplot(MADstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
-  ggtitle("2015 Storm Event at Madison Blue Spring") +
-  scale_fill_viridis_c(option = "magma")
+  ggtitle("2015 Storm Event at Madison Blue Spring") 
 print(MADplot)
 
 
 #MAN
+#Largest discharge event with least chaotic data
 MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")
 
 MANdata$dateTime <- ymd_hms(MANdata$dateTime)
@@ -164,17 +138,18 @@ dygraph(
   dyRangeSelector()
 
 MANstorm <- MANdata %>%
-  filter(dateTime > "2016-01-22 07:15:00" & dateTime < "2016-01-29 05:15:00")
+  filter(dateTime > "2016-02-04 02:00:00" & dateTime < "2016-02-09 06:45:00")
 
 MANplot <- ggplot(MANstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
-  ggtitle("")
+  ggtitle("2016 Storm Event at Manatee Spring")
 print(MANplot)
 
 
 #WAC
-WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata1.csv")
+#Largest discharge event
+WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
 
 WACdata$dateTime <- ymd_hms(WACdata$dateTime)
 
@@ -188,10 +163,10 @@ dygraph(
   dyRangeSelector()
 
 WACstorm <- WACdata %>%
-  filter(dateTime > "" & dateTime < "")
+  filter(dateTime > "2018-12-02 24:30:00" & dateTime < "2018-12-09 04:30:00")
 
 WACplot <- ggplot(WACstorm, aes(x = Flow_Inst, y = Nitrate_mgl, color = dateTime)) +
   geom_point() +
   labs(x = "Instantaneous Discharge (m/s)", y = "Nitrate Concentration (mg/l)", color = "Date") +
-  ggtitle("")
+  ggtitle("2018 Storm Event at Wacissa River")
 print(WACplot)

@@ -5,28 +5,6 @@ library(cowplot)
 library(xts)
 library(dygraphs)
 library(lubridate)
-library(viridis)
-
-
-BLUEdata
-
-
-CALdata <- read.csv("/ENV322_group_project/CALdata.csv")
-
-FANdata <- read.csv("/ENV322_group_project/FANdata.csv")
-
-
-
-HOLdata <- read.csv("/ENV322_group_project/HOLdata.csv")
-
-
-
-MADdata <- read.csv("/ENV322_group_project/MADdata.csv")
-
-MANdata <- read.csv("/ENV322_group_project/MANdata.csv")
-
-
-WACdata <- read.csv("/ENV322_group_project/WACdata.csv")
 
 #BLUE
 BLUEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")
@@ -128,15 +106,6 @@ MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")
 
 MANdata$dateTime <- ymd_hms(MANdata$dateTime)
 
-dygraph(
-  cbind(
-    Flow = xts(MANdata$Flow_Inst, order.by = MANdata$dateTime), 
-    Nitrate = xts(MANdata$Nitrate_mgl, order.by = MANdata$dateTime)
-  )
-) %>% 
-  dySeries("Nitrate", axis = "y2") %>%
-  dyRangeSelector()
-
 MANstorm <- MANdata %>%
   filter(dateTime > "2016-02-04 02:00:00" & dateTime < "2016-02-09 06:45:00")
 
@@ -152,15 +121,6 @@ print(MANplot)
 WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
 
 WACdata$dateTime <- ymd_hms(WACdata$dateTime)
-
-dygraph(
-  cbind(
-    Flow = xts(WACdata$Flow_Inst, order.by = WACdata$dateTime), 
-    Nitrate = xts(WACdata$Nitrate_mgl, order.by = WACdata$dateTime)
-  )
-) %>% 
-  dySeries("Nitrate", axis = "y2") %>%
-  dyRangeSelector()
 
 WACstorm <- WACdata %>%
   filter(dateTime > "2018-12-02 24:30:00" & dateTime < "2018-12-09 04:30:00")

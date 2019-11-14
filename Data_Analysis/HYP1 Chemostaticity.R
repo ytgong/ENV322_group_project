@@ -25,7 +25,7 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   
 print(BLUEChemoplot)
 
-BLUEChemo.lm <- lm(data = BLUEChemo, Flow_DV ~ Nitrate_DV)
+BLUEChemo.lm <- lm(data = BLUEChemo, Nitrate_DV ~ Flow_DV)
 summary(BLUEChemo.lm)
 
 
@@ -53,7 +53,7 @@ BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(BOWChemoplot)
 
-BOWChemo.lm <- lm(data = BOWChemo, Flow_DV ~ Nitrate_DV)
+BOWChemo.lm <- lm(data = BOWChemo, Nitrate_DV ~ Flow_DV)
 summary(BOWChemo.lm)
 
 
@@ -80,7 +80,7 @@ CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(CALChemoplot)
 
-CALChemo.lm <- lm(data = CALChemo, Flow_DV ~ Nitrate_DV)
+CALChemo.lm <- lm(data = CALChemo, Nitrate_DV ~ Flow_DV)
 summary(CALChemo.lm)
 
 
@@ -107,7 +107,7 @@ CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(CHASChemoplot)
 
-CHASChemo.lm <- lm(data = CHASChemo, Flow_DV ~ Nitrate_DV)
+CHASChemo.lm <- lm(data = CHASChemo, Nitrate_DV ~ Flow_DV)
 summary(CHASChemo.lm)
 
 
@@ -134,7 +134,7 @@ CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(CRANEChemoplot)
 
-CRANEChemo.lm <- lm(data = CRANEChemo, Flow_DV ~ Nitrate_DV)
+CRANEChemo.lm <- lm(data = CRANEChemo, Nitrate_DV ~ Flow_DV)
 summary(CRANEChemo.lm)
 
 
@@ -161,7 +161,7 @@ DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   
 print(DRAINChemoplot)
 
-DRAINChemo.lm <- lm(data = DRAINChemo, Flow_DV ~ Nitrate_DV)
+DRAINChemo.lm <- lm(data = DRAINChemo, Nitrate_DV ~ Flow_DV)
 summary(DRAINChemo.lm)
 
 
@@ -188,7 +188,7 @@ FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(FANChemoplot)
 
-FANChemo.lm <- lm(data = FANChemo, Flow_DV ~ Nitrate_DV)
+FANChemo.lm <- lm(data = FANChemo, Nitrate_DV ~ Flow_DV)
 summary(FANChemo.lm)
 
 
@@ -215,7 +215,7 @@ FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(FELLChemoplot)
 
-FELLChemo.lm <- lm(data = FELLChemo, Flow_DV ~ Nitrate_DV)
+FELLChemo.lm <- lm(data = FELLChemo, Nitrate_DV ~ Flow_DV)
 summary(FELLChemo.lm)
 
 
@@ -242,7 +242,7 @@ HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(HOLChemoplot)
 
-HOLChemo.lm <- lm(data = HOLChemo, Flow_DV ~ Nitrate_DV)
+HOLChemo.lm <- lm(data = HOLChemo, Nitrate_DV ~ Flow_DV)
 summary(HOLChemo.lm)
 
 
@@ -269,7 +269,7 @@ HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(HOMChemoplot)
 
-HOMChemo.lm <- lm(data = HOMChemo, Flow_DV ~ Nitrate_DV)
+HOMChemo.lm <- lm(data = HOMChemo, Nitrate_DV ~ Flow_DV)
 summary(HOMChemo.lm)
 
 
@@ -296,7 +296,7 @@ HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(HUNChemoplot)
 
-HUNChemo.lm <- lm(data = HUNChemo, Flow_DV ~ Nitrate_DV)
+HUNChemo.lm <- lm(data = HUNChemo, Nitrate_DV ~ Flow_DV)
 summary(HUNChemo.lm)
 
 
@@ -323,7 +323,7 @@ ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(ICHEChemoplot)
 
-ICHEChemo.lm <- lm(data = ICHEChemo, Flow_DV ~ Nitrate_DV)
+ICHEChemo.lm <- lm(data = ICHEChemo, Nitrate_DV ~ Flow_DV)
 summary(ICHEChemo.lm)
 
 
@@ -350,7 +350,7 @@ MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(MADChemoplot)
 
-MADChemo.lm <- lm(data = MADChemo, Flow_DV ~ Nitrate_DV)
+MADChemo.lm <- lm(data = MADChemo, Nitrate_DV ~ Flow_DV)
 summary(MADChemo.lm)
 
 
@@ -377,7 +377,7 @@ MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(MAINChemoplot)
 
-MAINChemo.lm <- lm(data = MAINChemo, Flow_DV ~ Nitrate_DV)
+MAINChemo.lm <- lm(data = MAINChemo, Nitrate_DV ~ Flow_DV)
 summary(MAINChemo.lm)
 
 
@@ -404,7 +404,7 @@ MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(MANChemoplot)
 
-MANChemo.lm <- lm(data = MANChemo, Flow_DV ~ Nitrate_DV)
+MANChemo.lm <- lm(data = MANChemo, Nitrate_DV ~ Flow_DV)
 summary(MANChemo.lm)
 
 #RAIN
@@ -430,7 +430,7 @@ RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(RAINChemoplot)
 
-RAINChemo.lm <- lm(data = RAINChemo, Flow_DV ~ Nitrate_DV)
+RAINChemo.lm <- lm(data = RAINChemo, Nitrate_DV ~ Flow_DV)
 summary(RAINChemo.lm)
 
 
@@ -457,7 +457,7 @@ SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(SANTAChemoplot)
 
-SANTAChemo.lm <- lm(data = SANTAChemo, Flow_DV ~ Nitrate_DV)
+SANTAChemo.lm <- lm(data = SANTAChemo, Nitrate_DV ~ Flow_DV)
 summary(SANTAChemo.lm)
 
 
@@ -484,7 +484,7 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(THREEChemoplot)
 
-THREEChemo.lm <- lm(data = THREEChemo, Flow_DV ~ Nitrate_DV)
+THREEChemo.lm <- lm(data = THREEChemo, Nitrate_DV ~ Flow_DV)
 summary(THREEChemo.lm)
 
 
@@ -511,7 +511,7 @@ TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(TURKChemoplot)
 
-TURKChemo.lm <- lm(data = TURKChemo, Flow_DV ~ Nitrate_DV)
+TURKChemo.lm <- lm(data = TURKChemo, Nitrate_DV ~ Flow_DV)
 summary(TURKChemo.lm)
 
 
@@ -538,7 +538,7 @@ TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(TURNChemoplot)
 
-TURNChemo.lm <- lm(data = TURNChemo, Flow_DV ~ Nitrate_DV)
+TURNChemo.lm <- lm(data = TURNChemo, Nitrate_DV ~ Flow_DV)
 summary(TURNChemo.lm)
 
 
@@ -565,7 +565,7 @@ WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 print(WACChemoplot)
 
-WACChemo.lm <- lm(data = WACChemo, Flow_DV ~ Nitrate_DV)
+WACChemo.lm <- lm(data = WACChemo, Nitrate_DV ~ Flow_DV)
 summary(WACChemo.lm)
 
 

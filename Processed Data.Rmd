@@ -31,7 +31,7 @@ BLUEdischarge <- readNWISuv(
 ) %>% 
   renameNWISColumns
 
-BLUEdata <- full_join(MADNO3, MADdischarge, by = "dateTime") %>%
+BLUEdata <- full_join(BLUENO3, BLUEdischarge, by = "dateTime") %>%
   drop_na() %>%
   filter(X_99133_Inst_cd == "A" & Flow_Inst_cd == "A")
 
@@ -481,7 +481,7 @@ WACdata <- full_join(WACdischarge, WACNO3, by = "dateTime") %>%
 #BLUEdata
 BLUEdata$dateTime <- ymd_hms(BLUEdata$dateTime) 
 
-BLUEdata <- BLUEdata %>% filter(dateTime > "2015-05-11 12:00:00" & dateTime < "2015-12-30 11:15:00")
+BLUEdata <- BLUEdata %>% filter(dateTime < "2015-12-30 11:15:00")
 
 
 #Bow
@@ -523,7 +523,7 @@ FANdata <- FANdata %>% filter(dateTime > "2017-10-27 09:00:00" & dateTime < "201
 #FELLdata
 FELLdata$dateTime <- ymd_hms(FELLdata$dateTime)
 
-FELLdata <- FELLdata %>% filter(dateTime > "2016-07-06")
+FELLdata <- FELLdata %>% filter(dateTime < "2015-09-24 11:45:00")
 
 
 #HOLdata
@@ -565,7 +565,7 @@ MAINdata <- MAINdata %>% filter(dateTime > "2014-10-10 12:00:00" & dateTime < "2
 #MANdata
 MANdata$dateTime <- ymd_hms(MANdata$dateTime)
 
-MANdata <- MANdata %>% filter(dateTime > "2016-01-06 03:15:00")
+MANdata <- MANdata %>% filter(dateTime > "2016-01-06 03:15:00" & dateTime < "2016-08-30")
 
 
 #RAINdata
@@ -629,8 +629,6 @@ print(BLUEChemoplot)
 
 BLUEChemo.lm <- lm(data = BLUEChemo, Flow_DV ~ Nitrate_DV)
 summary(BLUEChemo.lm)
-
-
 
 #BOW
 BOWNitrateDV <- BOWdata %>%

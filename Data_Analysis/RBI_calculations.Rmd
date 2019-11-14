@@ -343,5 +343,7 @@ linreg.sites<-c("BLUE", "BOW", "CAL","CHAS", "CRANE","DRAIN","FAN","FELL",
                 "SANTA","THREE","TURK","TURN","WAC")
 hyp1_analysis<-tibble(linregs, linregs.abs, sites = linreg.sites)%>%
   left_join(RBI_compiled, by = "sites")
+
+write_csv(hyp1_analysis, "./RBI_CHEMO_data")
 ```
 

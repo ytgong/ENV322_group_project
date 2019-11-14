@@ -24,9 +24,36 @@ mainfont: Times New Roman
 
 ```{r setup, include=FALSE}
 # Set your working directory
-# Load your packages
-# Set your ggplot theme
+library(dataRetrieval)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+
+#Set theme
+theme_set(theme_classic())
+
 # Load your datasets
+BLUEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")
+BOWdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BOWdata.csv")
+CALdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")
+CHASdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CHASdata.csv")
+CRANEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CRANEdata.csv")
+DRAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/DRAINdata.csv")
+FANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")
+FELLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FELLdata.csv")
+HOLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOLdata.csv")
+HOMdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOMData.csv")
+HUNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HUNdata.csv")
+ICHEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/ICHEdata.csv")
+MADdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MADdata.csv")
+MAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MAINdata.csv")
+MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")
+RAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/RAINdata.csv")
+SANTAdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/SANTAdata.csv")
+THREEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/THREEdata.csv")
+TURKdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")
+TURNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURNdata.csv")
+WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
 ```
 
 

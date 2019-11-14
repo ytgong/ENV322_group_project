@@ -21,7 +21,7 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Blue Springs Near Dell, FL")
+  ggtitle("Blue Springs C-Q")
   
 print(BLUEChemoplot)
 
@@ -49,7 +49,7 @@ BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Rainbow River Near Dunnellon, FL")
+  ggtitle("Rainbow River Near Dunnellon C-Q")
 
 print(BOWChemoplot)
 
@@ -58,7 +58,7 @@ summary(BOWChemo.lm)
 
 
 #CAL
-CALdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CALdata1.csv")
+CALdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")
 
 CALNitrateDV <- CALdata %>%
   group_by(dateTime) %>%
@@ -76,7 +76,7 @@ CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Caloosahatchee River at S-79 Near Olga, FL")
+  ggtitle("Caloosahatchee River C-Q")
 
 print(CALChemoplot)
 
@@ -85,7 +85,7 @@ summary(CALChemo.lm)
 
 
 #CHAS
-CHASdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CHASdata1.csv")
+CHASdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CHASdata.csv")
 
 CHASNitrateDV <- CHASdata %>%
   group_by(dateTime) %>%
@@ -103,7 +103,7 @@ CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Chassahowitzka River Near Homosassa, FL")
+  ggtitle("Chassahowitzka River C-Q")
 
 print(CHASChemoplot)
 
@@ -112,7 +112,7 @@ summary(CHASChemo.lm)
 
 
 #CRANE
-CRANEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CRANEdata1.csv")
+CRANEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/CRANEdata.csv")
 
 CRANENitrateDV <- CRANEdata %>%
   group_by(dateTime) %>%
@@ -130,7 +130,7 @@ CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Crane Creek at Melbourne, FL")
+  ggtitle("Crane Creek C-Q")
 
 print(CRANEChemoplot)
 
@@ -139,7 +139,7 @@ summary(CRANEChemo.lm)
 
 
 #DRAIN
-DRAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/DRAINdata1.csv")
+DRAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/DRAINdata.csv")
 
 DRAINNitrateDV <- DRAINdata %>%
   group_by(dateTime) %>%
@@ -157,7 +157,7 @@ DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Drainage Canal at Plaza Pkwy at Cocoa, FL")
+  ggtitle("Drainage Canal C-Q")
   
 print(DRAINChemoplot)
 
@@ -166,7 +166,7 @@ summary(DRAINChemo.lm)
 
 
 #FAN
-FANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FANdata1.csv")
+FANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")
 
 FANNitrateDV <- FANdata %>%
   group_by(dateTime) %>%
@@ -184,7 +184,7 @@ FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Fanning Springs Near Wilcox, FL")
+  ggtitle("Fanning Springs C-Q")
 
 print(FANChemoplot)
 
@@ -193,7 +193,7 @@ summary(FANChemo.lm)
 
 
 #FELL
-FELLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FELLdata1.csv")
+FELLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/FELLdata.csv")
 
 FELLNitrateDV <- FELLdata %>%
   group_by(dateTime) %>%
@@ -211,7 +211,7 @@ FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Fellsmere Canal Near Micco, FL")
+  ggtitle("Fellsmere Canal C-Q")
 
 print(FELLChemoplot)
 
@@ -220,7 +220,7 @@ summary(FELLChemo.lm)
 
 
 #HOL
-HOLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOLdata1.csv")
+HOLdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOLdata.csv")
 
 HOLNitrateDV <- HOLdata %>%
   group_by(dateTime) %>%
@@ -238,7 +238,7 @@ HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Blue Hole Spring Near Hildreth, FL")
+  ggtitle("Blue Hole Spring C-Q")
 
 print(HOLChemoplot)
 
@@ -247,7 +247,7 @@ summary(HOLChemo.lm)
 
 
 #HOM
-HOMdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOMdata1.csv")
+HOMdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HOMdata.csv")
 
 HOMNitrateDV <- HOMdata %>%
   group_by(dateTime) %>%
@@ -265,7 +265,7 @@ HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Homosassa Springs at Homosassa Springs, FL")
+  ggtitle("Homosassa Springs C-Q")
 
 print(HOMChemoplot)
 
@@ -274,7 +274,7 @@ summary(HOMChemo.lm)
 
 
 #HUN
-HUNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HUNdata1.csv")
+HUNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/HUNdata.csv")
 
 HUNNitrateDV <- HUNdata %>%
   group_by(dateTime) %>%
@@ -292,7 +292,7 @@ HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Hunter Spring Run at Beach L at Crystal River, FL")
+  ggtitle("Hunter Spring Run C-Q")
 
 print(HUNChemoplot)
 
@@ -301,7 +301,7 @@ summary(HUNChemo.lm)
 
 
 #ICHE
-ICHEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/ICHEdata1.csv")
+ICHEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/ICHEdata.csv")
 
 ICHENitrateDV <- ICHEdata %>%
   group_by(dateTime) %>%
@@ -319,7 +319,7 @@ ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Ichetucknee River at Hwy27 Near Hildreth, FL")
+  ggtitle("Ichetucknee River C-Q")
 
 print(ICHEChemoplot)
 
@@ -328,7 +328,7 @@ summary(ICHEChemo.lm)
 
 
 #MAD
-MADdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MADdata1.csv")
+MADdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MADdata.csv")
 
 MADNitrateDV <- MADdata %>%
   group_by(dateTime) %>%
@@ -346,7 +346,7 @@ MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Madison Blue Spring near Blue Springs, FL")
+  ggtitle("Madison Blue Spring C-Q")
 
 print(MADChemoplot)
 
@@ -355,7 +355,7 @@ summary(MADChemo.lm)
 
 
 #MAIN
-MAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MAINdata1.csv")
+MAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MAINdata.csv")
 
 MAINNitrateDV <- MAINdata %>%
   group_by(dateTime) %>%
@@ -373,7 +373,7 @@ MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Main Canal at Vero Beach, FL")
+  ggtitle("Main Canal C-Q")
 
 print(MAINChemoplot)
 
@@ -382,7 +382,7 @@ summary(MAINChemo.lm)
 
 
 #MAN
-MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata1.csv")
+MANdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")
 
 MANNitrateDV <- MANdata %>%
   group_by(dateTime) %>%
@@ -400,7 +400,7 @@ MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Manatee Spring Near Chiefland, FL")
+  ggtitle("Manatee Spring C-Q")
 
 print(MANChemoplot)
 
@@ -408,7 +408,7 @@ MANChemo.lm <- lm(data = MANChemo, Flow_DV ~ Nitrate_DV)
 summary(MANChemo.lm)
 
 #RAIN
-RAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/RAINdata1.csv")
+RAINdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/RAINdata.csv")
 
 RAINNitrateDV <- RAINdata %>%
   group_by(dateTime) %>%
@@ -426,7 +426,7 @@ RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Rainbow River at Dunnellon, FL")
+  ggtitle("Rainbow River at Dunnellon C-Q")
 
 print(RAINChemoplot)
 
@@ -435,7 +435,7 @@ summary(RAINChemo.lm)
 
 
 #SANTA
-SANTAdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/SANTAdata1.csv")
+SANTAdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/SANTAdata.csv")
 
 SANTANitrateDV <- SANTAdata %>%
   group_by(dateTime) %>%
@@ -453,7 +453,7 @@ SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Santa Fe River Near Hildreth, FL")
+  ggtitle("Santa Fe River C-Q")
 
 print(SANTAChemoplot)
 
@@ -480,7 +480,7 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Three Mile Canal Near Clewiston, FL")
+  ggtitle("Three Mile Canal C-Q")
 
 print(THREEChemoplot)
 
@@ -489,7 +489,7 @@ summary(THREEChemo.lm)
 
 
 #TURK
-TURKdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURKdata1.csv")
+TURKdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")
 
 TURKNitrateDV <- TURKdata %>%
   group_by(dateTime) %>%
@@ -507,7 +507,7 @@ TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Turkey Creek at Palm Bay, FL")
+  ggtitle("Turkey Creek C-Q")
 
 print(TURKChemoplot)
 
@@ -516,7 +516,7 @@ summary(TURKChemo.lm)
 
 
 #TURN
-TURNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURNdata1.csv")
+TURNdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/TURNdata.csv")
 
 TURNNitrateDV <- TURNdata %>%
   group_by(dateTime) %>%
@@ -534,7 +534,7 @@ TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Turnbull Creek Near Oak Hill, FL")
+  ggtitle("Turnbull Creek C-Q")
 
 print(TURNChemoplot)
 
@@ -543,7 +543,7 @@ summary(TURNChemo.lm)
 
 
 #WAC
-WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata1.csv")
+WACdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")
 
 WACNitrateDV <- WACdata %>%
   group_by(dateTime) %>%
@@ -561,9 +561,32 @@ WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
-  ggtitle("Chemostaticity of Wacissa River Near Wacissa, FL")
+  ggtitle("Wacissa River C-Q") 
 
 print(WACChemoplot)
 
 WACChemo.lm <- lm(data = WACChemo, Flow_DV ~ Nitrate_DV)
 summary(WACChemo.lm)
+
+
+
+ChemostaticPlot <- plot_grid(
+  CHASChemoplot, FANChemoplot, RAINChemoplot,  
+   TURNChemoplot, WACChemoplot,
+  ncol = 3
+)
+print(ChemostaticPlot)
+
+FlushingPlot <- plot_grid(
+  MAINChemoplot, FELLChemoplot, CRANEChemoplot, MADChemoplot, 
+  THREEChemoplot, CALChemoplot, HUNChemoplot,
+  ncol = 3
+)
+print(FlushingPlot)
+
+DilutingPlot <- plot_grid(
+  ICHEChemoplot, SANTAChemoplot, BLUEChemoplot, HOLChemoplot, DRAINChemoplot, 
+  BOWChemoplot,  MANChemoplot, HOMChemoplot, TURKChemoplot,
+  ncol = 3
+)
+print(DilutingPlot)

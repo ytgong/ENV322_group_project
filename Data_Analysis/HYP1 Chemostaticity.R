@@ -1,6 +1,8 @@
 library(tidyverse)
 library(ggplot2)
 library(cowplot)
+library(gridExtra)
+library(grid)
 
 #Blue
 BLUEdata <- read.csv("/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")
@@ -20,7 +22,7 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Blue Springs C-Q")
   
 print(BLUEChemoplot)
@@ -48,7 +50,7 @@ BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Rainbow River Near Dunnellon C-Q")
 
 print(BOWChemoplot)
@@ -75,7 +77,7 @@ CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Caloosahatchee River C-Q")
 
 print(CALChemoplot)
@@ -102,7 +104,7 @@ CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Chassahowitzka River C-Q")
 
 print(CHASChemoplot)
@@ -129,7 +131,7 @@ CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Crane Creek C-Q")
 
 print(CRANEChemoplot)
@@ -156,7 +158,7 @@ DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Drainage Canal C-Q")
   
 print(DRAINChemoplot)
@@ -183,7 +185,7 @@ FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Fanning Springs C-Q")
 
 print(FANChemoplot)
@@ -210,7 +212,7 @@ FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Fellsmere Canal C-Q")
 
 print(FELLChemoplot)
@@ -237,7 +239,7 @@ HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Blue Hole Spring C-Q")
 
 print(HOLChemoplot)
@@ -264,7 +266,7 @@ HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Homosassa Springs C-Q")
 
 print(HOMChemoplot)
@@ -291,7 +293,7 @@ HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Hunter Spring Run C-Q")
 
 print(HUNChemoplot)
@@ -318,7 +320,7 @@ ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Ichetucknee River C-Q")
 
 print(ICHEChemoplot)
@@ -345,7 +347,7 @@ MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Madison Blue Spring C-Q")
 
 print(MADChemoplot)
@@ -372,7 +374,7 @@ MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Main Canal C-Q")
 
 print(MAINChemoplot)
@@ -399,7 +401,7 @@ MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Manatee Spring C-Q")
 
 print(MANChemoplot)
@@ -425,7 +427,7 @@ RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Rainbow River at Dunnellon C-Q")
 
 print(RAINChemoplot)
@@ -452,7 +454,7 @@ SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Santa Fe River C-Q")
 
 print(SANTAChemoplot)
@@ -479,7 +481,7 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Three Mile Canal C-Q")
 
 print(THREEChemoplot)
@@ -506,7 +508,7 @@ TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Turkey Creek C-Q")
 
 print(TURKChemoplot)
@@ -533,7 +535,7 @@ TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Turnbull Creek C-Q")
 
 print(TURNChemoplot)
@@ -560,7 +562,7 @@ WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
   scale_y_log10() +
-  labs(x = "Daily Mean Discharge (m/s)", y = "Daily Mean Nitrate (mg/l)") +
+  labs(x = "", y = "") +
   ggtitle("Wacissa River C-Q") 
 
 print(WACChemoplot)
@@ -575,6 +577,13 @@ ChemostaticPlot <- plot_grid(
    TURNChemoplot, WACChemoplot,
   ncol = 3
 )
+y.grob <- textGrob("Daily Mean Nitrate (mg/l)", 
+                   gp=gpar(fontface="bold", fontsize=15), rot=90)
+
+x.grob <- textGrob("Daily Mean Discharge (m/s)", 
+                   gp=gpar(fontface="bold", fontsize=15))
+ChemostaticPlot <- grid.arrange(arrangeGrob(ChemostaticPlot, left = y.grob, bottom = x.grob))
+
 print(ChemostaticPlot)
 
 FlushingPlot <- plot_grid(
@@ -582,6 +591,8 @@ FlushingPlot <- plot_grid(
   THREEChemoplot, CALChemoplot, HUNChemoplot,
   ncol = 3
 )
+FlushingPlot <- grid.arrange(arrangeGrob(FlushingPlot, left = y.grob, bottom = x.grob))
+
 print(FlushingPlot)
 
 DilutingPlot <- plot_grid(
@@ -589,4 +600,6 @@ DilutingPlot <- plot_grid(
   BOWChemoplot,  MANChemoplot, HOMChemoplot, TURKChemoplot,
   ncol = 3
 )
+
+DilutingPlot <- grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob))
 print(DilutingPlot)

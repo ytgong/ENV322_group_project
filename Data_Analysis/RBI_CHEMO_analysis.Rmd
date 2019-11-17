@@ -11,23 +11,27 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 
 RBI_CHEMO_data<-read_csv("./RBI_CHEMO_data")
+  
 
-RBIplot.abs<- 
-  ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs))+
-  geom_point()
 
-RBIplot.abs<- 
-  ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs))+
-  geom_point()
+ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.new))+
+  geom_point()+
+  #scale_x_log10()+
+  geom_smooth(method="lm")
 
-print(RBIplot)
-print(RBIplot.abs)
+ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs.new))+
+  geom_point()+
+  scale_x_log10()+
+  #scale_y_log10()+
+  geom_smooth(method="lm", se=FALSE)
 
-RBI_ind_noncatch_lm<-lm(linregs~RBI_value_ind_noncatch, RBI_CHEMO_data)
+ 
 
-RBI_ind_noncatch_abs_lm<-lm(linregs.abs~RBI_value_ind_noncatch, RBI_CHEMO_data)
+RBI_ind_noncatch_lm<-lm(linregs.new~RBI_value_ind_noncatch, RBI_CHEMO_data)
+
+RBI_ind_noncatch_abs_lm<-lm(linregs.abs.new~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
 summary(RBI_ind_noncatch_lm)
-#summary(RBI_ind_noncatch_abs_lm)
+summary(RBI_ind_noncatch_abs_lm)
 ```
 

@@ -337,11 +337,17 @@ RBI_compiled<-RBI_forloop%>%
 linregs<-c(22.8644,-873.27,-5886.7,-60.457,-15.5647, -1.82465, -87.731,
            625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,
            67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300)
+
+linregs.new<- c(-3.182e-3,-3.034e-4,NA,-4.608e-5,0.0060945,-0.0221976,
+                NA,2.515e-4,-1.881e-3,-3.747e-4,3.953e-4,-6.377e-4,
+                0.001523,1.659e-3,-0.0003337,-7.366e-6,-2.001e-4,1.792e-4,
+                -7.248e-5,NA,9.849e-5)
 linregs.abs<-abs(linregs)
+linregs.abs.new<-abs(linregs.new)
 linreg.sites<-c("BLUE", "BOW", "CAL","CHAS", "CRANE","DRAIN","FAN","FELL",
                 "HOL","HOM","HUN","ICHE","MAD","MAIN","MAN","RAIN",
                 "SANTA","THREE","TURK","TURN","WAC")
-hyp1_analysis<-tibble(linregs, linregs.abs, sites = linreg.sites)%>%
+hyp1_analysis<-tibble(linregs.new, linregs.abs.new, sites = linreg.sites)%>%
   left_join(RBI_compiled, by = "sites")
 
 write_csv(hyp1_analysis, "./RBI_CHEMO_data")

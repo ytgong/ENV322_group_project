@@ -1,0 +1,238 @@
+---
+title: "discharge_violin"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(cowplot)
+
+hyp1_sites<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
+
+BLUEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "BLUE")
+BOWdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/BOWdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "BOW")
+CALdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CALdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "CAL")
+CHASdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CHASdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "CHAS")
+CRANEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/CRANEdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "CRANE")
+DRAINdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/DRAINdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "DRAINdata")
+FANdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "FAN")
+FELLdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/FELLdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "FELL")
+HOLdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/HOLdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "HOL")
+HOMdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/HOMdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "HOM")
+HUNdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/HUNdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "HUN")
+ICHEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/ICHEdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "ICHE")
+MADdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/MADdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "MAD")
+MAINdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/MAINdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "MAIN")
+MANdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/MANdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "MAN")
+RAINdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/RAINdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "RAIN")
+SANTAdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/SANTAdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "SANTA")
+THREEdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/THREEdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "THREE")
+TURKdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/TURKdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "TURK")
+TURNdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/TURNdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "TURN")
+WACdata<-read_csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/WACdata.csv")%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "WAC")
+
+#big data frame for combined plots
+violin_comb<-bind_rows(BLUEdata,BOWdata,CALdata,CHASdata,CRANEdata,
+                          DRAINdata,FANdata,FELLdata,HOLdata,HOMdata,HUNdata,
+                          ICHEdata,MADdata,MAINdata,MANdata,RAINdata,
+                          SANTAdata,THREEdata,TURKdata,TURNdata,WACdata)
+
+
+#individual discharge plots
+BLUE_violin_dis<-ggplot(BLUEdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+BOW_violin_dis<-ggplot(BOWdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+CAL_violin_dis<-ggplot(CALdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+CHAS_violin_dis<-ggplot(CHASdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+CRANE_violin_dis<-ggplot(CRANEdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+DRAIN_violin_dis<-ggplot(DRAINdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+FAN_violin_dis<-ggplot(FANdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+FELL_violin_dis<-ggplot(FELLdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+HOL_violin_dis<-ggplot(HOLdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+HOM_violin_dis<-ggplot(HOMdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+HUN_violin_dis<-ggplot(HUNdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+ICHE_violin_dis<-ggplot(ICHEdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+MAD_violin_dis<-ggplot(MADdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+MAIN_violin_dis<-ggplot(MAINdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+MAN_violin_dis<-ggplot(MANdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+RAIN_violin_dis<-ggplot(RAINdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+SANTA_violin_dis<-ggplot(SANTAdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+THREE_violin_dis<-ggplot(THREEdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+TURK_violin_dis<-ggplot(TURKdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+TURN_violin_dis<-ggplot(TURNdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+WAC_violin_dis<-ggplot(WACdata)+
+  geom_violin(aes(x=site,y=Flow_Inst))
+
+
+#individual nitrate plots
+BLUE_violin_nit<-ggplot(BLUEdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+BOW_violin_nit<-ggplot(BOWdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+CAL_violin_nit<-ggplot(CALdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+CHAS_violin_nit<-ggplot(CHASdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+CRANE_violin_nit<-ggplot(CRANEdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+DRAIN_violin_nit<-ggplot(DRAINdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+FAN_violin_nit<-ggplot(FANdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+FELL_violin_nit<-ggplot(FELLdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+HOL_violin_nit<-ggplot(HOLdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+HOM_violin_nit<-ggplot(HOMdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+HUN_violin_nit<-ggplot(HUNdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+ICHE_violin_nit<-ggplot(ICHEdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+MAD_violin_nit<-ggplot(MADdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+MAIN_violin_nit<-ggplot(MAINdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+MAN_violin_nit<-ggplot(MANdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+RAIN_violin_nit<-ggplot(RAINdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+SANTA_violin_nit<-ggplot(SANTAdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+THREE_violin_nit<-ggplot(THREEdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+TURK_violin_nit<-ggplot(TURKdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+TURN_violin_nit<-ggplot(TURNdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+WAC_violin_nit<-ggplot(WACdata)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))
+
+
+#combined discharge and nitrate violin plots for individual sites
+BLUE_comb<-plot_grid(BLUE_violin_dis,BLUE_violin_nit)
+BOW_comb<-plot_grid(BOW_violin_dis,BOW_violin_nit)
+CAL_comb<-plot_grid(CAL_violin_dis,CAL_violin_nit)
+CHAS_comb<-plot_grid(CHAS_violin_dis,CHAS_violin_nit)
+CRANE_comb<-plot_grid(CRANE_violin_dis,CRANE_violin_nit)
+DRAIN_comb<-plot_grid(DRAIN_violin_dis,DRAIN_violin_nit)
+FAN_comb<-plot_grid(FAN_violin_dis,FAN_violin_nit)
+FELL_comb<-plot_grid(FELL_violin_dis,FELL_violin_nit)
+HOL_comb<-plot_grid(HOL_violin_dis,HOL_violin_nit)
+HOM_comb<-plot_grid(HOM_violin_dis,HOM_violin_nit)
+HUN_comb<-plot_grid(HUN_violin_dis,HUN_violin_nit)
+ICHE_comb<-plot_grid(ICHE_violin_dis,ICHE_violin_nit)
+MAD_comb<-plot_grid(MAD_violin_dis,MAD_violin_nit)
+MAIN_comb<-plot_grid(MAIN_violin_dis,MAIN_violin_nit)
+MAN_comb<-plot_grid(MAN_violin_dis,MAN_violin_nit)
+RAIN_comb<-plot_grid(RAIN_violin_dis,RAIN_violin_nit)
+SANTA_comb<-plot_grid(SANTA_violin_dis,SANTA_violin_nit)
+THREE_comb<-plot_grid(THREE_violin_dis,THREE_violin_nit)
+TURK_comb<-plot_grid(TURK_violin_dis,TURK_violin_nit)
+TURN_comb<-plot_grid(TURN_violin_dis,TURN_violin_nit)
+WAC_comb<-plot_grid(WAC_violin_dis,WAC_violin_nit)
+
+
+#discharge plot for all sites
+discharge_violin<-ggplot(
+  violin_comb,aes(x=site,y=Flow_Inst))+
+  geom_violin()
+
+#discharge plot for all sites except two to visualize smaller discharges
+discharge_violin_select<-ggplot(
+  violin_comb%>%filter(site!="CAL", site!="SANTA"),aes(x=site,y=Flow_Inst))+
+  geom_violin()
+
+#nitrate plot for all sites
+nitrate_violin<-ggplot(violin_comb,aes(x=site,y=Nitrate_mgl))+
+  geom_violin()
+
+```
+

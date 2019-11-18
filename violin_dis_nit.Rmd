@@ -11,9 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(cowplot)
 
-hyp1_sites<-read_csv(
-  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
-
+#read in all the sites
 BLUEdata<-read_csv(
   "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/BLUEdata.csv")%>%
   select(Flow_Inst,Nitrate_mgl)%>%

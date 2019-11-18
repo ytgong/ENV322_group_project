@@ -103,6 +103,9 @@ violin_comb<-bind_rows(BLUEdata,BOWdata,CALdata,CHASdata,CRANEdata,
                           ICHEdata,MADdata,MAINdata,MANdata,RAINdata,
                           SANTAdata,THREEdata,TURKdata,TURNdata,WACdata)
 
+write_csv(violin_comb,
+          "/Users/ethanready/ENV322_group_project/Processed_Dataframes/violin_comb.csv")
+
 
 #individual discharge plots
 BLUE_violin_dis<-ggplot(BLUEdata)+

@@ -10,28 +10,81 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 
-RBI_CHEMO_data<-read_csv("./RBI_CHEMO_data")
-  
+RBI_CHEMO_data<-read_csv("./RBI_CHEMO_data.csv")
+RBI_nocanals<-read_csv("./RBI_CHEMO_nocanals.csv")  
 
-
-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.new))+
+RBI.linear<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
   geom_point()+
-  #scale_x_log10()+
-  geom_smooth(method="lm")
+  geom_smooth(method="lm", se = FALSE)+
+  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
 
-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs.new))+
+
+RBI.linear.abs<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index", 
+       y="Chemostaticity Coeffiecient Absolute Value")
+
+RBI.log<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
   geom_point()+
   scale_x_log10()+
-  #scale_y_log10()+
-  geom_smooth(method="lm", se=FALSE)
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index", y="log(Chemostaticity Coeffiecient)")
+
+RBI.log.abs<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
+  geom_point()+
+  scale_x_log10()+
+  scale_y_log10()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index", 
+       y="log(Absulute Value Chemostaticity Coeffiecient)")
 
  
 
-RBI_ind_noncatch_lm<-lm(linregs.new~RBI_value_ind_noncatch, RBI_CHEMO_data)
+lm_sig<-lm(linregs.all~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
-RBI_ind_noncatch_abs_lm<-lm(linregs.abs.new~RBI_value_ind_noncatch, RBI_CHEMO_data)
+lm_sig_abs<-lm(linregs.abs.all~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
-summary(RBI_ind_noncatch_lm)
-summary(RBI_ind_noncatch_abs_lm)
+
+summary(lm_sig)
+summary(lm_sig_abs)
+```
+
+```{r}
+#same analysis, without canals in the data
+
+Nocanals.linear<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
+  geom_point()+
+  geom_smooth(method="lm", se = FALSE)+
+  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
+
+
+Nocanals.linear.abs<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
+  geom_point()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index",
+       y="Absolute Value Chemostaticity Coeffiecient")
+
+Nocanals.log<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
+  geom_point()+
+  scale_x_log10()+
+  geom_smooth(method="lm", se = FALSE)+
+  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
+
+Nocanals.log.abs<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
+  geom_point()+
+  scale_x_log10()+
+  #scale_y_log10()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index", 
+       y="log(Absolute Value Chemostaticity Coeffiecient)")
+
+lm_nocanals<-lm(linregs.all~RBI_value_ind_noncatch, RBI_nocanals)
+
+lm_nocanals_abs<-lm(linregs.abs.all~RBI_value_ind_noncatch, RBI_nocanals)
+
+
+summary(lm_nocanals)
+summary(lm_nocanals_abs)
 ```
 

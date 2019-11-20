@@ -1,0 +1,85 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(dataRetrieval)
+library(tidyverse)
+library(EcoHydRology)
+library(dygraphs)
+library(xts)
+library(dplyr)
+library(viridis)
+```
+
+```{r}
+hyp2.full_cleaned = read.csv("../Processed_Dataframes/hyp2+chemo.csv")
+wateruse_cleaned = read.csv("../Processed_Dataframes/wateruse.csv")
+
+```
+
+```{r, echo = FALSE, include = FALSE}
+ggplot(hyp2.full_cleaned, aes(x = total_pop, y = chemo)) +
+  geom_point() +
+  ggtitle("Relationship between population and chemostaticity") +
+  labs(x = "Population of the county", y = "Chemostaticity (slope from regression)")
+
+ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo)) +
+  geom_point() +
+  ggtitle("Relationship between irrigation water use and chemostaticity") +
+  labs(x = "Irrigation water use", y = "Chemostaticity (slope from regression)")
+
+ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo)) +
+  geom_point() +
+  ggtitle("Relationship between power generation water use and chemostaticity") +
+  labs(x = "Power generation water use", y = "Chemostaticity (slope from regression)")
+```
+
+
+```{r}
+library(sf)
+library(maps)
+waterfeatures <- st_read("../hydrogl020.dbf")
+class(waterfeatures)
+
+# Filter for North Carolina
+waterfeatures <- filter(waterfeatures, STATE == "FL")
+
+# Remove a couple feature types we don't care about
+waterfeatures <- filter(waterfeatures, FEATURE != "Apparent Limit" & FEATURE != "Closure Line")
+HUC6 <- st_read("../WBDHU6.dbf")
+HUC6.Florida <- HUC6 %>%
+  filter(States %in% c("AL,FL", "FL", "FL,GA", "AL,FL,GA"))
+st_crs(waterfeatures)
+st_crs(HUC6.Florida)
+waterfeatures <- st_set_crs(waterfeatures, 4269)
+
+Waterfeaturesplot <- 
+ggplot(waterfeatures) +
+    geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) 
+
+
+states<- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white")) 
+states.florida = filter(states, ID %in% c("florida"))
+hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+hyp2.plot <- ggplot() +
+  geom_sf(data = states.florida, fill = "white") +
+  geom_sf(data = hyp2.spatial, aes(color = chemo, size = total_pop), alpha = 0.5, show.legend = "point") +
+  scale_color_viridis_c(option = "inferno") +
+labs(color = "Chemo staticity", size = "Total Population") +
+theme(legend.position = "right",legend.text = element_text(size = 7),
+legend.title = element_text(size = 8),
+legend.margin = margin(0,0,0,0))
+print(hyp2.plot)
+```
+```{r}
+fit <- aov(chemo ~ total_pop, data=hyp2.full_cleaned)
+summary(fit)
+```
+
+```{r}
+model = lm(chemo ~ total_pop, data = hyp2.full_cleaned)
+summary(model)
+```
+

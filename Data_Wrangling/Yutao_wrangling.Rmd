@@ -8,6 +8,8 @@ library(tidyverse)
 library(EcoHydRology)
 library(dygraphs)
 library(xts)
+library(dplyr)
+library(viridis)
 ```
 
 ```{r}
@@ -15,10 +17,14 @@ hyp1_sites = read.csv("../FL_CSV/hyp1_sites.csv")
 
 hyp1_sites = hyp1_sites[-c(1), ]
 hyp1_sites = cbind(hyp1_sites,county_nm = c("Jefferson County","Madison County","Lafayette County","Levy County","Levy County","Gilchrist County", "Columbia County", "Columbia County","Citrus County","Citrus County","Citrus County","Marion County","Marion County", "Lee County", "Hendry County","Volusia County","Brevard County","Brevard County","Brevard County","Brevard County","Indian River County"))
+hyp1 <- merge(hyp1_sites,wateruse_cleaned,by="county_nm")
+hyp2.full = hyp1[order(hyp1$station_nm),]
+hyp2.full = cbind(hyp2.full,chemo = c(-3.182e-3,-3.034e-4,NA,-4.608e-5,0.0060945,-0.0221976,NA,2.515e-4,-1.881e-3,-3.747e-4,3.953e-4,-6.377e-4,0.001523,1.659e-3,-0.0003337,-7.366e-6,-2.001e-4,1.792e-4,-7.248e-5,NA,9.849e-5))
+# These numbers are slope of regression lines from C-Q plots
+hyp2.full_cleaned = hyp2.full %>%
+  filter(hyp2.full$chemo > -0.020) %>%
+  mutate(abschemo = abs(chemo))
 
-hyp2_3_sites = read.csv("../FL_CSV/hyp2_3_sites.csv")
-hyp2_3_sites = hyp2_3_sites[-c(1), ]
-hyp2_3_sites = cbind(hyp2_3_sites,county_nm = c("Jefferson County","Madison County","Lafayette County","Levy County","Levy County","Columbia County","Lee County"))
 
 wateruse <- readNWISuse(stateCd = "Florida",
                          countyCd = "ALL",
@@ -33,56 +39,8 @@ wateruse_cleaned <- wateruse %>%
          livestock = Livestock.self.supplied.surface.water.withdrawals..fresh..in.Mgal.d,
          irrigation = Irrigation..Total.total.self.supplied.withdrawals..surface.water..in.Mgal.d)
 
-```
+write.csv(hyp2.full_cleaned, file = "../Processed_Dataframes/hyp2+chemo.csv")
+write.csv(wateruse_cleaned, file = "../Processed_Dataframes/wateruse.csv")
 
-```{r}
-hyp1 <- merge(hyp1_sites,wateruse_cleaned,by="county_nm")
-hyp2.full = hyp1[order(hyp1$station_nm),]
-hyp2.full = cbind(hyp2.full,chemo = c(22.8644,-873.27,-5886.7,-60.457,-15.5647, -1.82465, -87.731,
-           625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300))
-hyp2.full$chemo[hyp2.full$chemo<-2000] <- NA
-hyp2.full_cleaned = hyp2.full %>%
-  filter(hyp2.full$chemo > -2000) %>%
-  mutate(abschemo = abs(chemo))
-
-ggplot(hyp2.full_cleaned, aes(x = total_pop, y = chemo)) +
-  geom_point() +
-  ggtitle("Relationship between population and chemostaticity") +
-  labs(x = "Population of the county", y = "Chemostaticity (slope from regression)")
-
-ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo)) +
-  geom_point() +
-  ggtitle("Relationship between irrigation water use and chemostaticity") +
-  labs(x = "Irrigation water use", y = "Chemostaticity (slope from regression)")
-
-ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo)) +
-  geom_point() +
-  ggtitle("Relationship between power generation water use and chemostaticity") +
-  labs(x = "Power generation water use", y = "Chemostaticity (slope from regression)")
-
-hyp2 <- merge(hyp2_3_sites,wateruse_cleaned,by="county_nm")
-
-
-```
-```{r}
-library(sf)
-library(maps)
-
-states<- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white")) 
-states.florida = filter(states, ID %in% c("florida"))
-hyp2.spatial <- st_as_sf(hyp2.full, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
-hyp2.plot <- ggplot() +
-  geom_sf(data = states.florida, fill = "white") +
-  geom_sf(data = hyp2.spatial, aes(color = chemo, size = total_pop), alpha = 0.5) +
-labs(color = "Chemo staticity") +
-theme(legend.position = "top")
-print(hyp2.plot)
-```
-```{r}
-library(FedData)
-get_nlcd(states.florida,  label = "VEPIIN", year = 2011, dataset = "landcover",
-  raw.dir = "./RAW/NLCD", extraction.dir = paste0("./EXTRACTIONS/",
-  label, "/NLCD"), raster.options = c("COMPRESS=DEFLATE", "ZLEVEL=9",
-  "INTERLEAVE=BAND"), force.redo = F)
 ```
 

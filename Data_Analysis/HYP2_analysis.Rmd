@@ -39,7 +39,7 @@ ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo)) +
 ```{r}
 library(sf)
 library(maps)
-waterfeatures <- st_read("../hydrogl020.dbf")
+waterfeatures <- st_read("../other_data/hydrogl020.dbf")
 class(waterfeatures)
 
 # Filter for North Carolina
@@ -47,7 +47,7 @@ waterfeatures <- filter(waterfeatures, STATE == "FL")
 
 # Remove a couple feature types we don't care about
 waterfeatures <- filter(waterfeatures, FEATURE != "Apparent Limit" & FEATURE != "Closure Line")
-HUC6 <- st_read("../WBDHU6.dbf")
+HUC6 <- st_read("../other_data/WBDHU6.dbf")
 HUC6.Florida <- HUC6 %>%
   filter(States %in% c("AL,FL", "FL", "FL,GA", "AL,FL,GA"))
 st_crs(waterfeatures)
@@ -58,20 +58,31 @@ Waterfeaturesplot <-
 ggplot(waterfeatures) +
     geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
   geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) 
-
+print(Waterfeaturesplot)
 
 states<- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white")) 
 states.florida = filter(states, ID %in% c("florida"))
 hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
-hyp2.plot <- ggplot() +
+hyp2.plot.1 <- ggplot() +
   geom_sf(data = states.florida, fill = "white") +
   geom_sf(data = hyp2.spatial, aes(color = chemo, size = total_pop), alpha = 0.5, show.legend = "point") +
-  scale_color_viridis_c(option = "inferno") +
+ # scale_color_viridis_c(option = "inferno") +
 labs(color = "Chemo staticity", size = "Total Population") +
 theme(legend.position = "right",legend.text = element_text(size = 7),
 legend.title = element_text(size = 8),
 legend.margin = margin(0,0,0,0))
-print(hyp2.plot)
+print(hyp2.plot.1)
+
+hyp2.plot.2 <- ggplot() +
+ geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
+  geom_sf(data = hyp2.spatial, aes(size = chemo), alpha = 0.5, show.legend = "point") +
+ # scale_color_viridis_c(option = "inferno") +
+labs(size = "Chemo staticity") +
+theme(legend.position = "right",legend.text = element_text(size = 7),
+legend.title = element_text(size = 8),
+legend.margin = margin(0,0,0,0))
+print(hyp2.plot.2)
 ```
 ```{r}
 fit <- aov(chemo ~ total_pop, data=hyp2.full_cleaned)

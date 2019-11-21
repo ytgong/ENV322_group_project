@@ -12,9 +12,9 @@ library(tidyverse)
 
 # read in data from RBI_CHEMO_analysis doc
 RBI_CHEMO_data<-read_csv(
-  "/Users/ethanready/ENV322_group_project/Data_Analysis/RBI_CHEMO_data.csv")
+  "/Users/ethanready/ENV322_group_project/Processed_Dataframes/RBI_CHEMO_data.csv")
 RBI_nocanals<-read_csv(
-  "/Users/ethanready/ENV322_group_project/Data_Analysis/RBI_CHEMO_nocanals.csv")  
+  "/Users/ethanready/ENV322_group_project/Processed_Dataframes/RBI_CHEMO_nocanals.csv")  
 
 
 #visualize data, both abs and non-abs, both regular and log scaled

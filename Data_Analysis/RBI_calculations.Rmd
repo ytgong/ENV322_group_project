@@ -12,7 +12,8 @@ library(tidyverse)
 library(dataRetrieval)
 
 RBI_values<-1:22
-hyp1_sites<-read.csv("/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
+hyp1_sites<-read.csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
 site.nums<-as.character(hyp1_sites$site_no)
 
 for (i in 1:22) {
@@ -69,6 +70,8 @@ Individual RBI calculations w/ catchment
 
 ```{r}
 #confirm which sites have catchment sizes
+library(dataRetrieval)
+library(tidyverse)
 catch<-1:22
 hyp1_sites<-read.csv("/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
 site.nums<-as.character(hyp1_sites$site_no)
@@ -141,6 +144,8 @@ RBI_value_ind_catch[19] <- (
 Individual RBI calculations w/o catchment
 
 ```{r}
+library(tidyverse)
+
 RBI_value_ind_noncatch<-1:21
 
 BLUEdata<-read_csv(
@@ -319,20 +324,16 @@ RBI_value_ind_noncatch[21] <- (
 
 Creating vector with RBI values and chemostaticity regression coefficients
 ```{r}
-# RBI_sites<-c("WAC", "MAD", "BLUE", "MAN", "FAN", "SANTA", "ICHE", "HOL",
-#              "HUN", "HOM", "CHAS", "RAIN", "BOW", "CAL", "THREE", "TURN",
-#              "DRAIN", "CRANE", "TURK", "FELL", "MAIN")
+
+#old code that I don't need anymore
+
 # RBI_forloop<-tibble(
 #   sites = RBI_sites,
 #   site_no = paste0("0", hyp1_sites$site_no[2:22]),
 #   "RBI forloop noncatch" = RBI_values_noncatch[2:22],
 #   "RBI forloop catch" = RBI_values[2:22])
 
-linreg.sites<-c("BLUE", "BOW", "CAL","CHAS", "CRANE","DRAIN","FAN","FELL",
-                "HOL","HOM","HUN","ICHE","MAD","MAIN","MAN","RAIN",
-                "SANTA","THREE","TURK","TURN","WAC")
-
-RBI_ind<-tibble(sites = linreg.sites, RBI_value_ind_noncatch, RBI_value_ind_catch)
+# RBI_ind<-tibble(sites = linreg.sites, RBI_value_ind_noncatch, RBI_value_ind_catch)
 
 # RBI_compiled<-RBI_forloop%>%
 #   left_join(RBI_ind, by = "sites")
@@ -342,34 +343,56 @@ RBI_ind<-tibble(sites = linreg.sites, RBI_value_ind_noncatch, RBI_value_ind_catc
 #            625.709,413.069,-20.652,479.398,-302.023,110.978,-223.096,
 #            67.609,59.356,-4061.28,5.3744,1.769,-7.6549,401.300)
 
-linregs.sig<- c(-3.182e-3,-3.034e-4,NA,-4.608e-5,0.0060945,-0.0221976,
-                NA,2.515e-4,-1.881e-3,-3.747e-4,3.953e-4,-6.377e-4,
-                0.001523,1.659e-3,-0.0003337,-7.366e-6,-2.001e-4,1.792e-4,
-                -7.248e-5,NA,9.849e-5)
+# linregs.sig<- c(-3.182e-3,-3.034e-4,NA,-4.608e-5,0.0060945,-0.0221976,
+#                 NA,2.515e-4,-1.881e-3,-3.747e-4,3.953e-4,-6.377e-4,
+#                 0.001523,1.659e-3,-0.0003337,-7.366e-6,-2.001e-4,1.792e-4,
+#                 -7.248e-5,NA,9.849e-5)
 
-linregs.all<-c(-3.182e-3,-3.034e-4,-3.510e-8,-4.608e-5,0.0060945,-0.0221976,
+library(tidyverse)
+#create dataframe with RBI values, chemostaticity coefficients, sites, and site type
+hyp1_sites<-read.csv(
+  "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1_sites.csv")
+
+chemo.coef<-c(-3.182e-3,-3.034e-4,-3.510e-8,-4.608e-5,0.0060945,-0.0221976,
                 -0.0001424,2.515e-4,-1.881e-3,-3.747e-4,3.953e-4,-6.377e-4,
                 0.001523,1.659e-3,-0.0003337,-7.366e-6,-2.001e-4,1.792e-4,
                 -7.248e-5,-9.185e-5,9.849e-5)
 
-#linregs.abs<-abs(linregs)
-linregs.abs.sig<-abs(linregs.sig)
-linregs.abs.all<-abs(linregs.all)
+sites.alpha<-c("BLUE", "BOW", "CAL","CHAS", "CRANE","DRAIN","FAN","FELL",
+                "HOL","HOM","HUN","ICHE","MAD","MAIN","MAN","RAIN",
+                "SANTA","THREE","TURK","TURN","WAC")
 
-hyp1_analysis<-tibble(linregs.all, linregs.abs.all, sites = linreg.sites)%>%
-  left_join(RBI_ind, by = "sites")
+site.type<-c("RIVER", "SPRING","SPRING","SPRING","SPRING",
+             "RIVER","RIVER","SPRING","SPRING","SPRING","RIVER","RIVER",
+             "RIVER","RIVER","CANAL","CREEK","CANAL","CREEK","CREEK",
+             "CANAL","CANAL")
 
-hyp1_sig<-hyp1_analysis%>%
+sites.nonalpha<-c("WAC", "MAD", "BLUE", "MAN", "FAN", "SANTA", "ICHE", "HOL",
+              "HUN", "HOM", "CHAS", "RAIN", "BOW", "CAL", "THREE", "TURN",
+              "DRAIN", "CRANE", "TURK", "FELL", "MAIN")
+
+types<-tibble(site.type, sites.nonalpha,
+              site_no = paste0("0", hyp1_sites$site_no[2:22]))%>%
+  rename(sites = sites.nonalpha)
+
+chemo.coef.abs<-abs(chemo.coef)
+
+RBI_CHEMO_all<-tibble(chemo.coef, chemo.coef.abs,sites = sites.alpha,
+                      RBI_value_ind_noncatch, RBI_value_ind_catch)%>%
+  left_join(types, by = "sites")
+
+
+RBI_CHEMO_data<-RBI_CHEMO_all%>%
   filter(sites %in% c("BLUE", "BOW","CHAS", "CRANE","DRAIN","FELL",
                 "HOL","HOM","HUN","ICHE","MAD","MAIN","MAN","RAIN",
                 "SANTA","THREE","TURK","WAC"))
 
-hyp1_nocanals<-hyp1_sig%>%
+RBI_CHEMO_nocanals<-RBI_CHEMO_data%>%
   filter(sites %in% c("BLUE","BOW","CAL","CHAS","CRANE","FAN",
                 "HOL","HOM","HUN","ICHE","MAD","MAN","RAIN",
                 "SANTA","TURK","TURN","WAC"))
 
-write_csv(hyp1_sig, "./RBI_CHEMO_data.csv")
-write_csv(hyp1_nocanals, "./RBI_CHEMO_nocanals.csv")
+write_csv(RBI_CHEMO_data, "./RBI_CHEMO_data.csv")
+write_csv(RBI_CHEMO_nocanals, "./RBI_CHEMO_nocanals.csv")
 ```
 

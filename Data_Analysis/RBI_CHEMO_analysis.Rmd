@@ -10,81 +10,74 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 
-RBI_CHEMO_data<-read_csv("./RBI_CHEMO_data.csv")
-RBI_nocanals<-read_csv("./RBI_CHEMO_nocanals.csv")  
+# read in data from RBI_CHEMO_analysis doc
+RBI_CHEMO_data<-read_csv(
+  "/Users/ethanready/ENV322_group_project/Data_Analysis/RBI_CHEMO_data.csv")
+RBI_nocanals<-read_csv(
+  "/Users/ethanready/ENV322_group_project/Data_Analysis/RBI_CHEMO_nocanals.csv")  
 
-RBI.linear<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
-  geom_point()+
-  geom_smooth(method="lm", se = FALSE)+
+
+#visualize data, both abs and non-abs, both regular and log scaled
+RBI.linear<-ggplot(RBI_CHEMO_data, 
+                   aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
+  geom_point(aes(color=site.type))+
   labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
 
 
-RBI.linear.abs<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
-  geom_point()+
-  geom_smooth(method="lm", se=FALSE)+
+RBI.linear.abs<-ggplot(RBI_CHEMO_data, 
+                       aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
+  geom_point(aes(color=site.type))+
   labs(x="Richards-Baker Index", 
        y="Chemostaticity Coeffiecient Absolute Value")
 
-RBI.log<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
-  geom_point()+
+RBI.log<-ggplot(RBI_CHEMO_data, 
+                aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
+  geom_point(aes(color=site.type))+
   scale_x_log10()+
   geom_smooth(method="lm", se=FALSE)+
-  labs(x="Richards-Baker Index", y="log(Chemostaticity Coeffiecient)")
+  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
 
-RBI.log.abs<-ggplot(RBI_CHEMO_data, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
-  geom_point()+
+RBI.log.abs<-ggplot(RBI_CHEMO_data, 
+                    aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
+  geom_point(aes(color=site.type))+
   scale_x_log10()+
   scale_y_log10()+
   geom_smooth(method="lm", se=FALSE)+
   labs(x="Richards-Baker Index", 
-       y="log(Absulute Value Chemostaticity Coeffiecient)")
+       y="Absulute Value Chemostaticity Coeffiecient")
 
- 
 
-lm_sig<-lm(linregs.all~RBI_value_ind_noncatch, RBI_CHEMO_data)
+# run regressions on data
+lm_sig<-lm(chemo.coef~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
-lm_sig_abs<-lm(linregs.abs.all~RBI_value_ind_noncatch, RBI_CHEMO_data)
-
+lm_sig_abs<-lm(log(chemo.coef.abs)~exp(RBI_value_ind_noncatch), RBI_CHEMO_data)
 
 summary(lm_sig)
 summary(lm_sig_abs)
-```
 
-```{r}
 #same analysis, without canals in the data
 
-Nocanals.linear<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
-  geom_point()+
-  geom_smooth(method="lm", se = FALSE)+
+Nocanals.linear<-ggplot(RBI_nocanals, 
+                        aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
+  geom_point(aes(color=site.type))+
   labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
 
 
-Nocanals.linear.abs<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
-  geom_point()+
+Nocanals.linear.abs<-ggplot(RBI_nocanals, 
+                            aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
+  geom_point(aes(color=site.type))+
   geom_smooth(method="lm", se=FALSE)+
   labs(x="Richards-Baker Index",
        y="Absolute Value Chemostaticity Coeffiecient")
 
-Nocanals.log<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.all))+
-  geom_point()+
-  scale_x_log10()+
-  geom_smooth(method="lm", se = FALSE)+
-  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
+lm_nocanals<-lm(chemo.coef~RBI_value_ind_noncatch, RBI_nocanals)
 
-Nocanals.log.abs<-ggplot(RBI_nocanals, aes(x=RBI_value_ind_noncatch, y=linregs.abs.all))+
-  geom_point()+
-  scale_x_log10()+
-  #scale_y_log10()+
-  geom_smooth(method="lm", se=FALSE)+
-  labs(x="Richards-Baker Index", 
-       y="log(Absolute Value Chemostaticity Coeffiecient)")
-
-lm_nocanals<-lm(linregs.all~RBI_value_ind_noncatch, RBI_nocanals)
-
-lm_nocanals_abs<-lm(linregs.abs.all~RBI_value_ind_noncatch, RBI_nocanals)
+lm_nocanals_abs<-lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_nocanals)
 
 
 summary(lm_nocanals)
 summary(lm_nocanals_abs)
 ```
+
+
 

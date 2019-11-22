@@ -70,7 +70,6 @@ Nocanals.linear<-ggplot(RBI_nocanals,
 Nocanals.linear.abs<-ggplot(RBI_nocanals, 
                             aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
   geom_point(aes(color=site.type))+
-  geom_smooth(method="lm", se=FALSE)+
   labs(x="Richards-Baker Index",
        y="Absolute Value Chemostaticity Coeffiecient")
 

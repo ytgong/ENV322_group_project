@@ -36,25 +36,8 @@ lm_sig_log_abs<-lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
 summary(lm_sig_log_abs)
 
-#log graphs
 
-RBI.log<-ggplot(RBI_CHEMO_data, 
-                aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
-  geom_point(aes(color=site.type))+
-  scale_x_log10()+
-  geom_smooth(method="lm", se=FALSE)+
-  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
-
-RBI.log.abs<-ggplot(RBI_CHEMO_data, 
-                    aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
-  geom_point(aes(color=site.type))+
-  scale_x_log10()+
-  scale_y_log10()+
-  geom_smooth(method="lm", se=FALSE)+
-  labs(x="Richards-Baker Index", 
-       y="Absulute Value Chemostaticity Coeffiecient")
-
-#same analysis, without canals in the data
+#analysis, without canals in the data
 
 Nocanals.linear<-ggplot(RBI_nocanals, 
                         aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
@@ -72,6 +55,24 @@ lm_nocanals_log_abs<-
   lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_nocanals)
 
 summary(lm_nocanals_log_abs)
+
+#log graphs
+
+RBI.log<-ggplot(RBI_nocanals, 
+                aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
+  geom_point(aes(color=site.type))+
+  scale_x_log10()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index", y="Chemostaticity Coeffiecient")
+
+RBI.log.abs<-ggplot(RBI_nocanals, 
+                    aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
+  geom_point(aes(color=site.type))+
+  scale_x_log10()+
+  scale_y_log10()+
+  geom_smooth(method="lm", se=FALSE)+
+  labs(x="Richards-Baker Index", 
+       y="Absulute Value Chemostaticity Coeffiecient")
 ```
 
 

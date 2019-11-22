@@ -17,7 +17,7 @@ RBI_nocanals<-read_csv(
   "/Users/ethanready/ENV322_group_project/Processed_Dataframes/RBI_CHEMO_nocanals.csv")  
 
 
-#visualize data, both abs and non-abs, both regular and log scaled
+#visualize data, both abs and non-abs
 RBI.linear<-ggplot(RBI_CHEMO_data, 
                    aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
   geom_point(aes(color=site.type))+

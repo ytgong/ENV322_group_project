@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 ```{r, echo = FALSE, message = FALSE}
 library(dataRetrieval)
@@ -16,7 +18,8 @@ library(cowplot)
 ```{r}
 hyp2.full_cleaned = read.csv("../Processed_Dataframes/hyp2+chemo.csv")
 wateruse_cleaned = read.csv("../Processed_Dataframes/wateruse.csv")
-
+hyp2.nocanal = hyp2.full_cleaned %>%
+  filter(site.type != "CANAL")
 ```
 
 ```{r, echo = FALSE, message = FALSE}
@@ -47,14 +50,14 @@ therm.plot = ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = chemo)) +
 plot_grid(pop.plot,irri.plot, therm.plot, ncol = 3)
 ```
 
-```{r, echo = FALSE, message = FALSE}
-pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo)) +
+```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9}
+pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo, color = site.type)) +
   geom_point() +
-  labs(x = "Population of the county", y = "Chemostaticity (slope from regression)")+
+  labs(x = "Population of the county", y = "Absolute Chemostatic Coefficient (slope from regression)")+
   theme(title = element_text(size = 8),
         plot.margin = margin(0,0,0,0))
 
-irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo)) +
+irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo, color = site.type)) +
   geom_point() +
   labs(x = "Irrigation water use", y = "")+
     theme(title = element_text(size = 8),
@@ -63,16 +66,34 @@ irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo)) +
         axis.ticks.y=element_blank())
 
 
-therm.plot.2 = ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo)) +
+therm.plot.2 = ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo, color = site.type)) +
   geom_point() +
-  labs(x = "Power generation water use", y = "")+
+  labs(x = "Power gen. water use", y = "")+
     theme(title = element_text(size = 8),
         plot.margin = margin(0,0,0,0),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())
+legend <- get_legend(
+  # create some space to the left of the legend
+  pop.plot.2 + theme(legend.box.margin = margin(0, 0, 0, 0))
+)
 
+title <- ggdraw() + 
+  draw_label(
+    "Impact of Population and Water Use on Abs. Chemostatic Coeff. (unit of water use: Bgal/d) ",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  ) +theme(
+    # add margin on the left of the drawing canvas,
+    # so title is aligned with left edge of first plot
+    plot.margin = margin(0, 0, 0, 0)
+  )
+plot_row <- plot_grid(pop.plot.2 + theme(legend.position="none"),
+          irri.plot.2+ theme(legend.position="none"),
+          therm.plot.2+ theme(legend.position="none"), legend, ncol = 4)
 
-plot_grid(pop.plot.2, irri.plot.2, therm.plot.2, ncol = 3)
+plot_grid(title, plot_row, ncol = 1,rel_heights = c(0.1, 1))
 ```
 
 
@@ -98,15 +119,27 @@ Waterfeaturesplot <-
 ggplot(waterfeatures) +
     geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
   geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) 
-print(Waterfeaturesplot)
-
 states<- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white")) 
 states.florida = filter(states, ID %in% c("florida"))
 hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+hyp2.spatial.nocanal <- st_as_sf(hyp2.nocanal, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+
+hyp2.plot.exp <- ggplot() +
+  geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
+  geom_sf(data = hyp2.spatial, alpha = 0.5) +
+ # scale_color_viridis_c(option = "inferno") +
+  labs(size = "Chemo staticity") +
+  theme(legend.position = "right",
+        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8),
+        legend.margin = margin(0,0,0,0))
+print(hyp2.plot.exp)
+
 hyp2.plot.1 <- ggplot() +
   geom_sf(data = states.florida, fill = "white") +
   geom_sf(data = hyp2.spatial, aes(color = chemo, size = total_pop), alpha = 0.5, show.legend = "point") +
- # scale_color_viridis_c(option = "inferno") +
+ scale_color_viridis_c(option = "inferno") +
 labs(color = "Chemo staticity", size = "Total Population") +
 theme(legend.position = "right",legend.text = element_text(size = 7),
 legend.title = element_text(size = 8),
@@ -125,13 +158,39 @@ hyp2.plot.2 <- ggplot() +
         legend.margin = margin(0,0,0,0))
 print(hyp2.plot.2)
 ```
-```{r}
-fit <- aov(chemo ~ total_pop, data=hyp2.full_cleaned)
-summary(fit)
+
+```{r, fig.height=4}
+hyp2.plot.3 <- ggplot() +
+  geom_sf(data = states.florida, fill = "white") +
+  geom_sf(data = hyp2.spatial.nocanal, aes(color = chemo, size = total_pop), alpha = 0.5, show.legend = "point") +
+ scale_color_viridis_c(option = "inferno") +
+labs(color = "Chemo staticity", size = "Total Population") +
+theme(legend.position = "right",legend.text = element_text(size = 7),
+legend.title = element_text(size = 8),
+legend.margin = margin(0,0,0,0))
+print(hyp2.plot.3)
+
+hyp2.plot.4 <- ggplot() +
+  geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE),show.legend = NA) +
+  geom_sf(data = hyp2.spatial.nocanal, aes(size = chemo), alpha = 0.5, show.legend = "point") +
+ # scale_color_viridis_c(option = "inferno") +
+  labs(size = "Chemo staticity") +
+  theme(legend.position = "right",
+        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8),
+        legend.margin = margin(0,0,0,0))
+print(hyp2.plot.4)
 ```
 
+
 ```{r}
-model = lm(abschemo ~ total_pop, data = hyp2.full_cleaned)
-summary(model)
+
+model1 = lm(abschemo ~ total_pop, data = hyp2.full_cleaned)
+summary(model1)
+model2 = lm(abschemo ~ irrigation, data = hyp2.full_cleaned)
+summary(model2)
+model3 = lm(abschemo ~ thermoelectric, data = hyp2.full_cleaned)
+summary(model3)
 ```
 

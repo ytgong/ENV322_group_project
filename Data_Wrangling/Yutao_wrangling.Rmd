@@ -17,13 +17,6 @@ hyp1_sites = read.csv("../FL_CSV/hyp1_sites.csv")
 
 hyp1_sites = hyp1_sites[-c(1), ]
 hyp1_sites = cbind(hyp1_sites,county_nm = c("Jefferson County","Madison County","Lafayette County","Levy County","Levy County","Gilchrist County", "Columbia County", "Columbia County","Citrus County","Citrus County","Citrus County","Marion County","Marion County", "Lee County", "Hendry County","Volusia County","Brevard County","Brevard County","Brevard County","Brevard County","Indian River County"))
-hyp1 <- merge(hyp1_sites,wateruse_cleaned,by="county_nm")
-hyp2.full = hyp1[order(hyp1$station_nm),]
-hyp2.full = cbind(hyp2.full,chemo = c(-3.182e-3,-3.034e-4,NA,-4.608e-5,0.0060945,-0.0221976,NA,2.515e-4,-1.881e-3,-3.747e-4,3.953e-4,-6.377e-4,0.001523,1.659e-3,-0.0003337,-7.366e-6,-2.001e-4,1.792e-4,-7.248e-5,NA,9.849e-5))
-# These numbers are slope of regression lines from C-Q plots
-hyp2.full_cleaned = hyp2.full %>%
-  filter(hyp2.full$chemo > -0.020) %>%
-  mutate(abschemo = abs(chemo))
 
 
 wateruse <- readNWISuse(stateCd = "Florida",
@@ -38,6 +31,16 @@ wateruse_cleaned <- wateruse %>%
          thermoelectric = Thermoelectric.Power..Once.through.cooling..total.self.supplied.withdrawals..surface.water..in.Mgal.,
          livestock = Livestock.self.supplied.surface.water.withdrawals..fresh..in.Mgal.d,
          irrigation = Irrigation..Total.total.self.supplied.withdrawals..surface.water..in.Mgal.d)
+
+hyp1 <- merge(hyp1_sites,wateruse_cleaned,by="county_nm")
+hyp2.full = hyp1[order(hyp1$station_nm),]
+
+chemodata = read.csv("../Processed_Dataframes/RBI_CHEMO_data.csv")
+hyp2.full = merge(hyp2.full,chemodata, by="site_no")
+# These numbers are slope of regression lines from C-Q plots
+hyp2.full_cleaned = hyp2.full %>%
+  rename(chemo = chemo.coef,
+         abschemo = chemo.coef.abs)
 
 write.csv(hyp2.full_cleaned, file = "../Processed_Dataframes/hyp2+chemo.csv")
 write.csv(wateruse_cleaned, file = "../Processed_Dataframes/wateruse.csv")

@@ -24,7 +24,7 @@ BLUESCplot <- ggplot(BLUESC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Blue Springs SpecCond")
+  ggtitle("Blue Springs")
 
 print(BLUESCplot) #POS
 
@@ -48,7 +48,7 @@ CALSCplot <- ggplot(CALSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Caloosahatchee River SpecCond")
+  ggtitle("Caloosahatchee River")
 
 print(CALSCplot) #NEG
 
@@ -72,7 +72,7 @@ CHASSCplot <- ggplot(CHASSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Chassahowitzka River SpecCond")
+  ggtitle("Chassahowitzka River")
 
 print(CHASSCplot) #NEG
 
@@ -96,7 +96,7 @@ FANSCplot <- ggplot(FANSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Fanning Springs SpecCond")
+  ggtitle("Fanning Springs")
 
 print(FANSCplot) #NEG
 
@@ -120,7 +120,7 @@ HOMSCplot <- ggplot(HOMSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Homosassa Springs SpecCond")
+  ggtitle("Homosassa Springs")
 
 print(HOMSCplot) #NEG
 
@@ -144,7 +144,7 @@ HUNSCplot <- ggplot(HUNSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Hunter Spring Run SpecCond")
+  ggtitle("Hunter Spring Run")
 
 print(HUNSCplot) #NEG
 
@@ -168,7 +168,7 @@ ICHESCplot <- ggplot(ICHESC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Ichetucknee River SpecCond")
+  ggtitle("Ichetucknee River")
 
 print(ICHESCplot) #NEAR 0
 
@@ -192,7 +192,7 @@ MADSCplot <- ggplot(MADSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Madison Blue Spring SpecCond")
+  ggtitle("Madison Blue Spring")
 
 print(MADSCplot) #POS
 
@@ -216,7 +216,7 @@ MANSCplot <- ggplot(MANSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Manatee Spring SpecCond")
+  ggtitle("Manatee Spring")
 
 print(MANSCplot) #POS
 
@@ -240,7 +240,7 @@ SANTASCplot <- ggplot(SANTASC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Santa River SpecCond")
+  ggtitle("Santa Fe River")
 
 print(SANTASCplot) #NEG
 
@@ -264,7 +264,7 @@ WACSCplot <- ggplot(WACSC, aes(x = Flow_DV, y = SpecCond_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Wacissa River SpecCond")
+  ggtitle("Wacissa River")
 
 print(WACSCplot) #NEG
 
@@ -272,18 +272,24 @@ print(WACSCplot) #NEG
 
 #Combined Plots
 
+
+
+y.grob <- textGrob("Daily Mean Conductance (S/m)", 
+                   gp=gpar(fontface="bold", fontsize=12), rot=90)
+
+x.grob <- textGrob("Daily Mean Discharge (ft3/s)", 
+                   gp=gpar(fontface="bold", fontsize=12))
+
+positive.grob <- textGrob("Systems with Positive Specific Conductance Slopes",
+                          gp=gpar(fontface="bold", fontsize=15))
+negative.grob <- textGrob("Systems with Negative Specific Conductance Slopes",
+                          gp=gpar(fontface="bold", fontsize=15))
+
 PositivePlots <- plot_grid(
   BLUESCplot, MANSCplot, MADSCplot
 )
+PositivePlots <- grid.arrange(arrangeGrob(PositivePlots, left = y.grob, bottom = x.grob, top = positive.grob))
 
-y.grob <- textGrob("Daily Mean Conductance (S/m)", 
-                   gp=gpar(fontface="bold", fontsize=15), rot=90)
-
-x.grob <- textGrob("Daily Mean Discharge (m/s)", 
-                   gp=gpar(fontface="bold", fontsize=15))
-
-PositivePlots <- grid.arrange(arrangeGrob(PositivePlots, left = y.grob, bottom = x.grob))
-print(PositivePlots)
 
 
 NegativePlots <- plot_grid(
@@ -291,6 +297,5 @@ NegativePlots <- plot_grid(
   WACSCplot, HUNSCplot, ncol = 3
 )
 
-NegativePlots <- grid.arrange(arrangeGrob(NegativePlots, left = y.grob, bottom = x.grob))
+NegativePlots <- grid.arrange(arrangeGrob(NegativePlots, left = y.grob, bottom = x.grob, top = negative.grob))
 
-print(NegativePlots)

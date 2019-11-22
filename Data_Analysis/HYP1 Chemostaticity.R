@@ -577,7 +577,7 @@ summary(WACChemo.lm)
 y.grob <- textGrob("Daily Mean Nitrate (mg/l)", 
                    gp=gpar(fontface="bold", fontsize=12), rot=90)
 
-x.grob <- textGrob("Daily Mean Discharge (m/s)", 
+x.grob <- textGrob(("Daily Mean Discharge (ft3/s)"), 
                    gp=gpar(fontface="bold", fontsize=12))
 
 diluting.grob <- textGrob("Diluting Systems C-Q",

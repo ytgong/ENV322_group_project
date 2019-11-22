@@ -35,7 +35,7 @@ CRANEdata<-read_csv(
 DRAINdata<-read_csv(
   "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/DRAINdata.csv")%>%
   select(Flow_Inst,Nitrate_mgl)%>%
-  mutate(site = "DRAINdata")
+  mutate(site = "DRAIN")
 FANdata<-read_csv(
   "/Users/ethanready/ENV322_group_project/FL_CSV/hyp1/FANdata.csv")%>%
   select(Flow_Inst,Nitrate_mgl)%>%
@@ -109,92 +109,134 @@ write_csv(violin_comb,
 
 #individual discharge plots
 BLUE_violin_dis<-ggplot(BLUEdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 BOW_violin_dis<-ggplot(BOWdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 CAL_violin_dis<-ggplot(CALdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 CHAS_violin_dis<-ggplot(CHASdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 CRANE_violin_dis<-ggplot(CRANEdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 DRAIN_violin_dis<-ggplot(DRAINdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 FAN_violin_dis<-ggplot(FANdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 FELL_violin_dis<-ggplot(FELLdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 HOL_violin_dis<-ggplot(HOLdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 HOM_violin_dis<-ggplot(HOMdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 HUN_violin_dis<-ggplot(HUNdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 ICHE_violin_dis<-ggplot(ICHEdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 MAD_violin_dis<-ggplot(MADdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 MAIN_violin_dis<-ggplot(MAINdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 MAN_violin_dis<-ggplot(MANdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 RAIN_violin_dis<-ggplot(RAINdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 SANTA_violin_dis<-ggplot(SANTAdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 THREE_violin_dis<-ggplot(THREEdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 TURK_violin_dis<-ggplot(TURKdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 TURN_violin_dis<-ggplot(TURNdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 WAC_violin_dis<-ggplot(WACdata)+
-  geom_violin(aes(x=site,y=Flow_Inst))
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 
 
 #individual nitrate plots
 BLUE_violin_nit<-ggplot(BLUEdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 BOW_violin_nit<-ggplot(BOWdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 CAL_violin_nit<-ggplot(CALdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 CHAS_violin_nit<-ggplot(CHASdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 CRANE_violin_nit<-ggplot(CRANEdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 DRAIN_violin_nit<-ggplot(DRAINdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 FAN_violin_nit<-ggplot(FANdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 FELL_violin_nit<-ggplot(FELLdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 HOL_violin_nit<-ggplot(HOLdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 HOM_violin_nit<-ggplot(HOMdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 HUN_violin_nit<-ggplot(HUNdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 ICHE_violin_nit<-ggplot(ICHEdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 MAD_violin_nit<-ggplot(MADdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 MAIN_violin_nit<-ggplot(MAINdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 MAN_violin_nit<-ggplot(MANdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 RAIN_violin_nit<-ggplot(RAINdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 SANTA_violin_nit<-ggplot(SANTAdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 THREE_violin_nit<-ggplot(THREEdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 TURK_violin_nit<-ggplot(TURKdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 TURN_violin_nit<-ggplot(TURNdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 WAC_violin_nit<-ggplot(WACdata)+
-  geom_violin(aes(x=site,y=Nitrate_mgl))
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
 
 
 #combined discharge and nitrate violin plots for individual sites
@@ -224,16 +266,19 @@ WAC_comb<-plot_grid(WAC_violin_dis,WAC_violin_nit)
 #discharge plot for all sites
 discharge_violin<-ggplot(
   violin_comb,aes(x=site,y=Flow_Inst))+
-  geom_violin()
+  geom_violin()+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 
 #discharge plot for all sites except two to visualize smaller discharges
 discharge_violin_select<-ggplot(
   violin_comb%>%filter(site!="CAL", site!="SANTA"),aes(x=site,y=Flow_Inst))+
-  geom_violin()
+  geom_violin()+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
 
 #nitrate plot for all sites
 nitrate_violin<-ggplot(violin_comb,aes(x=site,y=Nitrate_mgl))+
-  geom_violin()
+  geom_violin()+
+  labs(y="Nitrate (mg/L)")
 
 ```
 

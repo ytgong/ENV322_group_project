@@ -31,14 +31,9 @@ RBI.linear.abs<-ggplot(RBI_CHEMO_data,
        y="Chemostaticity Coeffiecient Absolute Value")
 
 # run regressions on data
-lm_sig<-lm(chemo.coef~RBI_value_ind_noncatch, RBI_CHEMO_data)
-
-lm_sig_abs<-lm(chemo.coef.abs~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
 lm_sig_log_abs<-lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
-summary(lm_sig)
-summary(lm_sig_abs)
 summary(lm_sig_log_abs)
 
 #log graphs
@@ -70,19 +65,13 @@ Nocanals.linear<-ggplot(RBI_nocanals,
 Nocanals.linear.abs<-ggplot(RBI_nocanals, 
                             aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
   geom_point(aes(color=site.type))+
-  geom_smooth(method="lm", se=FALSE)+
   labs(x="Richards-Baker Index",
        y="Absolute Value Chemostaticity Coeffiecient")
 
-lm_nocanals<-lm(chemo.coef~RBI_value_ind_noncatch, RBI_nocanals)
-
-lm_nocanals_abs<-lm(chemo.coef.abs~RBI_value_ind_noncatch, RBI_nocanals)
 
 lm_nocanals_log_abs<-
   lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_nocanals)
 
-summary(lm_nocanals)
-summary(lm_nocanals_abs)
 summary(lm_nocanals_log_abs)
 ```
 

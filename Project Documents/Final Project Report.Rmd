@@ -118,7 +118,7 @@ hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_v
 ```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=4.5}
 plot.exp <- ggplot() +
   geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
-  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) +
   geom_sf(data = hyp2.spatial, alpha = 0.5) +
  # scale_color_viridis_c(option = "inferno") +
   labs(size = "Chemo staticity") +
@@ -216,7 +216,7 @@ When we were done listing the qualitative traits of all the sites in each hydrol
 Our list of diluting sites show more convincing trends - seven out of nine of the sites are located in very rural locations, most in or on the edge of a Florida state park. (Ichetucknee, Santa Fe, Blue Spring, Blue Hole Spring, Manatee Spring, Homosassa Spring, Turkey Creek) However, this number may be slightly inflated because three of the four most diluting sites are directly interconnected, increasing the likelihood of similar hydrologic tendencies between them. (Ichetucknee, Santa Fe, Blue Hole Spring) There seem to be no other notable qualitative trends for diluting sites.
 Chemostatic or mostly chemostatic systems do not seem to display any particular kind of trend. They are located in all kinds of environments - from hyper-urban to deep in state parks.
 
-```{r, include = FALSE}
+```{r, include = FALSE, warning= FALSE, message = FALSE, echo = FALSE}
 #Blue
 BLUEdata <- read.csv("../FL_CSV/hyp1/BLUEdata.csv")
 
@@ -236,7 +236,8 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Blue Springs")
+  ggtitle("Blue Springs") +
+  theme(plot.title = element_text(size = 12))
 
 #BOW
 BOWdata <- read.csv("../FL_CSV/hyp1/BOWdata.csv")
@@ -255,9 +256,10 @@ BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
-  scale_y_log10() +
+  
   labs(x = "", y = "") +
-  ggtitle("Rainbow River Near Dunnellon")
+  ggtitle("Rainbow River \n Near Dunnellon")+
+  theme(plot.title = element_text(size = 12))
 
 
 #CAL
@@ -279,7 +281,8 @@ CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Caloosahatchee River")
+  ggtitle("Caloosahatchee River")+
+  theme(plot.title = element_text(size = 12))
 
 
 #CHAS
@@ -301,7 +304,8 @@ CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Chassahowitzka River")
+  ggtitle("Chassahowitzka River")+
+  theme(plot.title = element_text(size = 12))
 
 
 #CRANE
@@ -323,7 +327,8 @@ CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Crane Creek")
+  ggtitle("Crane Creek")+
+  theme(plot.title = element_text(size = 12))
 
 #DRAIN
 DRAINdata <- read.csv("../FL_CSV/hyp1/DRAINdata.csv")
@@ -344,7 +349,8 @@ DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Drainage Canal")
+  ggtitle("Drainage Canal")+
+  theme(plot.title = element_text(size = 12))
   
 
 #FAN
@@ -366,7 +372,8 @@ FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Fanning Springs")
+  ggtitle("Fanning Springs")+
+  theme(plot.title = element_text(size = 12))
 
 
 #FELL
@@ -388,7 +395,8 @@ FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Fellsmere Canal")
+  ggtitle("Fellsmere Canal")+
+  theme(plot.title = element_text(size = 12))
 
 
 #HOL
@@ -410,7 +418,8 @@ HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Blue Hole Spring")
+  ggtitle("Blue Hole Spring")+
+  theme(plot.title = element_text(size = 12))
 
 
 #HOM
@@ -432,7 +441,8 @@ HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Homosassa Springs")
+  ggtitle("Homosassa Springs")+
+  theme(plot.title = element_text(size = 12))
 
 
 #HUN
@@ -454,7 +464,8 @@ HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Hunter Spring Run")
+  ggtitle("Hunter Spring Run")+
+  theme(plot.title = element_text(size = 12))
 
 
 #ICHE
@@ -476,7 +487,8 @@ ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Ichetucknee River")
+  ggtitle("Ichetucknee River")+
+  theme(plot.title = element_text(size = 12))
 
 
 #MAD
@@ -498,7 +510,8 @@ MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Madison Blue Spring")
+  ggtitle("Madison Blue Spring")+
+  theme(plot.title = element_text(size = 12))
 
 
 #MAIN
@@ -520,7 +533,8 @@ MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Main Canal")
+  ggtitle("Main Canal")+
+  theme(plot.title = element_text(size = 12))
 
 
 #MAN
@@ -542,7 +556,8 @@ MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Manatee Spring")
+  ggtitle("Manatee Spring")+
+  theme(plot.title = element_text(size = 12))
 
 
 #RAIN
@@ -562,9 +577,10 @@ RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   geom_point() +
   geom_smooth(method = "lm", se = FALSE) +
   scale_x_log10() +
-  scale_y_log10() +
+  
   labs(x = "", y = "") +
-  ggtitle("Rainbow River at Dunnellon")
+  ggtitle("Rainbow River at Dunnellon")+
+  theme(plot.title = element_text(size = 12))
 
 
 #SANTA
@@ -586,7 +602,8 @@ SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Santa Fe River")
+  ggtitle("Santa Fe River")+
+  theme(plot.title = element_text(size = 12))
 
 
 
@@ -609,7 +626,8 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Three Mile Canal")
+  ggtitle("Three Mile Canal")+
+  theme(plot.title = element_text(size = 12))
 
 
 #TURK
@@ -631,7 +649,8 @@ TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Turkey Creek")
+  ggtitle("Turkey Creek")+
+  theme(plot.title = element_text(size = 12))
 
 
 #TURN
@@ -653,7 +672,8 @@ TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Turnbull Creek")
+  ggtitle("Turnbull Creek")+
+  theme(plot.title = element_text(size = 12))
 
 #WAC
 WACdata <- read.csv("../FL_CSV/hyp1/WACdata.csv")
@@ -674,7 +694,8 @@ WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_x_log10() +
   scale_y_log10() +
   labs(x = "", y = "") +
-  ggtitle("Wacissa River") 
+  ggtitle("Wacissa River") +
+  theme(plot.title = element_text(size = 12))
 
 
 y.grob <- textGrob("Daily Mean Nitrate (mg/l)", 
@@ -691,53 +712,49 @@ chemostatic.grob <- textGrob("Chemostatic Systems C-Q",
                              gp=gpar(fontface="bold", fontsize=15))
 ```
 
-```{r, echo = FALSE, message = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=5}
+```{r, echo = FALSE, message = FALSE,warning = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=5}
 
 ChemostaticPlot <- plot_grid(
   FANChemoplot, RAINChemoplot, CHASChemoplot,  
   TURNChemoplot, WACChemoplot,
   ncol = 3)
-ChemostaticPlot <- grid.arrange(arrangeGrob(ChemostaticPlot, left = y.grob, bottom = x.grob, top = chemostatic.grob))
-
-print(ChemostaticPlot)
-
+grid.arrange(arrangeGrob(ChemostaticPlot, left = y.grob, bottom = x.grob, top = chemostatic.grob))
 ```
 
-```{r, echo = FALSE, message = FALSE, fig.cap="C-Q Plots of Flushing Sites",fig.height=5}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="C-Q Plots of Flushing Sites",fig.height=5}
 FlushingPlot <- plot_grid(
   MAINChemoplot, FELLChemoplot, CRANEChemoplot, MADChemoplot, 
   THREEChemoplot, CALChemoplot, HUNChemoplot,
   ncol = 3
 )
-FlushingPlot <- grid.arrange(arrangeGrob(FlushingPlot, left = y.grob, bottom = x.grob, top = flushing.grob))
+grid.arrange(arrangeGrob(FlushingPlot, left = y.grob, bottom = x.grob, top = flushing.grob))
 
-print(FlushingPlot)
 ```
 
-```{r, echo = FALSE, message = FALSE, fig.cap="C-Q Plots of Diluting Sites",fig.height=5}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="C-Q Plots of Diluting Sites",fig.height=5}
 DilutingPlot <- plot_grid(
   ICHEChemoplot, SANTAChemoplot, BLUEChemoplot, HOLChemoplot, DRAINChemoplot, 
   BOWChemoplot,  MANChemoplot, HOMChemoplot, TURKChemoplot,
   ncol = 3
 )
+grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob, top = diluting.grob))
 
-DilutingPlot <- grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob, top = diluting.grob))
-
-print(DilutingPlot)
 ```
 
 ### Quantitative/Statistical Approach: How do counties’ population and water usage impact the chemical flashiness of sites within the county?
 
 
-```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9}
-pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo, color = site.type)) +
-  geom_point() +
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=4, fig.width = 9}
+pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo)) +
+  geom_point(aes(color = site.type)) +
+  geom_smooth(method = "lm") +
   labs(x = "Population of the county (k people)", y = "Absolute Chemostatic Coefficient (slope from regression)")+
   theme(title = element_text(size = 8),
         plot.margin = margin(0,0,0,0))
 
-irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo, color = site.type)) +
-  geom_point() +
+irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo)) +
+  geom_point(aes(color = site.type)) +
+  geom_smooth(method = "lm") +
   labs(x = "Irrigation water use (Bgal/d)", y = "")+
     theme(title = element_text(size = 8),
         plot.margin = margin(0,0,0,0),
@@ -745,8 +762,9 @@ irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo, color 
         axis.ticks.y=element_blank())
 
 
-therm.plot.2 = ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo, color = site.type)) +
-  geom_point() +
+therm.plot.2 = ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo)) +
+  geom_point(aes(color = site.type)) +
+  geom_smooth(method = "lm") +
   labs(x = "Power gen. water use (Bgal/d)", y = "")+
     theme(title = element_text(size = 8),
         plot.margin = margin(0,0,0,0),

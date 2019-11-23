@@ -5,7 +5,7 @@ output:
     fig_caption: yes
     number_sections: yes
 geometry: margin=2.54cm
-title: "Insert title of project here"
+title: "A Case Study on Chemical Flashiness of Streams and Canals in Florida"
 subtitle: "https://github.com/ytgong/ENV322_group_project"
 author: "Ethan Ready, Gabi Richichi, Theo Cai, Yutao Gong"
 fontsize: 12pt
@@ -29,32 +29,18 @@ library(tidyverse)
 library(lubridate)
 library(ggplot2)
 library(knitr)
+library(sf)
+library(maps)
+library(cowplot)
+library(gridExtra)
+library(grid)
 
 #Set theme
-theme_set(theme_classic())
+theme_set(theme_bw())
 
 # Load your datasets
-BLUEdata <- read.csv("../FL_CSV/hyp1/BLUEdata.csv")
-BOWdata <- read.csv("../FL_CSV/hyp1/BOWdata.csv")
-CALdata <- read.csv("../FL_CSV/hyp1/CALdata.csv")
-CHASdata <- read.csv("../FL_CSV/hyp1/CHASdata.csv")
-CRANEdata <- read.csv("../FL_CSV/hyp1/CRANEdata.csv")
-DRAINdata <- read.csv("../FL_CSV/hyp1/DRAINdata.csv")
-FANdata <- read.csv("../FL_CSV/hyp1/FANdata.csv")
-FELLdata <- read.csv("../FL_CSV/hyp1/FELLdata.csv")
-HOLdata <- read.csv("../FL_CSV/hyp1/HOLdata.csv")
-HOMdata <- read.csv("../FL_CSV/hyp1/HOMData.csv")
-HUNdata <- read.csv("../FL_CSV/hyp1/HUNdata.csv")
-ICHEdata <- read.csv("../FL_CSV/hyp1/ICHEdata.csv")
-MADdata <- read.csv("../FL_CSV/hyp1/MADdata.csv")
-MAINdata <- read.csv("../FL_CSV/hyp1/MAINdata.csv")
-MANdata <- read.csv("../FL_CSV/hyp1/MANdata.csv")
-RAINdata <- read.csv("../FL_CSV/hyp1/RAINdata.csv")
-SANTAdata <- read.csv("../FL_CSV/hyp1/SANTAdata.csv")
-THREEdata <- read.csv("../FL_CSV/hyp1/THREEdata.csv")
-TURKdata <- read.csv("../FL_CSV/hyp1/TURKdata.csv")
-TURNdata <- read.csv("../FL_CSV/hyp1/TURNdata.csv")
-WACdata <- read.csv("../FL_CSV/hyp1/WACdata.csv")
+
+hyp2.full_cleaned = read.csv("../Processed_Dataframes/hyp2+chemo.csv")
 ```
 
 
@@ -93,12 +79,19 @@ Our research questions are:
 For this analysis, our datasets were USGS NWIS high frequency and water use data. The data contained in our datasets for hypothesis 1 are the site number, date/time of measurement, instantaneous discharge, and instantaneous nitrate. Contained in the datasets for hypothesis 2 and 3 are site number, date/time of measurement, instantaneous discharge, nitrate, pH, dissolved oxygen, specific conductance; population of the county each site is in, and the amount of surface water used for thermoelectric, industrial, livestock and irrigation uses in each county. We wrangled all our data frames to include periods of data that included all of the variables, and that exhibited the most continuous measurements - all for easier, more standardized analysis and visualization. We chose sites from the state of Florida because it had sufficient sites with high frequency nitrate and discharge data.
 
 ```{r, echo = FALSE, message = FALSE}
-df <- data.frame(Variable = c("Proximity to Farms","Urban / Rural","Trophic State","Average discharge","Total annual rainfall at site","Soil type","Slope","Storm rainfall","Storm duration","Storm precip. rate (rainfall / time)","Initial stream discharge/average discharge","Total suspended solids","Conductance","Nitrate concentrations -- high frequency","Discharge -- high frequency","Richards-Baker Index value"),
-                 Units = c("km","N/A (Categorical variable)","N/A (Categorical variable)","m^3/s","mm","N/A (Categorical variable)","m/km","mm","minutes","mm/minutes","ratio","mg/L","Siemens (S)","ng/L","m^3/s",""),
-                 Type = c("Independent","Independent","Independent","Independent","Independent","Independent","Independent","Independent","Independent","Independent","Independent","Dependent","Dependent","Dependent","Independent","Independent"),
-                 Hypothesis = c(2,2,2,2,2,2,2,3,3,3,3,"To determine chemical flashiness","To determine chemical flashiness","To determine chemical flashiness",1,1))
+df <- data.frame(Variable = c("Nitrate concentrations -- high frequency","Discharge -- high frequency","Richards-Baker Index value", "County population", "Irrigation water use", "Thermoelectric water use", "Chemostatic coefficient"),
+                 Units = c("ng/L","m^3/s","", "k people", "Bgal/day", "Bgal/day",""),
+                 Type = c("Independent","Independent","Independent","Independent","Independent","Independent","Dependent")
+)
 
-kable(df)
+kable(df, caption = "Variables used for analysis")
+
+df2 = read.csv("../Processed_Dataframes/siteinfo.csv") %>%
+  select("Site No." = site_no,
+         "Station Name" = station_nm,
+         "County" = county_nm)
+
+kable(df2, caption = "USGS sites selected for analysis") 
 ```
 
 \newpage
@@ -109,6 +102,33 @@ kable(df)
 
 <Each figure should be accompanied by a caption, and each figure should be referenced within the text>
 
+```{r, include = FALSE}
+waterfeatures <- st_read("../other_data/hydrogl020.dbf")
+waterfeatures <- filter(waterfeatures, STATE == "FL")
+waterfeatures <- filter(waterfeatures, FEATURE != "Apparent Limit" & FEATURE != "Closure Line")
+HUC6 <- st_read("../other_data/WBDHU6.dbf")
+HUC6.Florida <- HUC6 %>%
+  filter(States %in% c("AL,FL", "FL", "FL,GA", "AL,FL,GA"))
+waterfeatures <- st_set_crs(waterfeatures, 4269)
+states<- st_as_sf(map(database = "state", plot = TRUE, fill = TRUE, col = "white")) 
+states.florida = filter(states, ID %in% c("florida"))
+hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
+```
+
+```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=4.5}
+plot.exp <- ggplot() +
+  geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
+  geom_sf(data = hyp2.spatial, alpha = 0.5) +
+ # scale_color_viridis_c(option = "inferno") +
+  labs(size = "Chemo staticity") +
+  theme(legend.position = "right",
+        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8),
+        legend.margin = margin(0,0,0,0))
+print(plot.exp)
+```
+
 \newpage
 
 # Analysis
@@ -117,11 +137,657 @@ kable(df)
 
 <Each figure should be accompanied by a caption, and each figure should be referenced within the text>
 
-## Question 1: <insert specific question here and add additional subsections for additional questions below>
+## Question 1: <insert specific question here and add additional subsections for additional questions below> Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness?
 
-## Question 2: 
+We chose to analyze our first question, on the relationship between hydrologic flashiness and chemical flashiness, using sites with high frequency nitrate and discharge measurements. At each site, we calculated the Richards-Baker Index to quantify the hydrologic flashiness.
+
+We had to exclude catchment size in the formula because 17/21 sites did not have a recorded catchment size.
+
+To quantify chemical flashiness, we ran a linear regression between mean daily nitrate and mean daily discharge values and took the coefficient as our chemostaticity value. We excluded 3 sites with poor linear regression fits, 1 of which had a large outlier for chemostaticity coefficient.
+
+We wrangled the RBI values and Chemostaticity Coefficients to create a dataframe with columns site, site type(canal, river, etc.), chemostaticity coefficient, chemostaticity coefficient absolute value, and RBI value. We included the absolute value of the Chemostaticity Coefficient to investigate the flashiness, as absolute value would account for large chemostaticity in either a flushing or diluting system.
+
+```{r, include = FALSE}
+# read in data from RBI_CHEMO_analysis doc
+RBI_CHEMO_data<-read_csv("../Processed_Dataframes/RBI_CHEMO_data.csv")
+RBI_nocanals<-read_csv("../Processed_Dataframes/RBI_CHEMO_nocanals.csv")  
+```
+
+We created ggplot visualizations of Chemostaticity Coefficient vs. RBI and |Chemostaticity Coefficient vs. RBI| separating site type by color. The visualization without absolute value shows a distribution that follows the x and y axis. Sites with large RBI values have low Chemostatic Coefficients, and sites with low RBI values have Chemostatic Coefficients that are far above 0 or far below 0. The absolute value visualization reinforces this finding, as large absolute Chemostatic Coefficients correspond with small RBI values. Similar trends were viewed between site type, except that the largest outlier for both Chemostatic Coefficient and RBI are both canals.
+
+```{r, echo = FALSE, message = FALSE, fig.cap="Chemostatic coefficient values and Richards-Baker Index of 18 sites", fig.height=3}
+
+#visualize data, both abs and non-abs
+RBI.linear<-ggplot(RBI_CHEMO_data, 
+                   aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
+  geom_point(aes(color=site.type))+
+  labs(x="Richards-Baker Index", y="Chemostatic Coefficient")
+print(RBI.linear)
+```
 
 
+```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 18 sites",fig.height=3}
+RBI.linear.abs<-ggplot(RBI_CHEMO_data, 
+                       aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
+  geom_point(aes(color=site.type))+
+  labs(x="Richards-Baker Index", 
+       y=" Absolute Chemostatic Coefficient")
+print(RBI.linear.abs)
+
+```
+
+We ran a linear regression on log(Absolute Chemostaticity Coefficient) vs. RBI, which was the closest fit that we could find. The regression produced a coefficient of -2.6847 , a P-value of 0.473, and a multiple r-squared of 0.03264. The model does not adequately predict the data.
+
+```{r, echo = FALSE, message = FALSE}
+# run regressions on data
+
+lm_sig_log_abs<-lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_CHEMO_data)
+
+summary(lm_sig_log_abs)
+```
+
+Since canals often act differently than natural waterways, and the largest outlier for both RBI and Chemostaticity Coefficient are canals, we also visualized the data without canals. The visualizations are more clear due to smaller axis ranges, and show similar results to the first visualizations. We ran the same linear regression on the Absolute Chemostatic Coefficient without canals.
+
+```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 14 non-canal sites",fig.height=3}
+#same analysis, without canals in the data
+Nocanals.linear.abs<-ggplot(RBI_nocanals, 
+                            aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
+  geom_point(aes(color=site.type))+
+  geom_smooth(method="lm", se=TRUE)+
+  labs(x="Richards-Baker Index",
+       y="Absolute Chemostatic Coefficient")
+
+print(Nocanals.linear.abs)
+lm_nocanals_log_abs<-
+  lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_nocanals)
+summary(lm_nocanals_log_abs)
+```
+
+The linear regression for Absolute Chemostatic Coefficient vs. RBI provided a Coefficient of -6.889, a P-value of 0.39, and a multiple r-squared of 0.06228. While the fit doesn’t sufficiently match the data, it is better than the data with canals and does provide some idea of the relationship between the variables.
+
+
+## Question 2: How do features of a site impact its chemical flashiness?
+
+### Qualitative Approach: How do geographical features impact the site’s chemical flashiness?
+
+We made observations by first sorting sites into three categories - Chemostatic, Flushing, and Diluting - based on the slopes of the regression lines of their C-Q plots - values near 0, positive values, and negative values, respectively. Then, we went site by site and searched their coordinates into Google Maps and ArcGIS, and noted the general surrounding geography - is it mostly urban or rural? Is it in a state park, adjacent to it, or nowhere near? Where, generally, in Florida is this site located? We also paid special attention to the site type - river, spring, or canal - as each most likely have differing management strategies and hydrologies.
+
+When we were done listing the qualitative traits of all the sites in each hydrologic behavioral categorical, we noticed some trends had emerged. For the most flushing sites, or, the ones with the steepest regression line slopes, we noticed that all are located near airports. (Main Canal, Fellsmere Canal, Crane Creek, and Madison Blue Spring) There does not seem to be a correlation with the urbanity of the location, however, as two out of four of these sites are mostly rural and two are mostly urban - Fellsmere, Madison Blue Spring and Main Canal, Crane Creek, respectively. We hesitate to draw any concrete conclusions about possible relationships between flushing systems and proximity to airports, as there may be many other factors involved that are not within the scope of this project. One important factor could be the management style of the site; three out of four of the canals analyzed in this project tend towards flushing. This, too, could be a coincidence, and we would need to do a deeper analysis with more sites to draw conclusions.
+Our list of diluting sites show more convincing trends - seven out of nine of the sites are located in very rural locations, most in or on the edge of a Florida state park. (Ichetucknee, Santa Fe, Blue Spring, Blue Hole Spring, Manatee Spring, Homosassa Spring, Turkey Creek) However, this number may be slightly inflated because three of the four most diluting sites are directly interconnected, increasing the likelihood of similar hydrologic tendencies between them. (Ichetucknee, Santa Fe, Blue Hole Spring) There seem to be no other notable qualitative trends for diluting sites.
+Chemostatic or mostly chemostatic systems do not seem to display any particular kind of trend. They are located in all kinds of environments - from hyper-urban to deep in state parks.
+
+```{r, include = FALSE}
+#Blue
+BLUEdata <- read.csv("../FL_CSV/hyp1/BLUEdata.csv")
+
+BLUENitrateDV <- BLUEdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+BLUEFlowDV <- BLUEdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+BLUEChemo <- full_join(BLUENitrateDV, BLUEFlowDV, by = "dateTime")
+
+BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Blue Springs")
+
+#BOW
+BOWdata <- read.csv("../FL_CSV/hyp1/BOWdata.csv")
+
+BOWNitrateDV <- BOWdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+BOWFlowDV <- BOWdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+BOWChemo <- full_join(BOWNitrateDV, BOWFlowDV, by = "dateTime")
+
+BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Rainbow River Near Dunnellon")
+
+
+#CAL
+CALdata <- read.csv("../FL_CSV/hyp1/CALdata.csv")
+
+CALNitrateDV <- CALdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+CALFlowDV <- CALdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+CALChemo <- full_join(CALNitrateDV, CALFlowDV, by = "dateTime")
+
+CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Caloosahatchee River")
+
+
+#CHAS
+CHASdata <- read.csv("../FL_CSV/hyp1/CHASdata.csv")
+
+CHASNitrateDV <- CHASdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+CHASFlowDV <- CHASdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+CHASChemo <- full_join(CHASNitrateDV, CHASFlowDV, by = "dateTime")
+
+CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Chassahowitzka River")
+
+
+#CRANE
+CRANEdata <- read.csv("../FL_CSV/hyp1/CRANEdata.csv")
+
+CRANENitrateDV <- CRANEdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+CRANEFlowDV <- CRANEdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+CRANEChemo <- full_join(CRANENitrateDV, CRANEFlowDV, by = "dateTime")
+
+CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Crane Creek")
+
+#DRAIN
+DRAINdata <- read.csv("../FL_CSV/hyp1/DRAINdata.csv")
+
+DRAINNitrateDV <- DRAINdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+DRAINFlowDV <- DRAINdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+DRAINChemo <- full_join(DRAINNitrateDV, DRAINFlowDV, by = "dateTime")
+
+DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Drainage Canal")
+  
+
+#FAN
+FANdata <- read.csv("../FL_CSV/hyp1/FANdata.csv")
+
+FANNitrateDV <- FANdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+FANFlowDV <- FANdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+FANChemo <- full_join(FANNitrateDV, FANFlowDV, by = "dateTime")
+
+FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Fanning Springs")
+
+
+#FELL
+FELLdata <- read.csv("../FL_CSV/hyp1/FELLdata.csv")
+
+FELLNitrateDV <- FELLdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+FELLFlowDV <- FELLdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+FELLChemo <- full_join(FELLNitrateDV, FELLFlowDV, by = "dateTime")
+
+FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Fellsmere Canal")
+
+
+#HOL
+HOLdata <- read.csv("../FL_CSV/hyp1/HOLdata.csv")
+
+HOLNitrateDV <- HOLdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+HOLFlowDV <- HOLdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+HOLChemo <- full_join(HOLNitrateDV, HOLFlowDV, by = "dateTime")
+
+HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Blue Hole Spring")
+
+
+#HOM
+HOMdata <- read.csv("../FL_CSV/hyp1/HOMdata.csv")
+
+HOMNitrateDV <- HOMdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+HOMFlowDV <- HOMdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+HOMChemo <- full_join(HOMNitrateDV, HOMFlowDV, by = "dateTime")
+
+HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Homosassa Springs")
+
+
+#HUN
+HUNdata <- read.csv("../FL_CSV/hyp1/HUNdata.csv")
+
+HUNNitrateDV <- HUNdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+HUNFlowDV <- HUNdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+HUNChemo <- full_join(HUNNitrateDV, HUNFlowDV, by = "dateTime")
+
+HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Hunter Spring Run")
+
+
+#ICHE
+ICHEdata <- read.csv("../FL_CSV/hyp1/ICHEdata.csv")
+
+ICHENitrateDV <- ICHEdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+ICHEFlowDV <- ICHEdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+ICHEChemo <- full_join(ICHENitrateDV, ICHEFlowDV, by = "dateTime")
+
+ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Ichetucknee River")
+
+
+#MAD
+MADdata <- read.csv("../FL_CSV/hyp1/MADdata.csv")
+
+MADNitrateDV <- MADdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+MADFlowDV <- MADdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+MADChemo <- full_join(MADNitrateDV, MADFlowDV, by = "dateTime")
+
+MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Madison Blue Spring")
+
+
+#MAIN
+MAINdata <- read.csv("../FL_CSV/hyp1/MAINdata.csv")
+
+MAINNitrateDV <- MAINdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+MAINFlowDV <- MAINdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+MAINChemo <- full_join(MAINNitrateDV, MAINFlowDV, by = "dateTime")
+
+MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Main Canal")
+
+
+#MAN
+MANdata <- read.csv("../FL_CSV/hyp1/MANdata.csv")
+
+MANNitrateDV <- MANdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+MANFlowDV <- MANdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+MANChemo <- full_join(MANNitrateDV, MANFlowDV, by = "dateTime")
+
+MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Manatee Spring")
+
+
+#RAIN
+RAINdata <- read.csv("../FL_CSV/hyp1/RAINdata.csv")
+
+RAINNitrateDV <- RAINdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+RAINFlowDV <- RAINdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+RAINChemo <- full_join(RAINNitrateDV, RAINFlowDV, by = "dateTime")
+
+RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Rainbow River at Dunnellon")
+
+
+#SANTA
+SANTAdata <- read.csv("../FL_CSV/hyp1/SANTAdata.csv")
+
+SANTANitrateDV <- SANTAdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+SANTAFlowDV <- SANTAdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+SANTAChemo <- full_join(SANTANitrateDV, SANTAFlowDV, by = "dateTime")
+
+SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Santa Fe River")
+
+
+
+#THREE
+THREEdata <- read.csv("../FL_CSV/hyp1/THREEdata.csv")
+
+THREENitrateDV <- THREEdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+THREEFlowDV <- THREEdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+THREEChemo <- full_join(THREENitrateDV, THREEFlowDV, by = "dateTime")
+
+THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Three Mile Canal")
+
+
+#TURK
+TURKdata <- read.csv("../FL_CSV/hyp1/TURKdata.csv")
+
+TURKNitrateDV <- TURKdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+TURKFlowDV <- TURKdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+TURKChemo <- full_join(TURKNitrateDV, TURKFlowDV, by = "dateTime")
+
+TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Turkey Creek")
+
+
+#TURN
+TURNdata <- read.csv("../FL_CSV/hyp1/TURNdata.csv")
+
+TURNNitrateDV <- TURNdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+TURNFlowDV <- TURNdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+TURNChemo <- full_join(TURNNitrateDV, TURNFlowDV, by = "dateTime")
+
+TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Turnbull Creek")
+
+#WAC
+WACdata <- read.csv("../FL_CSV/hyp1/WACdata.csv")
+
+WACNitrateDV <- WACdata %>%
+  group_by(dateTime) %>%
+  summarise(Nitrate_DV = mean(Nitrate_mgl))
+
+WACFlowDV <- WACdata %>%
+  group_by(dateTime) %>%
+  summarise(Flow_DV = mean(Flow_Inst))
+
+WACChemo <- full_join(WACNitrateDV, WACFlowDV, by = "dateTime")
+
+WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "", y = "") +
+  ggtitle("Wacissa River") 
+
+
+y.grob <- textGrob("Daily Mean Nitrate (mg/l)", 
+                   gp=gpar(fontface="bold", fontsize=12), rot=90)
+
+x.grob <- textGrob(("Daily Mean Discharge (ft3/s)"), 
+                   gp=gpar(fontface="bold", fontsize=12))
+
+diluting.grob <- textGrob("Diluting Systems C-Q",
+                          gp=gpar(fontface="bold", fontsize=15))
+flushing.grob <- textGrob("Flushing Systems C-Q",
+                          gp=gpar(fontface="bold", fontsize=15))
+chemostatic.grob <- textGrob("Chemostatic Systems C-Q",
+                             gp=gpar(fontface="bold", fontsize=15))
+```
+
+```{r, echo = FALSE, message = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=5}
+
+ChemostaticPlot <- plot_grid(
+  FANChemoplot, RAINChemoplot, CHASChemoplot,  
+  TURNChemoplot, WACChemoplot,
+  ncol = 3)
+ChemostaticPlot <- grid.arrange(arrangeGrob(ChemostaticPlot, left = y.grob, bottom = x.grob, top = chemostatic.grob))
+
+print(ChemostaticPlot)
+
+```
+
+```{r, echo = FALSE, message = FALSE, fig.cap="C-Q Plots of Flushing Sites",fig.height=5}
+FlushingPlot <- plot_grid(
+  MAINChemoplot, FELLChemoplot, CRANEChemoplot, MADChemoplot, 
+  THREEChemoplot, CALChemoplot, HUNChemoplot,
+  ncol = 3
+)
+FlushingPlot <- grid.arrange(arrangeGrob(FlushingPlot, left = y.grob, bottom = x.grob, top = flushing.grob))
+
+print(FlushingPlot)
+```
+
+```{r, echo = FALSE, message = FALSE, fig.cap="C-Q Plots of Diluting Sites",fig.height=5}
+DilutingPlot <- plot_grid(
+  ICHEChemoplot, SANTAChemoplot, BLUEChemoplot, HOLChemoplot, DRAINChemoplot, 
+  BOWChemoplot,  MANChemoplot, HOMChemoplot, TURKChemoplot,
+  ncol = 3
+)
+
+DilutingPlot <- grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob, top = diluting.grob))
+
+print(DilutingPlot)
+```
+
+### Quantitative/Statistical Approach: How do counties’ population and water usage impact the chemical flashiness of sites within the county?
+
+
+```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9}
+pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo, color = site.type)) +
+  geom_point() +
+  labs(x = "Population of the county (k people)", y = "Absolute Chemostatic Coefficient (slope from regression)")+
+  theme(title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
+
+irri.plot.2 = ggplot(hyp2.full_cleaned, aes(x = irrigation, y = abschemo, color = site.type)) +
+  geom_point() +
+  labs(x = "Irrigation water use (Bgal/d)", y = "")+
+    theme(title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+
+
+therm.plot.2 = ggplot(hyp2.full_cleaned, aes(x = thermoelectric, y = abschemo, color = site.type)) +
+  geom_point() +
+  labs(x = "Power gen. water use (Bgal/d)", y = "")+
+    theme(title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+legend <- get_legend(
+  # create some space to the left of the legend
+  pop.plot.2 + theme(legend.box.margin = margin(0, 0, 0, 0))
+)
+
+title <- ggdraw() + 
+  draw_label(
+    "Impact of Population and Water Use on Abs. Chemostatic Coeff.",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  ) +theme(
+    # add margin on the left of the drawing canvas,
+    # so title is aligned with left edge of first plot
+    plot.margin = margin(0, 0, 0, 0)
+  )
+plot_row <- plot_grid(pop.plot.2 + theme(legend.position="none"),
+          irri.plot.2+ theme(legend.position="none"),
+          therm.plot.2+ theme(legend.position="none"), legend, ncol = 4)
+
+plot_grid(title, plot_row, ncol = 1,rel_heights = c(0.1, 1))
+```
+
+```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9}
+hyp2.plot.2 <- ggplot() +
+  geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
+  geom_sf(data = hyp2.spatial, aes(size = abschemo), alpha = 0.5, show.legend = "point") +
+ # scale_color_viridis_c(option = "inferno") +
+  labs(size = "Chemo staticity") +
+  theme(legend.position = "right",
+        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8),
+        legend.margin = margin(0,0,0,0))
+print(hyp2.plot.2)
+```
 
 
 \newpage

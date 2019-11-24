@@ -15,15 +15,10 @@ mainfont: Times New Roman
 
 \newpage
 
-<Arrow brackets are used for annotating the RMarkdown files. Text within these brackets should not appear in the final version of the PDF document>
-
-<**General Guidelines**>
-<1. Write in scientific style> 
-<2. [Global options for R chunks](https://rmarkdown.rstudio.com/lesson-3.html) should be set so that only relevant output is displayed>
-<3. Make sure your final knitted PDF looks professional. Format tables appropriately, size figures appropriately, make sure bulleted and numbered lists appear as such, avoid awkwardly placed page breaks, etc.>
-
 ```{r setup, include=FALSE}
 # Set your working directory
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, echo=FALSE, figure.cap = TRUE)
+
 library(dataRetrieval)
 library(tidyverse)
 library(lubridate)
@@ -39,44 +34,75 @@ library(grid)
 theme_set(theme_bw())
 
 # Load your datasets
+BLUEdata <- read.csv("../FL_CSV/hyp1/BLUEdata.csv")
+BOWdata <- read.csv("../FL_CSV/hyp1/BOWdata.csv")
+CALdata <- read.csv("../FL_CSV/hyp1/CALdata.csv")
+CHASdata <- read.csv("../FL_CSV/hyp1/CHASdata.csv")
+CRANEdata <- read.csv("../FL_CSV/hyp1/CRANEdata.csv")
+DRAINdata <- read.csv("../FL_CSV/hyp1/DRAINdata.csv")
+FANdata <- read.csv("../FL_CSV/hyp1/FANdata.csv")
+FELLdata <- read.csv("../FL_CSV/hyp1/FELLdata.csv")
+HOLdata <- read.csv("../FL_CSV/hyp1/HOLdata.csv")
+HOMdata <- read.csv("../FL_CSV/hyp1/HOMdata.csv")
+HUNdata <- read.csv("../FL_CSV/hyp1/HUNdata.csv")
+ICHEdata <- read.csv("../FL_CSV/hyp1/ICHEdata.csv")
+MADdata <- read.csv("../FL_CSV/hyp1/MADdata.csv")
+MAINdata <- read.csv("../FL_CSV/hyp1/MAINdata.csv")
+MANdata <- read.csv("../FL_CSV/hyp1/MANdata.csv")
+RAINdata <- read.csv("../FL_CSV/hyp1/RAINdata.csv")
+SANTAdata <- read.csv("../FL_CSV/hyp1/SANTAdata.csv")
+THREEdata <- read.csv("../FL_CSV/hyp1/THREEdata.csv")
+TURKdata <- read.csv("../FL_CSV/hyp1/TURKdata.csv")
+TURNdata <- read.csv("../FL_CSV/hyp1/TURNdata.csv")
+WACdata <- read.csv("../FL_CSV/hyp1/WACdata.csv")
 
 hyp2.full_cleaned = read.csv("../Processed_Dataframes/hyp2+chemo.csv")
+violin_comb = read.csv("../Processed_Dataframes/violin_comb.csv")
 ```
 
 
 # Rationale and Research Questions
 
-<Write 1-2 paragraph(s) detailing the rationale for your study. This should include both the context of the topic as well as a rationale for your choice of dataset (reason for location, variables, etc.) A few citations should be included to give context for your topic. You may choose to configure autoreferencing for your citations or add these manually.>
+## Rationale
+Storm events have the potential to influence rivers and streams by temporarily altering their discharge levels and chemical composition. Rapid changes in stream discharge is known as hydrologic flashiness (1). A stream that “experiences a rapid increase in flow shortly after onset of a precipitation event, and an equally rapid return to base conditions shortly after the end of the precipitation event” is considered to be hydrologically “flashy” (1). Rapid changes in chemical composition, such as nutrient concentrations or conductance levels, is known as chemical flashiness or a departure from chemostasis. “Chemostasis occurs when DOM [dissolved organic matter] remains unchanged despite changes in discharge” (2). 
 
-<At the end of your rationale, introduce a numbered list of your questions (or an overarching question and sub-questions). Each question should be accompanied by one or more working hypotheses, inserted beneath each question.>
+Both hydrologic and chemical flashiness can alter the natural processes of rivers and streams, particularly if these rivers and streams are experiencing an increase in flashiness over time. These alterations can disrupt human activity such as hunting, fishing, recreation, and the utilization of water for drinking, and, as a result, people incur costs. One consequence of hydrologic flashiness is flooding of nearby lands. Flooding events in the U.S. cost an average of 4.4 billion USD per event in damages (5). One alteration caused by storm-induced flashiness is eutrophication. Eutrophication “is characterized by excessive plant and algal growth due to the increased availability of one or more limiting growth factors needed for photosynthesis, such as sunlight, carbon dioxide, and nutrient fertilizers” (6). In this case, the limiting growth factor that chemical flashiness can increase is nutrient levels. As nutrient levels increase, this can cause “blooms of blue-green algae(i.e., cyanobacteria), tainted drinking water supplies, degradation of recreational opportunities, and hypoxia. The estimated cost of damage mediated by eutrophication in the U.S. alone is approximately $2.2 billion annually” (7). 
 
-Each time a storm event occurs, it has the potential to influence the land and waterways with which it comes in contact. A storm can bring high levels of precipitation that can flood rivers and streams and temporarily alter their discharge levels. The precipitation can also alter the biogeochemistry of water bodies: eroding soil, increasing terrestrial inputs of organic matter, and transporting in contaminants such as pesticides and fertilizers. Alterations to the natural processes of streams impact the ecosystems present in the streams and can affect human activity such as hunting, fishing, recreation, and the utilization of river water for irrigation. Eutrophication is one example of a massive alteration to a river that can have negative consequences for people. Eutrophication is the induction of a dead zone devoid of oxygen in a body of water due to nutrient loading from a storm event.
+The effects of storm events on bodies of water are compounded by human activity. The use of pesticides and fertilizers on agricultural land, as well as the way in which sewage is managed, can make nutrients such as nitrogen and phosphorus accessible for storm transport in the first place (8). Furthermore, anthropogenically-induced climate change is intensifying natural precipitation events by making them wetter, longer, and more intense (9). As storms worsen, so do their effects. 
 
-  The effects of storm events on bodies of water are compounded by human activity. The use of pesticides and fertilizers on agricultural land makes nutrients such as nitrogen and phosphorus accessible for storm transport in the first place. Furthermore, anthropogenically-induced climate change is intensifying natural precipitation events by making them wetter, longer, and more intense. As storms worsen, so do their effects. 
-	
-	This applies to the region we are studying in particular. Florida is a state that has a history of extreme weather events such as hurricanes and tropical storms, as well as a history, particularly recently, of eutrophication events. High levels of nutrient loading, in combination with high temperatures that are typical of Florida’s climate, creates an environment conducive to eutrophication (Stephenson, 2018). The Florida Department of Environmental Protection lists more than 1,400 water bodies as “impaired by pollutants” (Stephenson, 2018). 
-	
-	It is important for us to understand the science behind the interaction of storms and streams in order to protect ourselves from the consequences on human activity of storm events. As eutrophication events worsen and hinder human activities such as fishing, hunting, recreation, and irrigation, policymakers will enact legislation to tackle the problem. In Florida, for example, policymakers have enacted legislation to tackle point sources of nutrient discharge. Nevertheless, eutrophication still abounds (Smith & Schindler 2009). As a result, it is crucial that the problem be understood more explicitly in order for policies to be more targeted and effective. How do storm events affect the chemostaticity and hydrologic flashiness of rivers in Florida? Which rivers are the most affected? What factors influence the flashiness during storm events? These are questions to which we need answers in order to affect change. 
+This applies to the region of this study in particular. Florida is a state that has a history of extreme weather events such as hurricanes and tropical storms, as well as a history, particularly recently, of eutrophication events. High levels of nutrient loading, in combination with high temperatures that are typical of Florida’s climate, create an environment conducive to eutrophication (5). The Florida Department of Environmental Protection lists more than 1,400 water bodies as “impaired by pollutants” (5). In this study, 21 water bodies including rivers, creeks, springs, and canals in Florida are examined for their hydrologic and chemical flashiness, the urbanness or ruralness of their surrounding lands, as well as the water use levels of the surrounding communities.  
 
-Our research questions are:
+These sites are of great importance to people. For example, Chassahowitzka River is a spring-fed river in a national wildlife refuge, on which people engage in sportfishing, crabbing, camping, and hiking activities (6). The Main Relief Canal in Vero Beach, managed by the Indian River Farms Water Control District, drains much of Indian River County and the City of Vero Beach to prevent flooding on residential and commercial land (10). Turnbull Creek is a “critical waypoint for waters flowing north into Turnbull Bay, Spruce Creek, the Indian River, and Atlantic Ocean” (11) and a habitat for numerous species (12). A majority of the people of New Smyrna Beach (75% of constituents) just voted in favor of a referendum to pay $8.94 million to protect the land along Turnbull Creek from development (13). Many of the sites of this study are well-managed, located in state or national parks, and all of the canals are artificially created. There are already management-schemes and policies in place to protect these water bodies. For example, to reduce nutrient total maximum daily loads, there exists action plans (14) and the Springs Protection Act (15). It is useful, then, to better understand the effects of flashiness on these water bodies in order to inform managers to implement more efficient and cost-effective management practices. 
 
-  What, if any, is the correlation between hydrologic flashiness and chemical flashiness in Florida?
+## Research Questions
+The goal of this study is to better understand the effects of storm events on rivers and streams in Florida. 
 
-  What aspects of a stream influence chemical flashiness in Florida?
+1. Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness? 
+  
+  a) Hypothesis: sites with high hydrologic flashiness are more likely to be chemically flashy because of shared predictor variables.
+  
+  b) This question will be answered using USGS NWIS high frequency discharge and nitrate data on water bodies within the state of Florida. 
 
-  What aspects of a storm influence chemical flashiness in Florida?
+2. The second question to answer is: how do features of a site impact its chemical flashiness?
+  
+  a) This question will be approached qualitatively by ascertaining the presence or absence of urban and/or rural features, such as airports, commercial development, or farmland, and their proximity to each site. GIS maps will be analyzed for this part.
+  
+  b) The hypotheses related to the qualitative approach are: (1) that urbanness / ruralness will be correlated with the stream exhibiting flushing, diluting, or chemostatic behavior, or (2) that the urbanness / ruralness will not be correlated with any particular behavior of the stream, whether flushing, diluting, or chemostatic in nature.
+  
+  c) This question will also be approached quantitatively or statistically by ascertaining the level of human activity surrounding each site. Human activity will be measured using population totals and water use levels for the counties surrounding each water body.
+  
+  d) The corresponding hypotheses are that: (1) population and water use will be correlated with chemical flashiness, and (2) population and water use will not be correlated with chemical flashiness.
 
 \newpage
 
 # Dataset Information
 
-<Provide information on how the dataset for this analysis were collected, the data contained in the dataset, and any important pieces of information that are relevant to your analyses. This section should contain much of same information as the metadata file for the dataset but formatted in a way that is more narrative.>
+Data for 21 water bodies (7 rivers, 7 springs, 3 creeks, and 4 canals) in Florida will be collected. 
 
-<Describe how your team wrangled your dataset in a format similar to a methods section of a journal article.>
+For question / hypothesis 1 regarding hydrologic and chemical flashiness, high frequency discharge and nitrate data will be extracted from the USGS NWIS DataRetrieval package. A Richards-Baker Index will be calculated using the discharge data as a measure of hydrologic flashiness. C-Q plots will be generated using the nitrate data as a measure of chemical flashiness. 
 
-<Add a table that summarizes your data structure (variables, units, ranges and/or central tendencies, data source if multiple are used, etc.). This table can be made in markdown text or inserted as a `kable` function in an R chunk. If the latter, do not include the code used to generate your table.>
+For question / hypothesis 2 regarding the properties of each site that may affect chemical flashiness, data will be retrieved from ____ . Specifically, county population values, irrigation water use levels, thermoelectric water use levels, and a chemostatic coefficient will be examined. Maps taken from ___ will be examined to ascertain the presence or absence of features indicative of urbanness or ruralness surrounding each site, such as airports, commercial center, or farms, as well as the proximity of these features to each water body.
 
-For this analysis, our datasets were USGS NWIS high frequency and water use data. The data contained in our datasets for hypothesis 1 are the site number, date/time of measurement, instantaneous discharge, and instantaneous nitrate. Contained in the datasets for hypothesis 2 and 3 are site number, date/time of measurement, instantaneous discharge, nitrate, pH, dissolved oxygen, specific conductance; population of the county each site is in, and the amount of surface water used for thermoelectric, industrial, livestock and irrigation uses in each county. We wrangled all our data frames to include periods of data that included all of the variables, and that exhibited the most continuous measurements - all for easier, more standardized analysis and visualization. We chose sites from the state of Florida because it had sufficient sites with high frequency nitrate and discharge data.
 
 ```{r, echo = FALSE, message = FALSE}
 df <- data.frame(Variable = c("Nitrate concentrations -- high frequency","Discharge -- high frequency","Richards-Baker Index value", "County population", "Irrigation water use", "Thermoelectric water use", "Chemostatic coefficient"),
@@ -98,9 +124,6 @@ kable(df2, caption = "USGS sites selected for analysis")
 
 # Exploratory Analysis 
 
-<Insert exploratory visualizations of your dataset. This may include, but is not limited to, graphs illustrating the distributions of variables of interest and/or maps of the spatial context of your dataset. Format your R chunks so that graphs are displayed but code is not displayed. Accompany these graphs with text sections that describe the visualizations and provide context for further analyses.>
-
-<Each figure should be accompanied by a caption, and each figure should be referenced within the text>
 
 ```{r, include = FALSE}
 waterfeatures <- st_read("../other_data/hydrogl020.dbf")
@@ -115,8 +138,10 @@ states.florida = filter(states, ID %in% c("florida"))
 hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
 ```
 
-```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=4.5}
-plot.exp <- ggplot() +
+Figure 1 is a map that shows the location of the sites we chose to analyze. 
+
+```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=4, fig.align="center"}
+ggplot() +
   geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
   geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) +
   geom_sf(data = hyp2.spatial, alpha = 0.5) +
@@ -126,18 +151,139 @@ plot.exp <- ggplot() +
         legend.text = element_text(size = 7),
         legend.title = element_text(size = 8),
         legend.margin = margin(0,0,0,0))
-print(plot.exp)
 ```
+
+
+We decided to use violin plots to visualize the ranges of discharge and nitrate in the different sites. We made individual violin plots for discharge and nitrate for each site, and used cowplot to combine the discharge and nitrate for each site. The first thing we noticed was the difference between the canal plots and the other waterway types. The canal plots have values much more concentrated in their lower ranges, and much less variation overall. Visualizing the differences in canal variable distributions alerts us that they may influence our data analysis.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge and nitrate values of a stream and a canal", fig.height=8, fig.width = 9}
+SANTAviolin<- SANTAdata%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "SANTA")
+SANTA_violin_dis<-ggplot(SANTAviolin)+
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
+SANTA_violin_nit<-ggplot(SANTAviolin)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
+
+DRAINviolin<- DRAINdata%>%
+  select(Flow_Inst,Nitrate_mgl)%>%
+  mutate(site = "DRAIN")
+DRAIN_violin_dis<-ggplot(DRAINviolin)+
+  geom_violin(aes(x=site,y=Flow_Inst))+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
+DRAIN_violin_nit<-ggplot(DRAINviolin)+
+  geom_violin(aes(x=site,y=Nitrate_mgl))+
+  labs(y="Nitrate (mg/L)")
+
+plot_grid(SANTA_violin_dis,SANTA_violin_nit, DRAIN_violin_dis,DRAIN_violin_nit, ncol = 2)
+```
+
+We then created combined violin plots of discharge and nitrate for all the sites. The CAL and SANTA sites had much more discharge than any other site. We made another discharge plot without CAL and SANTA to better visualize the smaller discharges. We then made a similar plot for nitrate.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge values of all sites (except CAL and SANTA", fig.height=4, fig.width = 9}
+#discharge plot for all sites except two to visualize smaller discharges
+ggplot(
+  violin_comb%>%filter(site!="CAL", site!="SANTA"),aes(x=site,y=Flow_Inst))+
+  geom_violin()+
+  labs(y=expression(paste("Discharge (ft"^"3","/s)")))
+```
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of nitrate concentration values of all sites", fig.height=4, fig.width = 9}
+#discharge plot for all sites except two to visualize smaller discharges
+ggplot(violin_comb,aes(x=site,y=Nitrate_mgl))+
+  geom_violin()+
+  labs(y="Nitrate (mg/L)")
+```
+
+Part of our data exploration process included plotting discharge and nitrate over time at all 21 of our sites. This served two purposes: one, it helped us get a preliminary sense of the diversity in distributions and behaviors at all of the sites, and two, it highlighted any possible gaps in the data that we would need to wrangle out. In general, we did not notice any trends between sites, indicating a deeper analysis was needed. 
+
+This report includes four examples of the graphs we generated: one spring, one river, one canal, and one creek - all to give a sense of the range of site types and the data trends at each.
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=16, fig.width = 9, fig.cap = "Discharge and nitrate value patterns of example sites"}
+#Spring
+BLUEdata$dateTime <- as.Date(BLUEdata$dateTime)
+
+BLUEplot <- ggplot(BLUEdata, aes(x= dateTime, y = Flow_Inst)) +
+  geom_line(color = "blue") +
+  labs(x = "", y = expression("Instantaneous Flow (ft"^3*"/s)"))
+
+BLUENO3plot <- ggplot(BLUEdata, aes(x = dateTime, y = Nitrate_mgl)) +
+  geom_line() +
+  labs(x = "Date", y = "Instantaneous Nitrate (mg/l)")
+
+BLUECombined <- plot_grid(BLUEplot, BLUENO3plot, ncol = 1)
+
+BLUE.grob <- textGrob("Blue Springs Discharge/Nitrate Over Time", gp=gpar(fontface="bold", fontsize=15))
+
+
+#River
+CALdata$dateTime <- as.Date(CALdata$dateTime)
+
+CALplot <- ggplot(CALdata, aes(x= dateTime, y = Flow_Inst)) +
+  geom_line(color = "blue") +
+  labs(x = "", y = expression("Instantaneous Flow (ft"^3*"/s)"))
+
+CALNO3plot <- ggplot(CALdata, aes(x = dateTime, y = Nitrate_mgl)) +
+  geom_line() +
+  labs(x = "Date", y = "Instantaneous Nitrate (mg/l)")
+
+CALCombined <- plot_grid(CALplot, CALNO3plot, ncol = 1)
+
+CAL.grob <- textGrob("Caloosahatchee River Discharge/Nitrate Over Time",
+                      gp=gpar(fontface="bold", fontsize=15))
+
+
+
+#Canal
+MAINdata$dateTime <- as.Date(MAINdata$dateTime)
+
+MAINplot <- ggplot(MAINdata, aes(x= dateTime, y = Flow_Inst)) +
+  geom_line(color = "blue") +
+  labs(x = "", y = expression("Instantaneous Flow (ft"^3*"/s)"))
+
+MAINNO3plot <- ggplot(MAINdata, aes(x = dateTime, y = Nitrate_mgl)) +
+  geom_line() +
+  labs(x = "Date", y = "Instantaneous Nitrate (mg/l)")
+
+MAINCombined <- plot_grid(MAINplot, MAINNO3plot, ncol = 1)
+
+MAIN.grob <- textGrob("Main Canal Discharge/Nitrate Over Time",
+                     gp=gpar(fontface="bold", fontsize=15))
+
+
+#Creek
+TURKdata$dateTime <- as.Date(TURKdata$dateTime)
+
+TURKplot <- ggplot(TURKdata, aes(x= dateTime, y = Flow_Inst)) +
+  geom_line(color = "blue") +
+  labs(x = "", y = expression("Instantaneous Flow (ft"^3*"/s)"))
+
+TURKNO3plot <- ggplot(TURKdata, aes(x = dateTime, y = Nitrate_mgl)) +
+  geom_line() +
+  labs(x = "Date", y = "Instantaneous Nitrate (mg/l)")
+
+TURKCombined <- plot_grid(TURKplot, TURKNO3plot, ncol = 1)
+
+TURK.grob <- textGrob("Turkey Creek Discharge/Nitrate Over Time",
+                     gp=gpar(fontface="bold", fontsize=15))
+
+
+grid.arrange(arrangeGrob(BLUECombined, top = BLUE.grob),
+             arrangeGrob(CALCombined, top = CAL.grob),
+             arrangeGrob(MAINCombined, top = MAIN.grob),
+             arrangeGrob(TURKCombined, top = TURK.grob))
+```
+
 
 \newpage
 
 # Analysis
 
-<Insert visualizations and text describing your main analyses. Format your R chunks so that graphs are displayed but code and other output is not displayed. Instead, describe the results of any statistical tests in the main text (e.g., "Variable x was significantly different among y groups (ANOVA; df = 300, F = 5.55, p < 0.0001)"). Each paragraph, accompanied by one or more visualizations, should describe the major findings and how they relate to the question and hypotheses. Divide this section into subsections, one for each research question.>
-
-<Each figure should be accompanied by a caption, and each figure should be referenced within the text>
-
-## Question 1: <insert specific question here and add additional subsections for additional questions below> Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness?
+## Question 1: Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness?
 
 We chose to analyze our first question, on the relationship between hydrologic flashiness and chemical flashiness, using sites with high frequency nitrate and discharge measurements. At each site, we calculated the Richards-Baker Index to quantify the hydrologic flashiness.
 
@@ -213,13 +359,13 @@ The linear regression for Absolute Chemostatic Coefficient vs. RBI provided a Co
 We made observations by first sorting sites into three categories - Chemostatic, Flushing, and Diluting - based on the slopes of the regression lines of their C-Q plots - values near 0, positive values, and negative values, respectively. Then, we went site by site and searched their coordinates into Google Maps and ArcGIS, and noted the general surrounding geography - is it mostly urban or rural? Is it in a state park, adjacent to it, or nowhere near? Where, generally, in Florida is this site located? We also paid special attention to the site type - river, spring, or canal - as each most likely have differing management strategies and hydrologies.
 
 When we were done listing the qualitative traits of all the sites in each hydrologic behavioral categorical, we noticed some trends had emerged. For the most flushing sites, or, the ones with the steepest regression line slopes, we noticed that all are located near airports. (Main Canal, Fellsmere Canal, Crane Creek, and Madison Blue Spring) There does not seem to be a correlation with the urbanity of the location, however, as two out of four of these sites are mostly rural and two are mostly urban - Fellsmere, Madison Blue Spring and Main Canal, Crane Creek, respectively. We hesitate to draw any concrete conclusions about possible relationships between flushing systems and proximity to airports, as there may be many other factors involved that are not within the scope of this project. One important factor could be the management style of the site; three out of four of the canals analyzed in this project tend towards flushing. This, too, could be a coincidence, and we would need to do a deeper analysis with more sites to draw conclusions.
+
 Our list of diluting sites show more convincing trends - seven out of nine of the sites are located in very rural locations, most in or on the edge of a Florida state park. (Ichetucknee, Santa Fe, Blue Spring, Blue Hole Spring, Manatee Spring, Homosassa Spring, Turkey Creek) However, this number may be slightly inflated because three of the four most diluting sites are directly interconnected, increasing the likelihood of similar hydrologic tendencies between them. (Ichetucknee, Santa Fe, Blue Hole Spring) There seem to be no other notable qualitative trends for diluting sites.
+
 Chemostatic or mostly chemostatic systems do not seem to display any particular kind of trend. They are located in all kinds of environments - from hyper-urban to deep in state parks.
 
 ```{r, include = FALSE, warning= FALSE, message = FALSE, echo = FALSE}
 #Blue
-BLUEdata <- read.csv("../FL_CSV/hyp1/BLUEdata.csv")
-
 BLUENitrateDV <- BLUEdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -240,8 +386,6 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   theme(plot.title = element_text(size = 12))
 
 #BOW
-BOWdata <- read.csv("../FL_CSV/hyp1/BOWdata.csv")
-
 BOWNitrateDV <- BOWdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -263,8 +407,6 @@ BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #CAL
-CALdata <- read.csv("../FL_CSV/hyp1/CALdata.csv")
-
 CALNitrateDV <- CALdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -286,8 +428,6 @@ CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #CHAS
-CHASdata <- read.csv("../FL_CSV/hyp1/CHASdata.csv")
-
 CHASNitrateDV <- CHASdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -309,8 +449,6 @@ CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #CRANE
-CRANEdata <- read.csv("../FL_CSV/hyp1/CRANEdata.csv")
-
 CRANENitrateDV <- CRANEdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -331,8 +469,6 @@ CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   theme(plot.title = element_text(size = 12))
 
 #DRAIN
-DRAINdata <- read.csv("../FL_CSV/hyp1/DRAINdata.csv")
-
 DRAINNitrateDV <- DRAINdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -354,8 +490,6 @@ DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   
 
 #FAN
-FANdata <- read.csv("../FL_CSV/hyp1/FANdata.csv")
-
 FANNitrateDV <- FANdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -377,8 +511,6 @@ FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #FELL
-FELLdata <- read.csv("../FL_CSV/hyp1/FELLdata.csv")
-
 FELLNitrateDV <- FELLdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -400,8 +532,6 @@ FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #HOL
-HOLdata <- read.csv("../FL_CSV/hyp1/HOLdata.csv")
-
 HOLNitrateDV <- HOLdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -423,8 +553,6 @@ HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #HOM
-HOMdata <- read.csv("../FL_CSV/hyp1/HOMdata.csv")
-
 HOMNitrateDV <- HOMdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -446,8 +574,6 @@ HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #HUN
-HUNdata <- read.csv("../FL_CSV/hyp1/HUNdata.csv")
-
 HUNNitrateDV <- HUNdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -469,8 +595,6 @@ HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #ICHE
-ICHEdata <- read.csv("../FL_CSV/hyp1/ICHEdata.csv")
-
 ICHENitrateDV <- ICHEdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -492,8 +616,6 @@ ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #MAD
-MADdata <- read.csv("../FL_CSV/hyp1/MADdata.csv")
-
 MADNitrateDV <- MADdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -515,8 +637,6 @@ MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #MAIN
-MAINdata <- read.csv("../FL_CSV/hyp1/MAINdata.csv")
-
 MAINNitrateDV <- MAINdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -538,7 +658,6 @@ MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #MAN
-MANdata <- read.csv("../FL_CSV/hyp1/MANdata.csv")
 
 MANNitrateDV <- MANdata %>%
   group_by(dateTime) %>%
@@ -561,8 +680,6 @@ MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #RAIN
-RAINdata <- read.csv("../FL_CSV/hyp1/RAINdata.csv")
-
 RAINNitrateDV <- RAINdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -584,8 +701,6 @@ RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #SANTA
-SANTAdata <- read.csv("../FL_CSV/hyp1/SANTAdata.csv")
-
 SANTANitrateDV <- SANTAdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -608,8 +723,6 @@ SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #THREE
-THREEdata <- read.csv("../FL_CSV/hyp1/THREEdata.csv")
-
 THREENitrateDV <- THREEdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -631,8 +744,6 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #TURK
-TURKdata <- read.csv("../FL_CSV/hyp1/TURKdata.csv")
-
 TURKNitrateDV <- TURKdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -654,8 +765,6 @@ TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
 
 
 #TURN
-TURNdata <- read.csv("../FL_CSV/hyp1/TURNdata.csv")
-
 TURNNitrateDV <- TURNdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -676,8 +785,6 @@ TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   theme(plot.title = element_text(size = 12))
 
 #WAC
-WACdata <- read.csv("../FL_CSV/hyp1/WACdata.csv")
-
 WACNitrateDV <- WACdata %>%
   group_by(dateTime) %>%
   summarise(Nitrate_DV = mean(Nitrate_mgl))
@@ -816,10 +923,36 @@ print(hyp2.plot.2)
 \newpage
 
 # References
-<add references here> 
-Chislock, M. F., Doster, E., Zitomer, R. A. & Wilson, A. E. (2013) Eutrophication: Causes, Consequences, and Controls in Aquatic Ecosystems. Nature Education Knowledge 4(4):10
 
-Smith, V. H. & Schindler, D. W. Eutrophication science: where do we go from here? Trends in Ecology and Evolution 24, 201-207 (2009).
+(1) “Hydrologic Flashiness.” Kansas River Inventory. Accessed November 21, 2019. Web: http://www.kansasriverinventory.org/home/hydrologic-flashiness
 
-Stephenson, C. “Addressing Eutrophication in Florida, one watershed at a time.” University of Florida: IFAS Extension. July 23, 2018. Web: https://nwdistrict.ifas.ufl.edu/nat/2018/07/23/addressing-eutrophication-in-florida-one-watershed-at-a-time/.
+(2) Creed, I.F., et al. (2015). “The river as a chemostat: fresh perspectives on dissolved organic matter flowing down the river continuum.” Can. J. Fish. Aquat. Sci. 72: 1272-1285.
+
+(3) “Calculating the Cost of Weather and Climate Disasters.” NOAA: National Centers for Environmental Information. Accessed November 21, 2019. Web: https://www.ncei.noaa.gov/news/calculating-cost-weather-and-climate-disasters
+
+(4) Smith, V. H. and Schindler, D. W. (2009). “Eutrophication science: where do we go from here?” Trends in Ecology and Evolution. 24, 201-207.
+
+(5) Stephenson, C. “Addressing Eutrophication in Florida, one watershed at a time.” University of Florida: IFAS Extension. July 23, 2018. Accessed November 21, 2019. Web: https://nwdistrict.ifas.ufl.edu/nat/2018/07/23/addressing-eutrophication-in-florida-one-watershed-at-a-time/.
+
+(6) “Chassahowitzka River and Coastal Swamps.” Southwest Florida Management District. Accessed November 21, 2019. Web: https://www.swfwmd.state.fl.us/recreation/chassahowitzka-river-and-coastal-swamps
+
+(7) Chislock, M. F., Doster, E., Zitomer, R. A. & Wilson, A. E. (2013). “Eutrophication: Causes, Consequences, and Controls in Aquatic Ecosystems.” Nature Education Knowledge 4(4):10.
+
+(8) Walker, S. “In World That Says It’s Cutting Nutrient Pollution, Progress is Lacking.” World Resources Institute. March 4, 2019. Accessed November 21, 2019. Web: https://www.wri.org/blog/2019/03/world-says-its-cutting-nutrient-pollution-progress-lacking
+
+(9) “Extreme weather gets a boost from climate change.” Environmental Defense Fund. Accessed November 21, 2019. Web: https://www.edf.org/climate/climate-change-and-extreme-weather
+
+(10) Begley, J. “Pioneers had foresight to drain area for development; set up canal system in use today.” TC Palm News. November 7, 2018. Accessed November 21, 2019. Web: https://www.tcpalm.com/story/news/local/verobeachcentennial/2018/11/07/without-canals-dug-vero-beach-area-1900-s-wed-under-water/1821047002/
+
+(11) “City of NSB Voter Information: Turnbull Creek.” Marine Discovery Center. October 10, 2018. Accessed November 21, 2019. Web: https://www.marinediscoverycenter.org/city-of-nsb-voter-information-turnbull-creek/
+
+(12) Harrison, C. “NSB responds to growth with effort to preserve Turnbull Creek.” June 14, 2018. Accessed November 21, 2019. The Daytona Beach News Journal. Web:
+https://www.news-journalonline.com/news/20180613/nsb-responds-to-growth-with-effort-to-preserve-turnbull-creek
+
+(13) Coston, D. “NSB To Purchase More Property Along Turnbull Creek.” WNDB: News Daytona Beach. June 27, 2019. Accessed November 21, 2019. Web: https://www.newsdaytonabeach.com/wndb-news/nsb-to-purchase-more-property-along-turnbull-creek/ 
+
+(14) Division of Environmental Assessment and Restoration, Water Quality Restoration Program, Department of Florida. “Basin Management Action Plan for the Implementation of the Nutrient Total Maximum Daily Load by the Florida Department of Environmental Protection in the Jackson Blue Spring and Merritts Mill Pond Basin.” May 2016. Accessed November 21, 2019. Web. https://floridadep.gov/sites/default/files/JacksonBlueBMAP.pdf
+
+(15) Florida Department of Environmental Protection. “Protecting Florida’s Springs.” Accessed November 21, 2019. Web. https://floridadep.gov/springs/protect-restore/content/protecting-floridas-springs
+
 

@@ -1,4 +1,7 @@
 ---
+header-includes: 
+- \usepackage{float} #use the 'float' package
+- \floatplacement{figure}{H}
 output: 
   pdf_document:
     keep_tex: yes
@@ -17,7 +20,7 @@ mainfont: Times New Roman
 
 ```{r setup, include=FALSE}
 # Set your working directory
-knitr::opts_chunk$set(message=FALSE, warning=FALSE, echo=FALSE, figure.cap = TRUE)
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, echo=FALSE, figure.cap = TRUE, figure.pos = "H")
 
 library(dataRetrieval)
 library(tidyverse)
@@ -29,6 +32,7 @@ library(maps)
 library(cowplot)
 library(gridExtra)
 library(grid)
+library(float)
 
 #Set theme
 theme_set(theme_bw())
@@ -75,23 +79,16 @@ This applies to the region of this study in particular. Florida is a state that 
 These sites are of great importance to people. For example, Chassahowitzka River is a spring-fed river in a national wildlife refuge, on which people engage in sportfishing, crabbing, camping, and hiking activities (6). The Main Relief Canal in Vero Beach, managed by the Indian River Farms Water Control District, drains much of Indian River County and the City of Vero Beach to prevent flooding on residential and commercial land (10). Turnbull Creek is a “critical waypoint for waters flowing north into Turnbull Bay, Spruce Creek, the Indian River, and Atlantic Ocean” (11) and a habitat for numerous species (12). A majority of the people of New Smyrna Beach (75% of constituents) just voted in favor of a referendum to pay $8.94 million to protect the land along Turnbull Creek from development (13). Many of the sites of this study are well-managed, located in state or national parks, and all of the canals are artificially created. There are already management-schemes and policies in place to protect these water bodies. For example, to reduce nutrient total maximum daily loads, there exists action plans (14) and the Springs Protection Act (15). It is useful, then, to better understand the effects of flashiness on these water bodies in order to inform managers to implement more efficient and cost-effective management practices. 
 
 ## Research Questions
-The goal of this study is to better understand the effects of storm events on rivers and streams in Florida. 
 
-1. Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness? 
-  
-  a) Hypothesis: sites with high hydrologic flashiness are more likely to be chemically flashy because of shared predictor variables.
-  
-  b) This question will be answered using USGS NWIS high frequency discharge and nitrate data on water bodies within the state of Florida. 
+The goal of this study was to better understand the effects of storm events on rivers and streams in Florida. The following questions and hypotheses guided the study: 
+Question 1: Is there a correlation between hydrologic and chemical flashiness in rivers and streams? 
 
-2. The second question to answer is: how do features of a site impact its chemical flashiness?
-  
-  a) This question will be approached qualitatively by ascertaining the presence or absence of urban and/or rural features, such as airports, commercial development, or farmland, and their proximity to each site. GIS maps will be analyzed for this part.
-  
-  b) The hypotheses related to the qualitative approach are: (1) that urbanness / ruralness will be correlated with the stream exhibiting flushing, diluting, or chemostatic behavior, or (2) that the urbanness / ruralness will not be correlated with any particular behavior of the stream, whether flushing, diluting, or chemostatic in nature.
-  
-  c) This question will also be approached quantitatively or statistically by ascertaining the level of human activity surrounding each site. Human activity will be measured using population totals and water use levels for the counties surrounding each water body.
-  
-  d) The corresponding hypotheses are that: (1) population and water use will be correlated with chemical flashiness, and (2) population and water use will not be correlated with chemical flashiness.
+Hypothesis 1: There is a correlation between hydrologic and chemical flashiness. Sites with high hydrologic flashiness are more likely to be chemically flashy because of shared predictor variables.
+
+Question 2: How do rural / urban features of a site impact its chemical flashiness? 
+
+Hypothesis 2: There is a correlation between the urbanness / ruralness of a site and its chemical flashiness. Sites with high urbanness are more likely to be chemically flashy because of impervious surfaces and non-point source discharge potential.
+
 
 \newpage
 
@@ -101,7 +98,7 @@ Data for 21 water bodies (7 rivers, 7 springs, 3 creeks, and 4 canals) in Florid
 
 For question / hypothesis 1 regarding hydrologic and chemical flashiness, high frequency discharge and nitrate data will be extracted from the USGS NWIS DataRetrieval package. A Richards-Baker Index will be calculated using the discharge data as a measure of hydrologic flashiness. C-Q plots will be generated using the nitrate data as a measure of chemical flashiness. 
 
-For question / hypothesis 2 regarding the properties of each site that may affect chemical flashiness, data will be retrieved from ____ . Specifically, county population values, irrigation water use levels, thermoelectric water use levels, and a chemostatic coefficient will be examined. Maps taken from ___ will be examined to ascertain the presence or absence of features indicative of urbanness or ruralness surrounding each site, such as airports, commercial center, or farms, as well as the proximity of these features to each water body.
+For question / hypothesis 2 regarding the properties of each site that may affect chemical flashiness, data will be retrieved from United States Geological Survey (USGS). Specifically, county population values, irrigation water use levels, thermoelectric water use levels, and a chemostatic coefficient will be examined. Maps taken from ArcGIS will be examined to ascertain the presence or absence of features indicative of urbanness or ruralness surrounding each site, such as airports, commercial center, or farms, as well as the proximity of these features to each water body.
 
 
 ```{r, echo = FALSE, message = FALSE}
@@ -138,9 +135,9 @@ states.florida = filter(states, ID %in% c("florida"))
 hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_va"), crs = 4326)
 ```
 
-Figure 1 is a map that shows the location of the sites we chose to analyze. 
+Figure 1 is a map that shows the watershed and water feature information of Florida and location of the sites we chose to analyze. It can be seen that the sites chosen encompass a variety of water features, ranging from streams, banks, to canals. They are also located in different regions of Florida, and the hydrological heterogeneity among sites offers an opportunity to study the potentially different interactions between chemostaticity and hydrological flashiness.
 
-```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=4, fig.align="center"}
+```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=3, fig.align="center"}
 ggplot() +
   geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
   geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) +
@@ -154,9 +151,9 @@ ggplot() +
 ```
 
 
-We decided to use violin plots to visualize the ranges of discharge and nitrate in the different sites. We made individual violin plots for discharge and nitrate for each site, and used cowplot to combine the discharge and nitrate for each site. The first thing we noticed was the difference between the canal plots and the other waterway types. The canal plots have values much more concentrated in their lower ranges, and much less variation overall. Visualizing the differences in canal variable distributions alerts us that they may influence our data analysis.
+We used violin plots to visualize the ranges of discharge and nitrate in the different sites. We made individual violin plots for discharge and nitrate for each site, and noticed the difference between the canal plots and the other waterway types (Figure 2). The canal plots have values much more concentrated in their lower ranges, and much less variation overall. Visualizing the differences in canal variable distributions alerts us that they may influence our data analysis.
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge and nitrate values of a stream and a canal", fig.height=8, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge and nitrate values of a stream and a canal", fig.height=5, fig.width = 9}
 SANTAviolin<- SANTAdata%>%
   select(Flow_Inst,Nitrate_mgl)%>%
   mutate(site = "SANTA")
@@ -180,9 +177,9 @@ DRAIN_violin_nit<-ggplot(DRAINviolin)+
 plot_grid(SANTA_violin_dis,SANTA_violin_nit, DRAIN_violin_dis,DRAIN_violin_nit, ncol = 2)
 ```
 
-We then created combined violin plots of discharge and nitrate for all the sites. The CAL and SANTA sites had much more discharge than any other site. We made another discharge plot without CAL and SANTA to better visualize the smaller discharges. We then made a similar plot for nitrate.
+We then created combined violin plots of discharge and nitrate for all the sites. The CAL and SANTA sites had much more discharge than any other site so here we present the discharge plot without CAL and SANTA to better visualize the smaller discharges (Figure 3). A similar plot for nitrate was also made (Figure 4).
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge values of all sites (except CAL and SANTA", fig.height=4, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge values of all sites (except CAL and SANTA)", fig.height=3, fig.width = 9}
 #discharge plot for all sites except two to visualize smaller discharges
 ggplot(
   violin_comb%>%filter(site!="CAL", site!="SANTA"),aes(x=site,y=Flow_Inst))+
@@ -191,19 +188,19 @@ ggplot(
 ```
 
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of nitrate concentration values of all sites", fig.height=4, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of nitrate concentration values of all sites", fig.height=3, fig.width = 9}
 #discharge plot for all sites except two to visualize smaller discharges
 ggplot(violin_comb,aes(x=site,y=Nitrate_mgl))+
   geom_violin()+
   labs(y="Nitrate (mg/L)")
 ```
 
-Part of our data exploration process included plotting discharge and nitrate over time at all 21 of our sites. This served two purposes: one, it helped us get a preliminary sense of the diversity in distributions and behaviors at all of the sites, and two, it highlighted any possible gaps in the data that we would need to wrangle out. In general, we did not notice any trends between sites, indicating a deeper analysis was needed. 
+Our final exploratory analysis consisted of plotting discharge and nitrate over time at all 21 of our sites. This served two purposes: one, it helped us get a preliminary sense of the diversity in distributions and behaviors at all of the sites, and two, it highlighted any possible gaps in the data that we would need to wrangle out. In general, we did not notice any trends between sites, indicating a deeper analysis was needed. 
 
-This report includes four examples of the graphs we generated: one spring, one river, one canal, and one creek - all to give a sense of the range of site types and the data trends at each.
+This report includes four examples of the graphs we generated: one spring, one river, one canal, and one creek (Figure 5) - all to give a sense of the range of site types and the data trends at each.
 
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=16, fig.width = 9, fig.cap = "Discharge and nitrate value patterns of example sites"}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=15, fig.width = 12, fig.cap = "Discharge and nitrate value patterns of example sites"}
 #Spring
 BLUEdata$dateTime <- as.Date(BLUEdata$dateTime)
 
@@ -285,13 +282,11 @@ grid.arrange(arrangeGrob(BLUECombined, top = BLUE.grob),
 
 ## Question 1: Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness?
 
-We chose to analyze our first question, on the relationship between hydrologic flashiness and chemical flashiness, using sites with high frequency nitrate and discharge measurements. At each site, we calculated the Richards-Baker Index to quantify the hydrologic flashiness.
-
-We had to exclude catchment size in the formula because 17/21 sites did not have a recorded catchment size.
+We chose to analyze our first question, on the relationship between hydrologic flashiness and chemical flashiness, using sites with high frequency nitrate and discharge measurements. At each site, we calculated the Richards-Baker Index to quantify the hydrologic flashiness. We had to exclude catchment size in the formula because 17 out of 21 sites did not have a recorded catchment size.
 
 To quantify chemical flashiness, we ran a linear regression between mean daily nitrate and mean daily discharge values and took the coefficient as our chemostaticity value. We excluded 3 sites with poor linear regression fits, 1 of which had a large outlier for chemostaticity coefficient.
 
-We wrangled the RBI values and Chemostaticity Coefficients to create a dataframe with columns site, site type(canal, river, etc.), chemostaticity coefficient, chemostaticity coefficient absolute value, and RBI value. We included the absolute value of the Chemostaticity Coefficient to investigate the flashiness, as absolute value would account for large chemostaticity in either a flushing or diluting system.
+We wrangled the RBI values and Chemostaticity Coefficients to create a dataframe with columns site, site type (canal, river, etc.), chemostaticity coefficient, chemostaticity coefficient absolute value, and RBI value. We included the absolute value of the Chemostaticity Coefficient to investigate the flashiness, as absolute value would account for large chemostaticity in either a flushing or diluting system.
 
 ```{r, include = FALSE}
 # read in data from RBI_CHEMO_analysis doc
@@ -299,40 +294,42 @@ RBI_CHEMO_data<-read_csv("../Processed_Dataframes/RBI_CHEMO_data.csv")
 RBI_nocanals<-read_csv("../Processed_Dataframes/RBI_CHEMO_nocanals.csv")  
 ```
 
-We created ggplot visualizations of Chemostaticity Coefficient vs. RBI and |Chemostaticity Coefficient vs. RBI| separating site type by color. The visualization without absolute value shows a distribution that follows the x and y axis. Sites with large RBI values have low Chemostatic Coefficients, and sites with low RBI values have Chemostatic Coefficients that are far above 0 or far below 0. The absolute value visualization reinforces this finding, as large absolute Chemostatic Coefficients correspond with small RBI values. Similar trends were viewed between site type, except that the largest outlier for both Chemostatic Coefficient and RBI are both canals.
+We created ggplot visualizations of Chemostatic Coefficient vs. RBI (Figure 6) and Absolute Chemostatic Coefficient vs. RBI (Figure 7) separating site type by color. The visualization without absolute value shows a distribution that follows the x and y axis. Sites with large RBI values have low Chemostatic Coefficients, and sites with low RBI values have Chemostatic Coefficients that are far above 0 or far below 0. The absolute value visualization reinforces this finding, as large absolute Chemostatic Coefficients correspond with small RBI values. Similar trends were viewed between site type, except that the largest outlier for both Chemostatic Coefficient and RBI are both canals.
 
 ```{r, echo = FALSE, message = FALSE, fig.cap="Chemostatic coefficient values and Richards-Baker Index of 18 sites", fig.height=3}
 
 #visualize data, both abs and non-abs
-RBI.linear<-ggplot(RBI_CHEMO_data, 
+ggplot(RBI_CHEMO_data, 
                    aes(x=RBI_value_ind_noncatch, y=chemo.coef))+
   geom_point(aes(color=site.type))+
-  labs(x="Richards-Baker Index", y="Chemostatic Coefficient")
-print(RBI.linear)
+  labs(x="Richards-Baker Index", y="Chemostatic Coefficient")+theme(plot.margin = margin(0,0,0,0))
 ```
 
 
 ```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 18 sites",fig.height=3}
-RBI.linear.abs<-ggplot(RBI_CHEMO_data, 
+ggplot(RBI_CHEMO_data, 
                        aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
   geom_point(aes(color=site.type))+
   labs(x="Richards-Baker Index", 
-       y=" Absolute Chemostatic Coefficient")
-print(RBI.linear.abs)
+       y=" Absolute Chemostatic Coefficient")+theme(plot.margin = margin(0,0,0,0))
 
 ```
 
-We ran a linear regression on log(Absolute Chemostaticity Coefficient) vs. RBI, which was the closest fit that we could find. The regression produced a coefficient of -2.6847 , a P-value of 0.473, and a multiple r-squared of 0.03264. The model does not adequately predict the data.
+We ran a linear regression on log(Absolute Chemostatic Coefficient) vs. RBI, which was the closest fit that we could find. The regression produced a coefficient of -2.6847 , a P-value of 0.473, and a multiple r-squared of 0.03264. The model does not adequately predict the data.
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, message = FALSE, include = FALSE}
 # run regressions on data
 
 lm_sig_log_abs<-lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_CHEMO_data)
 
 summary(lm_sig_log_abs)
+
+lm_nocanals_log_abs<-
+  lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_nocanals)
+summary(lm_nocanals_log_abs)
 ```
 
-Since canals often act differently than natural waterways, and the largest outlier for both RBI and Chemostaticity Coefficient are canals, we also visualized the data without canals. The visualizations are more clear due to smaller axis ranges, and show similar results to the first visualizations. We ran the same linear regression on the Absolute Chemostatic Coefficient without canals.
+Since canals often act differently than natural waterways, and the largest outlier for both RBI and Chemostaticity Coefficient are canals, we also visualized the data without canals (Figure 8). The visualizations are more clear due to smaller axis ranges, and show similar results to the first visualizations. We ran the same linear regression on the Absolute Chemostatic Coefficient without canals.
 
 ```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 14 non-canal sites",fig.height=3}
 #same analysis, without canals in the data
@@ -344,9 +341,6 @@ Nocanals.linear.abs<-ggplot(RBI_nocanals,
        y="Absolute Chemostatic Coefficient")
 
 print(Nocanals.linear.abs)
-lm_nocanals_log_abs<-
-  lm(log(chemo.coef.abs)~RBI_value_ind_noncatch, RBI_nocanals)
-summary(lm_nocanals_log_abs)
 ```
 
 The linear regression for Absolute Chemostatic Coefficient vs. RBI provided a Coefficient of -6.889, a P-value of 0.39, and a multiple r-squared of 0.06228. While the fit doesn’t sufficiently match the data, it is better than the data with canals and does provide some idea of the relationship between the variables.
@@ -383,7 +377,8 @@ BLUEChemoplot <- ggplot(BLUEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Blue Springs") +
-  theme(plot.title = element_text(size = 12))
+  theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #BOW
 BOWNitrateDV <- BOWdata %>%
@@ -403,8 +398,8 @@ BOWChemoplot <- ggplot(BOWChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   
   labs(x = "", y = "") +
   ggtitle("Rainbow River \n Near Dunnellon")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #CAL
 CALNitrateDV <- CALdata %>%
@@ -424,8 +419,8 @@ CALChemoplot <- ggplot(CALChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Caloosahatchee River")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #CHAS
 CHASNitrateDV <- CHASdata %>%
@@ -445,8 +440,8 @@ CHASChemoplot <- ggplot(CHASChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Chassahowitzka River")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #CRANE
 CRANENitrateDV <- CRANEdata %>%
@@ -466,8 +461,8 @@ CRANEChemoplot <- ggplot(CRANEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Crane Creek")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 #DRAIN
 DRAINNitrateDV <- DRAINdata %>%
   group_by(dateTime) %>%
@@ -486,8 +481,8 @@ DRAINChemoplot <- ggplot(DRAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Drainage Canal")+
-  theme(plot.title = element_text(size = 12))
-  
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))  
 
 #FAN
 FANNitrateDV <- FANdata %>%
@@ -507,8 +502,8 @@ FANChemoplot <- ggplot(FANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Fanning Springs")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #FELL
 FELLNitrateDV <- FELLdata %>%
@@ -528,8 +523,8 @@ FELLChemoplot <- ggplot(FELLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Fellsmere Canal")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #HOL
 HOLNitrateDV <- HOLdata %>%
@@ -549,8 +544,8 @@ HOLChemoplot <- ggplot(HOLChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Blue Hole Spring")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #HOM
 HOMNitrateDV <- HOMdata %>%
@@ -570,8 +565,8 @@ HOMChemoplot <- ggplot(HOMChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Homosassa Springs")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #HUN
 HUNNitrateDV <- HUNdata %>%
@@ -591,8 +586,8 @@ HUNChemoplot <- ggplot(HUNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Hunter Spring Run")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #ICHE
 ICHENitrateDV <- ICHEdata %>%
@@ -612,8 +607,8 @@ ICHEChemoplot <- ggplot(ICHEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Ichetucknee River")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #MAD
 MADNitrateDV <- MADdata %>%
@@ -633,8 +628,8 @@ MADChemoplot <- ggplot(MADChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Madison Blue Spring")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #MAIN
 MAINNitrateDV <- MAINdata %>%
@@ -654,8 +649,8 @@ MAINChemoplot <- ggplot(MAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Main Canal")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #MAN
 
@@ -676,8 +671,8 @@ MANChemoplot <- ggplot(MANChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Manatee Spring")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #RAIN
 RAINNitrateDV <- RAINdata %>%
@@ -697,8 +692,8 @@ RAINChemoplot <- ggplot(RAINChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   
   labs(x = "", y = "") +
   ggtitle("Rainbow River at Dunnellon")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #SANTA
 SANTANitrateDV <- SANTAdata %>%
@@ -718,8 +713,8 @@ SANTAChemoplot <- ggplot(SANTAChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Santa Fe River")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 
 #THREE
@@ -740,8 +735,8 @@ THREEChemoplot <- ggplot(THREEChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Three Mile Canal")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #TURK
 TURKNitrateDV <- TURKdata %>%
@@ -761,8 +756,8 @@ TURKChemoplot <- ggplot(TURKChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Turkey Creek")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 #TURN
 TURNNitrateDV <- TURNdata %>%
@@ -782,8 +777,8 @@ TURNChemoplot <- ggplot(TURNChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Turnbull Creek")+
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 #WAC
 WACNitrateDV <- WACdata %>%
   group_by(dateTime) %>%
@@ -802,24 +797,24 @@ WACChemoplot <- ggplot(WACChemo, aes(x = Flow_DV, y = Nitrate_DV)) +
   scale_y_log10() +
   labs(x = "", y = "") +
   ggtitle("Wacissa River") +
-  theme(plot.title = element_text(size = 12))
-
+theme(plot.title = element_text(size = 8),
+        plot.margin = margin(0,0,0,0))
 
 y.grob <- textGrob("Daily Mean Nitrate (mg/l)", 
-                   gp=gpar(fontface="bold", fontsize=12), rot=90)
+                   gp=gpar(fontface="bold", fontsize=10), rot=90)
 
 x.grob <- textGrob(("Daily Mean Discharge (ft3/s)"), 
-                   gp=gpar(fontface="bold", fontsize=12))
+                   gp=gpar(fontface="bold", fontsize=10))
 
 diluting.grob <- textGrob("Diluting Systems C-Q",
-                          gp=gpar(fontface="bold", fontsize=15))
+                          gp=gpar(fontface="bold", fontsize=12))
 flushing.grob <- textGrob("Flushing Systems C-Q",
-                          gp=gpar(fontface="bold", fontsize=15))
+                          gp=gpar(fontface="bold", fontsize=12))
 chemostatic.grob <- textGrob("Chemostatic Systems C-Q",
-                             gp=gpar(fontface="bold", fontsize=15))
+                             gp=gpar(fontface="bold", fontsize=12))
 ```
 
-```{r, echo = FALSE, message = FALSE,warning = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=5}
+```{r, echo = FALSE, message = FALSE,warning = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=4}
 
 ChemostaticPlot <- plot_grid(
   FANChemoplot, RAINChemoplot, CHASChemoplot,  
@@ -850,8 +845,27 @@ grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob, top = dil
 
 ### Quantitative/Statistical Approach: How do counties’ population and water usage impact the chemical flashiness of sites within the county?
 
+Figure 12 shows each site's chemostaticity (absolute chemostatic coefficient) on the water feature map. Based on the map, it appears that sites on the right bank are less chemostatic, compared to sites in central-northern part of Florida. However, since many factors are confounding and sample size is not big enough, no definite conclusion can be drawn.
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=4, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9,fig.cap="Location of sites and respective absolute chemostatic coefficient"}
+hyp2.plot.2 <- ggplot() +
+  geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
+  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
+  geom_sf(data = hyp2.spatial, aes(size = abschemo), alpha = 0.5, show.legend = "point") +
+ # scale_color_viridis_c(option = "inferno") +
+  labs(size = "Absolute Chemostaticity") +
+  theme(legend.position = "right",
+        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8),
+        legend.margin = margin(0,0,0,0))
+print(hyp2.plot.2)
+```
+
+We then used county population and water use data from USGS to conduct a quantitative analysis on how sites in different locations have different levels of chemical flashiness. Specifically, for water use, we looked at billion gallons of water used per day for irrigation and thermo electricity generation in each county. We believe that the more water used for irrigation in a county, the higher probability the sites in that county have of being influenced by nutrient run-off from farms within the county. A large amount of water used for thermo electricity generation may either imply that the water is well-managed and therefore more chemically stable, or imply that pollution may come from the generation process and make the water chemically flashy.
+
+Figure 13 shows that sites in counties with higher population seem to have a higher probability of having higher absolute chemostatic coefficient, which means that they are less chemically stable. However, relationship between water use and chemical flashiness is not convincing enough.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=4, fig.width = 9, fig.cap = "Relationship between a site's chemical flashiness and population and water use of the county the site is in" }
 pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo)) +
   geom_point(aes(color = site.type)) +
   geom_smooth(method = "lm") +
@@ -897,28 +911,20 @@ plot_row <- plot_grid(pop.plot.2 + theme(legend.position="none"),
           irri.plot.2+ theme(legend.position="none"),
           therm.plot.2+ theme(legend.position="none"), legend, ncol = 4)
 
-plot_grid(title, plot_row, ncol = 1,rel_heights = c(0.1, 1))
+plot_grid(plot_row, ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9}
-hyp2.plot.2 <- ggplot() +
-  geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
-  geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
-  geom_sf(data = hyp2.spatial, aes(size = abschemo), alpha = 0.5, show.legend = "point") +
- # scale_color_viridis_c(option = "inferno") +
-  labs(size = "Chemo staticity") +
-  theme(legend.position = "right",
-        legend.text = element_text(size = 7),
-        legend.title = element_text(size = 8),
-        legend.margin = margin(0,0,0,0))
-print(hyp2.plot.2)
-```
-
+We ran a linear regression to quantify the relationship between population, water use and chemical flashiness. The regression result shows that the impact of water use (both irrigation and thermoelectric) on chemical flashiness is not significant. But for population, we got a coefficient of 1.057e-05, and a P-value of 0.06. That is, we are 94% confident that on average, adding one thousand people to a county, the absolute value of chemostatic coefficient will increase by 1. 
 
 \newpage
 
 # Summary and Conclusions
-<Summarize your major findings from your analyses in a few paragraphs. What conclusions do you draw from your findings? Relate your findings back to the original research questions and rationale.>
+This examination of hydrologic and chemical flashiness on 21 water bodies in Florida yielded a few notable results. Correspondingly, there are a few recommendations that managers of rivers, springs, creeks, canals, etc. in Florida might want to consider. 
+
+First, there is no clear or statistically significant correlation between hydrologic and chemical flashiness. As a result, in order to maintain the health of their rivers and streams, it is recommended that river and stream managers start tracking or continue to track proxies for both hydrologic and chemical flashiness and not simply just for one or the other. For hydrologic flashiness, river and stream managers should track high frequency discharge levels during storms. For chemical flashiness, river and stream managers should track high frequency nitrate and conductance levels during storms. Unfortunately, since there is no clear correlation between hydrologic and chemical flashiness, it is advised that managers track for both types of flashiness and not just one. 
+
+A second conclusion of this examination is a relationship between the location of a water body and its chemical flashiness behavior. More specifically, the water bodies that were located closest to airports tended to exhibit flushing behavior, while the water bodies located in or near state parks tended to exhibit diluting behavior. However, due to the limited scope both in site number and variable number of this study, these trends may be misleading or misrepresentative of other processes at work. For Florida water managers, it is recommended to at least pay closer attention to the possible interactions between airports or similar, large human operations and watersheds - the diluting nature of systems in state parks may be important as well, but they are likely already closely monitored. 
+
 
 \newpage
 

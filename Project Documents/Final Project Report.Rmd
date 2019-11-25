@@ -137,7 +137,7 @@ hyp2.spatial <- st_as_sf(hyp2.full_cleaned, coords = c("dec_long_va", "dec_lat_v
 
 Figure 1 is a map that shows the watershed and water feature information of Florida and location of the sites we chose to analyze. It can be seen that the sites chosen encompass a variety of water features, ranging from streams, banks, to canals. They are also located in different regions of Florida, and the hydrological heterogeneity among sites offers an opportunity to study the potentially different interactions between chemostaticity and hydrological flashiness.
 
-```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=3, fig.align="center"}
+```{r, echo = FALSE, message = FALSE, fig.cap="Location of sites analyzed on watersheds",fig.height=2.5, fig.align="center"}
 ggplot() +
   geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
   geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE)) +
@@ -153,7 +153,7 @@ ggplot() +
 
 We used violin plots to visualize the ranges of discharge and nitrate in the different sites. We made individual violin plots for discharge and nitrate for each site, and noticed the difference between the canal plots and the other waterway types (Figure 2). The canal plots have values much more concentrated in their lower ranges, and much less variation overall. Visualizing the differences in canal variable distributions alerts us that they may influence our data analysis.
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge and nitrate values of a stream and a canal", fig.height=5, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge and nitrate values of a stream and a canal", fig.height=4, fig.width = 7}
 SANTAviolin<- SANTAdata%>%
   select(Flow_Inst,Nitrate_mgl)%>%
   mutate(site = "SANTA")
@@ -179,7 +179,7 @@ plot_grid(SANTA_violin_dis,SANTA_violin_nit, DRAIN_violin_dis,DRAIN_violin_nit, 
 
 We then created combined violin plots of discharge and nitrate for all the sites. The CAL and SANTA sites had much more discharge than any other site so here we present the discharge plot without CAL and SANTA to better visualize the smaller discharges (Figure 3). A similar plot for nitrate was also made (Figure 4).
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge values of all sites (except CAL and SANTA)", fig.height=3, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge values of all sites (except CAL and SANTA)", fig.height=3, fig.width = 8}
 #discharge plot for all sites except two to visualize smaller discharges
 ggplot(
   violin_comb%>%filter(site!="CAL", site!="SANTA"),aes(x=site,y=Flow_Inst))+
@@ -188,7 +188,7 @@ ggplot(
 ```
 
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of nitrate concentration values of all sites", fig.height=3, fig.width = 9}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of nitrate concentration values of all sites", fig.height=3, fig.width = 8}
 #discharge plot for all sites except two to visualize smaller discharges
 ggplot(violin_comb,aes(x=site,y=Nitrate_mgl))+
   geom_violin()+
@@ -200,7 +200,7 @@ Our final exploratory analysis consisted of plotting discharge and nitrate over 
 This report includes four examples of the graphs we generated: one spring, one river, one canal, and one creek (Figure 5) - all to give a sense of the range of site types and the data trends at each.
 
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=15, fig.width = 12, fig.cap = "Discharge and nitrate value patterns of example sites"}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=13, fig.width = 10, fig.cap = "Discharge and nitrate value patterns of example sites"}
 #Spring
 BLUEdata$dateTime <- as.Date(BLUEdata$dateTime)
 
@@ -296,7 +296,7 @@ RBI_nocanals<-read_csv("../Processed_Dataframes/RBI_CHEMO_nocanals.csv")
 
 We created ggplot visualizations of Chemostatic Coefficient vs. RBI (Figure 6) and Absolute Chemostatic Coefficient vs. RBI (Figure 7) separating site type by color. The visualization without absolute value shows a distribution that follows the x and y axis. Sites with large RBI values have low Chemostatic Coefficients, and sites with low RBI values have Chemostatic Coefficients that are far above 0 or far below 0. The absolute value visualization reinforces this finding, as large absolute Chemostatic Coefficients correspond with small RBI values. Similar trends were viewed between site type, except that the largest outlier for both Chemostatic Coefficient and RBI are both canals.
 
-```{r, echo = FALSE, message = FALSE, fig.cap="Chemostatic coefficient values and Richards-Baker Index of 18 sites", fig.height=3}
+```{r, echo = FALSE, message = FALSE, fig.cap="Chemostatic coefficient values and Richards-Baker Index of 18 sites", fig.height=2.5}
 
 #visualize data, both abs and non-abs
 ggplot(RBI_CHEMO_data, 
@@ -306,7 +306,7 @@ ggplot(RBI_CHEMO_data,
 ```
 
 
-```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 18 sites",fig.height=3}
+```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 18 sites",fig.height=2.5}
 ggplot(RBI_CHEMO_data, 
                        aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
   geom_point(aes(color=site.type))+
@@ -331,7 +331,7 @@ summary(lm_nocanals_log_abs)
 
 Since canals often act differently than natural waterways, and the largest outlier for both RBI and Chemostaticity Coefficient are canals, we also visualized the data without canals (Figure 8). The visualizations are more clear due to smaller axis ranges, and show similar results to the first visualizations. We ran the same linear regression on the Absolute Chemostatic Coefficient without canals.
 
-```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 14 non-canal sites",fig.height=3}
+```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 14 non-canal sites",fig.height=2.5}
 #same analysis, without canals in the data
 Nocanals.linear.abs<-ggplot(RBI_nocanals, 
                             aes(x=RBI_value_ind_noncatch, y=chemo.coef.abs))+
@@ -814,7 +814,7 @@ chemostatic.grob <- textGrob("Chemostatic Systems C-Q",
                              gp=gpar(fontface="bold", fontsize=12))
 ```
 
-```{r, echo = FALSE, message = FALSE,warning = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=4}
+```{r, echo = FALSE, message = FALSE,warning = FALSE, fig.cap="C-Q Plots of Chemostatic Sites",fig.height=3.2}
 
 ChemostaticPlot <- plot_grid(
   FANChemoplot, RAINChemoplot, CHASChemoplot,  
@@ -823,7 +823,7 @@ ChemostaticPlot <- plot_grid(
 grid.arrange(arrangeGrob(ChemostaticPlot, left = y.grob, bottom = x.grob, top = chemostatic.grob))
 ```
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="C-Q Plots of Flushing Sites",fig.height=5}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="C-Q Plots of Flushing Sites",fig.height=4.2}
 FlushingPlot <- plot_grid(
   MAINChemoplot, FELLChemoplot, CRANEChemoplot, MADChemoplot, 
   THREEChemoplot, CALChemoplot, HUNChemoplot,
@@ -833,7 +833,7 @@ grid.arrange(arrangeGrob(FlushingPlot, left = y.grob, bottom = x.grob, top = flu
 
 ```
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="C-Q Plots of Diluting Sites",fig.height=5}
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap="C-Q Plots of Diluting Sites",fig.height=4.2}
 DilutingPlot <- plot_grid(
   ICHEChemoplot, SANTAChemoplot, BLUEChemoplot, HOLChemoplot, DRAINChemoplot, 
   BOWChemoplot,  MANChemoplot, HOMChemoplot, TURKChemoplot,
@@ -847,7 +847,7 @@ grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob, top = dil
 
 Figure 12 shows each site's chemostaticity (absolute chemostatic coefficient) on the water feature map. Based on the map, it appears that sites on the right bank are less chemostatic, compared to sites in central-northern part of Florida. However, since many factors are confounding and sample size is not big enough, no definite conclusion can be drawn.
 
-```{r, echo = FALSE, message = FALSE, fig.height=4, fig.width = 9,fig.cap="Location of sites and respective absolute chemostatic coefficient"}
+```{r, echo = FALSE, message = FALSE, fig.height=3.5, fig.width = 9,fig.cap="Location of sites and respective absolute chemostatic coefficient"}
 hyp2.plot.2 <- ggplot() +
   geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
   geom_sf(data = waterfeatures, aes(fill = FEATURE, color = FEATURE, show.legend = "fill")) +
@@ -865,7 +865,7 @@ We then used county population and water use data from USGS to conduct a quantit
 
 Figure 13 shows that sites in counties with higher population seem to have a higher probability of having higher absolute chemostatic coefficient, which means that they are less chemically stable. However, relationship between water use and chemical flashiness is not convincing enough.
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=4, fig.width = 9, fig.cap = "Relationship between a site's chemical flashiness and population and water use of the county the site is in" }
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.height=3.5, fig.width = 9, fig.cap = "Relationship between a site's chemical flashiness and population and water use of the county the site is in" }
 pop.plot.2 = ggplot(hyp2.full_cleaned, aes(x = total_pop, y = abschemo)) +
   geom_point(aes(color = site.type)) +
   geom_smooth(method = "lm") +
@@ -923,7 +923,7 @@ This examination of hydrologic and chemical flashiness on 21 water bodies in Flo
 
 First, there is no clear or statistically significant correlation between hydrologic and chemical flashiness. As a result, in order to maintain the health of their rivers and streams, it is recommended that river and stream managers start tracking or continue to track proxies for both hydrologic and chemical flashiness and not simply just for one or the other. For hydrologic flashiness, river and stream managers should track high frequency discharge levels during storms. For chemical flashiness, river and stream managers should track high frequency nitrate and conductance levels during storms. Unfortunately, since there is no clear correlation between hydrologic and chemical flashiness, it is advised that managers track for both types of flashiness and not just one. 
 
-A second conclusion of this examination is a relationship between the location of a water body and its chemical flashiness behavior. More specifically, the water bodies that were located closest to airports tended to exhibit flushing behavior, while the water bodies located in or near state parks tended to exhibit diluting behavior. However, due to the limited scope both in site number and variable number of this study, these trends may be misleading or misrepresentative of other processes at work. For Florida water managers, it is recommended to at least pay closer attention to the possible interactions between airports or similar, large human operations and watersheds - the diluting nature of systems in state parks may be important as well, but they are likely already closely monitored. 
+A second conclusion of this examination is that there exists a relationship between the location of a water body and its chemical flashiness behavior. More specifically, the water bodies that were located closest to airports tended to exhibit flushing behavior, while the water bodies located in or near state parks tended to exhibit diluting behavior. Also water bodies located in counties that have higher population tended to exhibit more chemical flashiness. However, due to the limited scope both in site number and variable number of this study, these trends may be misleading or misrepresentative of other processes at work. For Florida water managers, it is recommended to at least pay closer attention to the possible interactions between airports or similar, large human operations and watersheds - the diluting nature of systems in state parks may be important as well, but they are likely already closely monitored. 
 
 
 \newpage

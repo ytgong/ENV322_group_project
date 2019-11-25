@@ -109,10 +109,15 @@ df <- data.frame(Variable = c("Nitrate concentrations -- high frequency","Discha
 
 kable(df, caption = "Variables used for analysis")
 
+sites.nonalpha<-c("WAC", "MAD", "BLUE", "MAN", "FAN", "SANTA", "ICHE", "HOL",
+              "HUN", "HOM", "CHAS", "RAIN", "BOW", "CAL", "THREE", "TURN",
+              "DRAIN", "CRANE", "TURK", "FELL", "MAIN")
+
 df2 = read.csv("../Processed_Dataframes/siteinfo.csv") %>%
   select("Site No." = site_no,
          "Station Name" = station_nm,
-         "County" = county_nm)
+         "County" = county_nm)%>%
+  mutate("Abbr." = sites.nonalpha)
 
 kable(df2, caption = "USGS sites selected for analysis") 
 ```

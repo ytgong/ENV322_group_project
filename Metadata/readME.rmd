@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+## Dataset Information
+Data were collected using the `dataRetrieval` R package which pulls from the USGS National Water Information System interface, or NWIS. More information can be found here: https://cran.r-project.org/web/packages/dataRetrieval/vignettes/dataRetrieval.html
+
+The dataset contains data from 22 sites in Florida, including high frequency values for discharge, nitrate and specific conductance (not used in analysis); 2015 Water use data which includes county population and quantity of water used for irrigation and thermo electricity generation. The data are retrieved using the commands:
+
+* readNWISdata
+* whatNWISsites
+* readNWISdv
+* readNWISuv
+* readNWISqw
+* readNWISuse
+
+Data were accessed between in November 2019.
+
+Data of geographic and water features of Florida were acquired from Hydrological Data Analysis course material.
+
+## File organization
+
+Files are organized based on its type and who generated the file.
+
+**Data_Wrangling** contains rmd files where original data were pulled and wrangled for next steps.
+
+**FL_csv** and **Processed_Dataframes** contain data files wrangled.
+
+**other_data** contains geographic and water features data acquired from course folder.
+
+**data_explorations** contains rmd files used for conducting exploratory data analysis.
+
+**Data_Analysis** contains rmd files used for analyzing data and generating visualizations. 
+
+**Plots** contains visualizations generated in analysis process.
+
+**Project Documents** contains project templates and interim and final report.

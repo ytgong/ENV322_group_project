@@ -850,8 +850,6 @@ grid.arrange(arrangeGrob(DilutingPlot, left = y.grob, bottom = x.grob, top = dil
 
 ### Quantitative/Statistical Approach: How do counties’ population and water usage impact the chemical flashiness of sites within the county?
 
-Figure 12 shows each site's chemostaticity (absolute chemostatic coefficient) on the water feature map. Based on the map, it appears that sites on the right bank are less chemostatic, compared to sites in central-northern part of Florida. However, since many factors are confounding and sample size is not big enough, no definite conclusion can be drawn.
-
 ```{r, echo = FALSE, message = FALSE, fig.height=3.5, fig.width = 9,fig.cap="Location of sites and respective absolute chemostatic coefficient"}
 hyp2.plot.2 <- ggplot() +
   geom_sf(data = HUC6.Florida, color = "darkgray", alpha = 0.5)+
@@ -865,6 +863,8 @@ hyp2.plot.2 <- ggplot() +
         legend.margin = margin(0,0,0,0))
 print(hyp2.plot.2)
 ```
+
+Figure 12 shows each site's chemostaticity (absolute chemostatic coefficient) on the water feature map. Based on the map, it appears that sites on the right bank are less chemostatic, compared to sites in central-northern part of Florida. However, since many factors are confounding and sample size is not big enough, no definite conclusion can be drawn.
 
 We then used county population and water use data from USGS to conduct a quantitative analysis on how sites in different locations have different levels of chemical flashiness. Specifically, for water use, we looked at billion gallons of water used per day for irrigation and thermo electricity generation in each county. We believe that the more water used for irrigation in a county, the higher probability the sites in that county have of being influenced by nutrient run-off from farms within the county. A large amount of water used for thermo electricity generation may either imply that the water is well-managed and therefore more chemically stable, or imply that pollution may come from the generation process and make the water chemically flashy.
 
@@ -919,7 +919,7 @@ plot_row <- plot_grid(pop.plot.2 + theme(legend.position="none"),
 plot_grid(plot_row, ncol = 1,rel_heights = c(0.1, 1))
 ```
 
-We ran a linear regression to quantify the relationship between population, water use and chemical flashiness. The regression result shows that the impact of water use (both irrigation and thermoelectric) on chemical flashiness is not significant. But for population, we got a coefficient of 1.057e-05, and a P-value of 0.06. That is, we are 94% confident that on average, adding one thousand people to a county, the absolute value of chemostatic coefficient will increase by 1. 
+We ran a linear regression to quantify the relationship between population, water use and chemical flashiness. The regression result shows that the impact of water use (both irrigation and thermoelectric) on chemical flashiness is not significant. But for population, we got a coefficient of 1.057e-05 (16 degrees of freedom, a P-value of 0.06, multiple r-squared of 0.1972). That is, we are 94% confident that on average, adding one thousand people to a county, the absolute value of chemostatic coefficient will increase by 1. 
 
 \newpage
 

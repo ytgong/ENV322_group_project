@@ -156,7 +156,7 @@ ggplot() +
 ```
 
 
-We used violin plots to visualize the ranges of discharge and nitrate in the different sites. We made individual violin plots for discharge and nitrate for each site, and noticed the difference between the canal plots and the other waterway types (Figure 2). The canal plots have values much more concentrated in their lower ranges, and much less variation overall. Visualizing the differences in canal variable distributions alerts us that they may influence our data analysis.
+We created violin plots to visualize the ranges of discharge and nitrate in the different sites. We made individual violin plots for discharge and nitrate for each site, and noticed the difference between the canal plots and the other waterway types (Figure 2). The canal plots have values much more concentrated in their lower ranges, and contain less variation overall. Visualizing the differences in canal variable distributions alerts us that they may influence our later data analysis.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.cap = "Distribution of discharge and nitrate values of a stream and a canal", fig.height=4, fig.width = 7}
 SANTAviolin<- SANTAdata%>%
@@ -287,11 +287,11 @@ grid.arrange(arrangeGrob(BLUECombined, top = BLUE.grob),
 
 ## Question 1: Are sites with high hydrologic flashiness more or less likely to have high chemical flashiness?
 
-We chose to analyze our first question, on the relationship between hydrologic flashiness and chemical flashiness, using sites with high frequency nitrate and discharge measurements. At each site, we calculated the Richards-Baker Index to quantify the hydrologic flashiness. We had to exclude catchment size in the formula because 17 out of 21 sites did not have a recorded catchment size.
+To analyze our first question, on the relationship between hydrolic flashiness and chemical flashiness, we calculated the Richards-Baker Index of each site to quantify hydrologic flashiness. We had to exclude catchment size in the formula because 17 out of 21 sites did not have a recorded catchment size.
 
-To quantify chemical flashiness, we ran a linear regression between mean daily nitrate and mean daily discharge values and took the coefficient as our chemostaticity value. We excluded 3 sites with poor linear regression fits, 1 of which had a large outlier for chemostaticity coefficient.
+To quantify chemical flashiness, we ran a linear regression between mean daily nitrate and mean daily discharge values and took the coefficient as our chemostaticity value. We excluded 3 sites with poor linear regression fits.
 
-We wrangled the RBI values and Chemostaticity Coefficients to create a dataframe with columns site, site type (canal, river, etc.), chemostaticity coefficient, chemostaticity coefficient absolute value, and RBI value. We included the absolute value of the Chemostaticity Coefficient to investigate the flashiness, as absolute value would account for large chemostaticity in either a flushing or diluting system.
+We wrangled the RBI values and Chemostaticity Coefficients to create a dataframe with columns site, site type (canal, river, etc.), chemostaticity coefficient, chemostaticity coefficient absolute value, and RBI value. We included the absolute value of the Chemostaticity Coefficient to investigate the overall flashiness, as absolute value would account for large chemostaticity in either a flushing or diluting system.
 
 ```{r, include = FALSE}
 # read in data from RBI_CHEMO_analysis doc
@@ -299,7 +299,7 @@ RBI_CHEMO_data<-read_csv("../Processed_Dataframes/RBI_CHEMO_data.csv")
 RBI_nocanals<-read_csv("../Processed_Dataframes/RBI_CHEMO_nocanals.csv")  
 ```
 
-We created ggplot visualizations of Chemostatic Coefficient vs. RBI (Figure 6) and Absolute Chemostatic Coefficient vs. RBI (Figure 7) separating site type by color. The visualization without absolute value shows a distribution that follows the x and y axis. Sites with large RBI values have low Chemostatic Coefficients, and sites with low RBI values have Chemostatic Coefficients that are far above 0 or far below 0. The absolute value visualization reinforces this finding, as large absolute Chemostatic Coefficients correspond with small RBI values. Similar trends were viewed between site type, except that the largest outlier for both Chemostatic Coefficient and RBI are both canals.
+We created ggplot visualizations of Chemostatic Coefficient vs. RBI (Figure 6) and Absolute Chemostatic Coefficient vs. RBI (Figure 7) separating site type by color. The visualization without absolute value shows a distribution that follows the x and y axis. Sites with large RBI values have low Chemostatic Coefficients, and sites with low RBI values have Chemostatic Coefficients that are far above 0 or far below 0. The absolute value visualization reinforces this finding, as large absolute Chemostatic Coefficients correspond with small RBI values. Similar distributions were viewed between site type, except that the largest outlier for both Chemostatic Coefficient and RBI are canals.
 
 ```{r, echo = FALSE, message = FALSE, fig.cap="Chemostatic coefficient values and Richards-Baker Index of 18 sites", fig.height=2.5}
 
@@ -320,7 +320,7 @@ ggplot(RBI_CHEMO_data,
 
 ```
 
-We ran a linear regression on log(Absolute Chemostatic Coefficient) vs. RBI, which was the closest fit that we could find. The regression produced a coefficient of -2.6847 , a P-value of 0.473, and a multiple r-squared of 0.03264. The model does not adequately predict the data.
+We ran a linear regression on log(Absolute Chemostatic Coefficient) vs. RBI, which was the closest fit that we could find. The regression produced a coefficient of -2.6847 (16 degrees of freedom, P-value of 0.473, multiple r-squared 0.03264). The model does not adequately predict the data.
 
 ```{r, echo = FALSE, message = FALSE, include = FALSE}
 # run regressions on data
@@ -334,7 +334,7 @@ lm_nocanals_log_abs<-
 summary(lm_nocanals_log_abs)
 ```
 
-Since canals often act differently than natural waterways, and the largest outlier for both RBI and Chemostaticity Coefficient are canals, we also visualized the data without canals (Figure 8). The visualizations are more clear due to smaller axis ranges, and show similar results to the first visualizations. We ran the same linear regression on the Absolute Chemostatic Coefficient without canals.
+Since canals often act differently than natural waterways, and the largest outlier for both RBI and Chemostaticity Coefficient are canals, we also visualized the data without canals (Figure 8). The visualizations show a more concise version of the trends in Figure 6 and Figure 7, where low RBI results in a high Absolute Chemostatic Coefficient. We ran the same linear regression on the data without canals.
 
 ```{r, echo = FALSE, message = FALSE, fig.cap="Absolute Chemostatic coefficient values and Richards-Baker Index of 14 non-canal sites",fig.height=2.5}
 #same analysis, without canals in the data
@@ -348,7 +348,7 @@ Nocanals.linear.abs<-ggplot(RBI_nocanals,
 print(Nocanals.linear.abs)
 ```
 
-The linear regression for Absolute Chemostatic Coefficient vs. RBI provided a Coefficient of -6.889, a P-value of 0.39, and a multiple r-squared of 0.06228. While the fit doesn’t sufficiently match the data, it is better than the data with canals and does provide some idea of the relationship between the variables.
+The linear regression for Absolute Chemostatic Coefficient vs. RBI provided a Coefficient of -6.889 (12 degrees of freedom, P-value 0.39, and a multiple r-squared 0.06228). While the fit still isn't significant, it is better than the data with canals and suggests that there is a negative relationship between hydrologic flashiness and chemical flashiness.
 
 
 ## Question 2: How do features of a site impact its chemical flashiness?
@@ -926,7 +926,7 @@ We ran a linear regression to quantify the relationship between population, wate
 # Summary and Conclusions
 This examination of hydrologic and chemical flashiness on 21 water bodies in Florida yielded a few notable results. Correspondingly, there are a few recommendations that managers of rivers, springs, creeks, canals, etc. in Florida might want to consider. 
 
-First, there is no clear or statistically significant correlation between hydrologic and chemical flashiness. As a result, in order to maintain the health of their rivers and streams, it is recommended that river and stream managers start tracking or continue to track proxies for both hydrologic and chemical flashiness and not simply just for one or the other. For hydrologic flashiness, river and stream managers should track high frequency discharge levels during storms. For chemical flashiness, river and stream managers should track high frequency nitrate and conductance levels during storms. Unfortunately, since there is no clear correlation between hydrologic and chemical flashiness, it is advised that managers track for both types of flashiness and not just one. 
+First, there is no clear or statistically significant correlation between hydrologic and chemical flashiness. Our research suggests that there could be a negative correlation between hydrologic flashiness and chemical flashiness, but further research is needed to develop a clear relationship. As a result, in order to maintain the health of their rivers and streams, it is recommended that river and stream managers start tracking or continue to track proxies for both hydrologic and chemical flashiness and not simply just for one or the other. For hydrologic flashiness, river and stream managers should track high frequency discharge levels during storms. For chemical flashiness, river and stream managers should track high frequency nitrate and conductance levels during storms. If further research confirmed a negative relationship between hydrologic flashiness and chemical flashiness, managers could better predict problems for certain streams and respond accordingly.
 
 A second conclusion of this examination is that there exists a relationship between the location of a water body and its chemical flashiness behavior. More specifically, the water bodies that were located closest to airports tended to exhibit flushing behavior, while the water bodies located in or near state parks tended to exhibit diluting behavior. Also water bodies located in counties that have higher population tended to exhibit more chemical flashiness. However, due to the limited scope both in site number and variable number of this study, these trends may be misleading or misrepresentative of other processes at work. For Florida water managers, it is recommended to at least pay closer attention to the possible interactions between airports or similar, large human operations and watersheds - the diluting nature of systems in state parks may be important as well, but they are likely already closely monitored. 
 

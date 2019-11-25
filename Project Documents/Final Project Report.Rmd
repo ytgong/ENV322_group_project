@@ -94,9 +94,9 @@ Hypothesis 2: There is a correlation between the urbanness / ruralness of a site
 
 # Dataset Information
 
-Data for 21 water bodies (7 rivers, 7 springs, 3 creeks, and 4 canals) in Florida will be collected. 
+Data for 21 water bodies (7 rivers, 7 springs, 3 creeks, and 4 canals) in Florida will be collected. They were chosen by searching all USGS Florida sites with high frequency nitrate and discharge data that had significant periods of overlap. Each site's data was shortened to focus on period of time with consistent data collecting.
 
-For question / hypothesis 1 regarding hydrologic and chemical flashiness, high frequency discharge and nitrate data will be extracted from the USGS NWIS DataRetrieval package. A Richards-Baker Index will be calculated using the discharge data as a measure of hydrologic flashiness. C-Q plots will be generated using the nitrate data as a measure of chemical flashiness. 
+For question / hypothesis 1 regarding hydrologic and chemical flashiness, high frequency discharge and nitrate data will be extracted from the USGS NWIS DataRetrieval package. A Richards-Baker Index will be calculated using the discharge data as a measure of hydrologic flashiness. C-Q plots will be generated using the nitrate and discharge data as a measure of chemical flashiness. The data will be combined into one dataframe, along with site information, for trend analysis.
 
 For question / hypothesis 2 regarding the properties of each site that may affect chemical flashiness, data will be retrieved from United States Geological Survey (USGS). Specifically, county population values, irrigation water use levels, thermoelectric water use levels, and a chemostatic coefficient will be examined. Maps taken from ArcGIS will be examined to ascertain the presence or absence of features indicative of urbanness or ruralness surrounding each site, such as airports, commercial center, or farms, as well as the proximity of these features to each water body.
 
